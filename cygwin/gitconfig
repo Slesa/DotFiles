@@ -1,0 +1,32 @@
+[user]
+	name = Jörg Preiß
+	email = joerg.preiss@slesa.de
+[core]
+	editor = vim
+	autocrlf = false
+
+
+[color]
+    ui = auto
+	wtf = true
+[color "diff"]
+	old = bold red
+	new = bold green
+	meta = bold yellow
+[color "branch"]
+	current = black green
+	local = bold green
+	remote = yellow
+	plain = bold yellow
+[color "status"]
+	added = bold red
+	changed = bold green
+	untracked = bold cyan
+	nobranch = red reverse
+[color "interactive"]
+	prompt = bold green
+	error = bold red
+
+
+[alias]
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit

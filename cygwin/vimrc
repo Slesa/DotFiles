@@ -1,0 +1,43 @@
+" Settings
+" ========================================
+
+
+" zeigt statuszeile fr einen buffer
+set laststatus=2
+" gibt die aktuelle cursorposition in der statuszeile an
+set ruler
+" Keine Backups machen
+set nobackup
+" dunkler Hintergrund
+set background=dark
+" Beep Tne abschalten
+set noerrorbells
+" versteckte Buffer
+set hidden
+"set list
+" Tab wird im Text durchn Leerzeichen mitet te
+set tabstop=4
+" Vim verhlt sich nicht wie Vi
+set nocompatible
+set nowrap
+set cursorline
+set shiftwidth=4
+set autoindent
+set fileencoding=utf-8
+set encoding=utf-8
+"
+" Syntaxhighlighting
+"
+let color = "true"
+"
+if has("syntax")
+  if color == "true"
+    " This will switch colors ON
+    so ${VIMRUNTIME}/syntax/syntax.vim
+    colorscheme koehler
+  else
+    " this switches colors OF
+    syntax off
+    set t_Co=0
+  endif
+endif
