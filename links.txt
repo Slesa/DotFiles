@@ -1,1 +1,4 @@
 https://github.com/agross/dotfiles
+
+Git aliases:
+http://haacked.com/archive/2014/07/28/github-flow-aliases/
