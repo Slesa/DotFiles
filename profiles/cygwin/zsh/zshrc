@@ -1,0 +1,10 @@
+# Which plugins would you like to load? (plugins can be found in ~/.zsh/plugins/*)
+# Example format: plugins=(rails git textmate ruby lighthouse)
+plugins=(git-flow-completion)
+
+source $ZSH/my-zsh.sh
+
+prompt agross
+
+cdpath=(/gw /scratch /lab /lab/.NET /git-demos /gw/Kunden/*)
+export CDPATH

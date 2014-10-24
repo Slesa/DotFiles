@@ -1,0 +1,109 @@
+#!/bin/bash
+
+gitalias cmd='command'
+gitalias rsd='command rm *.exe.stackdump'
+
+gitalias fl='git flow'
+
+gitalias unresolve='git checkout --conflict=merge -- '
+
+# temporarily ignoring files
+gitalias ignore='git update-index --assume-unchanged'
+gitalias unignore='git update-index --no-assume-unchanged'
+gitalias ignored="git ls-files -v | env --unset=GREP_OPTIONS grep --perl-regexp '^[a-z]\s' | cut --delimiter=' ' --fields=2-"
+
+gitalias gitignored='git ls-files --others --directory --ignored --exclude-standard'
+
+# git commit
+gitalias commit='git commit --verbose'
+gitalias amend='git commit --verbose --amend --reuse-message=HEAD'
+gitalias ci='git commit --verbose'
+gitalias cim='git commit --verbose --message'
+gitalias cima='git commit --verbose --all --message'
+gitalias ca='git commit --verbose --all'
+
+gitalias co='git checkout'
+
+# git branch and remote
+gitalias   b='git branch'
+gitalias brs='git branch -a --verbose'
+gitalias  rv='git remote -v'
+gitalias pru='git fetch upstream && git rebase upstream/master'
+gitalias pro='git fetch origin && git rebase origin/master'
+gitalias mpull='branch=${1:-develop} && git fetch origin && git rebase --preserve-merges origin/$branch $branch'
+gitalias pub='git publish'
+
+# git add
+gitalias  a='git add'
+gitalias au='git add --update'
+gitalias aa='git add --all'
+gitalias ai='git add --interactive'
+gitalias ap='git add --patch'
+gitalias aaa='git add --all && git commit --verbose --amend --reuse-message=HEAD'
+gitalias aua='git add --update && git commit --verbose --amend --reuse-message=HEAD'
+
+# git checkout
+gitalias c='git checkout'
+gitalias cp='git checkout --patch'
+gitalias rp='git reset --patch'
+
+# git fetch
+gitalias f='git fetch'
+
+# rebase
+gitalias  r='git rebase --interactive'
+gitalias rc='git rebase --continue'
+gitalias ra='git rebase --abort'
+
+# git diff
+gitalias d='git diff'
+gitalias wd='git diff --word-diff'
+gitalias dns='git diff --ignore-all-space'
+gitalias wdns='git diff --word-diff --ignore-all-space'
+
+gitalias dc='git diff --cached'
+gitalias wdc='git diff --cached --word-diff'
+gitalias wdcns='git diff --cached --word-diff --ignore-all-space'
+gitalias preview='git diff --cached'
+
+gitalias dt='git difftool'
+gitalias mt='git mergetool'
+
+gitalias meld='git difftool --dir-diff --tool=meld'
+
+# git status
+gitalias  s='git status'
+
+# git push
+gitalias pu='git push upstream'
+gitalias puf='git push upstream --force'
+gitalias po='git push origin'
+gitalias pof='git push origin --force'
+
+# git log
+gitalias ll='git log'
+gitalias l='git log --pretty=oneline --abbrev-commit --max-count=15'
+gitalias lp='git log --patch'
+gitalias lpw='git log --patch --word-diff'
+gitalias glog='git log --graph --oneline --decorate --branches --all'
+gitalias wdw='git log --pretty="format:%h - %an - %s"'
+
+# misc
+gitalias pick='git cherry-pick'
+gitalias mcp='git multi-cherry-pick'
+
+# experimental
+gitalias unstage='git reset HEAD'
+gitalias pop='git reset --soft HEAD^'
+gitalias review='git log -p --max-count=1'
+gitalias reviewwd='git log -p --word-diff --max-count=1'
+gitalias review-files='git log --name-only --max-count=1'
+gitalias reword='git commit --amend --message'
+gitalias cleanf='git clean -xdf'
+gitalias most-changed='~/bin/git/git-most-changed.sh'
+
+# svn
+gitalias sd='git svn dcommit'
+gitalias sr='git svn rebase'
+
+gitalias gk='gitk --all &'
