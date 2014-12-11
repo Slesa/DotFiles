@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Dropbox
+Exec=java -jar /home/jpreiss/bin/time-tracking-client-2.0.6.jar
