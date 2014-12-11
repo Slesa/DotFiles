@@ -4,7 +4,39 @@
 [core]
 	editor = vim
 	autocrlf = false
+[push]
+	default = matching
 
+[merge]
+	tool = meld
+	log = true
+[mergetool]
+	prompt = false
+	keepBackup = false
+[mergetool "diffmerge"]
+	cmd = ~/bin/tools/git/diffmerge-merge.sh \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+	trustExitCode = true
+[mergetool "p4"]
+	cmd = ~/bin/tools/git/p4merge-merge.sh \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+[mergetool "semanticmerge"]
+	cmd = ~/bin/tools/git/semanticmerge-merge.sh \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+	trustExitCode = false
+[mergetool "winmerge"]
+	cmd = ~/bin/tools/git/winmerge-merge.sh \"$BASE\" \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+	trustExitCode = true
+[diff]
+	tool = meld
+	renames = copies
+[difftool]
+	prompt = false
+[difftool "diffmerge"]
+	cmd = ~/bin/tools/git/diffmerge-diff.sh \"$LOCAL\" \"$REMOTE\"
+[difftool "p4"]
+	cmd = ~/bin/tools/git/p4merge-diff.sh \"$LOCAL\" \"$REMOTE\"
+[difftool "meld"]
+	cmd = ~/bin/tools/git/meld-diff.sh \"$LOCAL\" \"$REMOTE\"
+[difftool "winmerge"]
+	cmd = ~/bin/tools/git/winmerge-diff.sh \"$LOCAL\" \"$REMOTE\"
 
 [color]
     ui = auto
@@ -30,3 +62,5 @@
 
 [alias]
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+	preview = diff --staged
+	review = log --oneline --patch -1

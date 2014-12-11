@@ -44,7 +44,12 @@
 #
 # When changing directory small typos can be ignored by bash
 # for example, cd /vr/lgo/apaache would find /var/log/apache
-# shopt -s cdspell
+shopt -s cdspell
+
+source ~/git-prompt.sh
+PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
+export PS1
+# export PS1='\n\[\e[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\\$ ' 
 
 # Completion options
 #
@@ -197,14 +202,29 @@
 # 
 # alias cd=cd_func
 
-alias pull="git pull origin Development"
-alias push="git push origin Development"
+alias df='df -h'
+alias du='du -h'
+
+LS_COLORS='di=1;32:fi=0:ln=35:pi=5:so=5:bd=5:cd=5:or=31:mi=0:ex=31:*.rpm=90'
+export LS_COLORS
+alias ls='ls --color=auto -h'
+
+alias cls='echo -ne "\033c"'
+alias vi=vim
+
+alias pull="git pull origin"
+alias push="git push origin"
 alias s="git status"
 alias ll="git log"
 alias l="git log --pretty=oneline --abbrev-commit --max-count=15"
 alias ga="git add"
 alias gc="git commit"
 alias gd="git diff"
+alias gdt="git difftool"
+alias gmt="git mergetool"
 alias co="git checkout"
+alias glog="git log --graph --oneline --all"
+alias unstage="git reset HEAD"
+
 
 cd /work/LiveStyleGuide/03-Production/LiveStyleGuide
