@@ -1,5 +1,4 @@
 [Desktop Entry]
 Type=Application
-Name=Pidgin
-Exec=pidgin
-
+Name=Synergy
+Exec=synergy

@@ -1,4 +1,4 @@
 [Desktop Entry]
 Type=Application
 Name=Dropbox
-Exec=/home/jpreiss/.dropbox-dist/dropbox
+Exec=/home/jpreiss/.dropbox-dist/dropboxd
