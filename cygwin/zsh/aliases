@@ -1,0 +1,30 @@
+alias ls='ls --color=auto'
+alias lsbig='ls -Slh | head'
+alias lssmall='ls -Slhr | head'
+alias lsnew='ls -tlh | head'
+alias lsold='ls -tlh | tail'
+
+alias vi=vim
+alias df='df -h'
+alias du='du -h'
+alias cls='echo -ne "\033c"'
+
+# git
+alias pull="git pull origin"
+alias push="git push origin"
+alias s="git status"
+alias ll="git log"
+alias l="git log --pretty=oneline --abbrev-commit --max-count=15"
+alias ga="git add"
+alias gc="git commit"
+alias gd="git diff"
+alias gdt="git difftool"
+alias gmt="git mergetool"
+alias co="git checkout"
+alias glog="git log --graph --oneline --all"
+alias unstage="git reset HEAD
+
+# Suffix-Aliase
+alias -s txt=vim
+alias -s de=$BROWSER com=$BROWSER org=$BROWSER
+

@@ -1,0 +1,18 @@
+# Nicht piepen bei Fehler                                                       
+setopt no_beep
+# Verzeichniswechsel auch ohne cd
+setopt auto_cd
+# Bei TAB innerhalb Wort nicht ans Ende des Wortes springen
+setopt complete_in_word
+# Rechtschreibkorrektur bei Eingabe von Programmen
+setopt correct
+# Verhindere das Löschen aller Dateien in einem Verzeichnis
+setopt rm_star_wait
+
+# Farbausgabe anschalten
+autoload colors && colors
+# Vervollständigunssystem laden
+autoload -U compinit && compinit
+
+PROMPT='%~-%# '
+RPROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}%#"

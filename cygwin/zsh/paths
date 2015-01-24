@@ -1,0 +1,4 @@
+hash -d launchy=~/work/github/launchy
+hash -d grauchy=~/work/github/Trinity/src/grauchy
+hash -d lsg=~/work/LiveStyleGuide/03\ Production\LiveStyleGuide
+hash -d df=~/work/github/DotFiles
