@@ -22,7 +22,7 @@ alias gdt="git difftool"
 alias gmt="git mergetool"
 alias co="git checkout"
 alias glog="git log --graph --oneline --all"
-alias unstage="git reset HEAD
+alias unstage="git reset HEAD"
 
 # Suffix-Aliase
 alias -s txt=vim
