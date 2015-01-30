@@ -5,7 +5,7 @@ setopt auto_cd
 # Bei TAB innerhalb Wort nicht ans Ende des Wortes springen
 setopt complete_in_word
 # Rechtschreibkorrektur bei Eingabe von Programmen
-setopt correct
+# setopt correct
 # Verhindere das Löschen aller Dateien in einem Verzeichnis
 setopt rm_star_wait
 
@@ -16,3 +16,16 @@ autoload -U compinit && compinit
 
 PROMPT='%~-%# '
 RPROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}%#"
+
+
+# History
+HISTFILE=~/.zsh_history
+SAVEHIST=10000
+HISTSIZE=12000
+
+setopt share_history
+setopt append_history
+setopt hist_no_store
+setopt hist_reduce_blanks
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
