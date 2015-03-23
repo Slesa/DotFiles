@@ -20,8 +20,8 @@ RPROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}%#"
 
 # History
 HISTFILE=~/.zsh_history
-SAVEHIST=10000
-HISTSIZE=12000
+SAVEHIST=1000
+HISTSIZE=1200
 
 setopt share_history
 setopt append_history
