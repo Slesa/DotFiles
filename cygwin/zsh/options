@@ -14,5 +14,7 @@ autoload colors && colors
 # Vervollständigunssystem laden
 autoload -U compinit && compinit
 
-PROMPT='%~-%# '
-RPROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}%#"
+# PROMPT='%~-%# '
+# RPROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}%#"
+PROMPT="%{$fg[green]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}%# %~$ "
+
