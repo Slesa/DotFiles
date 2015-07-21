@@ -14,7 +14,13 @@ set background=dark
 set noerrorbells
 " versteckte Buffer
 set hidden
-"set list
+" Zeige Whitespaces
+set list
+set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+" Zeilennummern
+set number
+"set nonumber
+
 " Tab wird im Text durchn Leerzeichen mitet te
 set tabstop=4
 " Vim verhlt sich nicht wie Vi
