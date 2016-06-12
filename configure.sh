@@ -227,24 +227,24 @@ function installLogin() {
         echo "Login logo already installed"
         return 0
     fi
-    sudo cp $BASEPATH/data/imgs/StarTrekLogo1920x1080.jpg /usr/hare/backgrounds
-    sudo chmod +r /usr/hare/backgrounds/StarTrekLogo1920x1080.jpg
-    sudo sed -i '/background=/c\background=/usr/hare/backgrounds/StarTrekLogo1920x1080.jpg'
-    sudo sed -i '/#background=/c\background=/usr/hare/backgrounds/StarTrekLogo1920x1080.jpg'
+    sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
+    sudo chmod +r /usr/share/backgrounds/StarTrekLogo1920x1080.jpg
+    sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+    sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 }
 
 getSystem
 ensureRoot
-#installPrereqs
-#createSshKey
-#installBasics
-#installDotFiles
-#installFonts
-#installZsh
+installPrereqs
+createSshKey
+installBasics
+installDotFiles
+installFonts
+installZsh
 installLinks
-#installPrograms
-#installXPrograms
-#installCompilers
+installPrograms
+installXPrograms
+installCompilers
 installTwitter
 installKeybase
 installLogin
