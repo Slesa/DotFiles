@@ -168,7 +168,8 @@ function installLinks() {
 	if [ ! -L ~/.config/autostart/Launchy.desktop ]; then
 		ln -s $BASEPATH/etc/unix/autostart/Launchy.desktop ~/.config/autostart/Launchy.desktop
 	fi
-	if [ "$DEST"="host" ]; then
+	if [ "$DEST" = "host" ]; then
+		echo "Creating host autostarts"
 		if [ ! -L ~/.config/autostart/ownCloud.desktop ]; then
 			ln -s $BASEPATH/etc/unix/autostart/ownCloud.desktop ~/.config/autostart/ownCloud.desktop
 		fi
@@ -213,7 +214,7 @@ function installXPrograms() {
     case $SYSTEM in
         "ubuntu")
             $INSTALL $packs
-			if [ "$DEST"="host" ]; then
+			if [ "$DEST" = "host" ]; then
 				$INSTALL extPacks
 			fi
             #$INSTALL $ubuntu_packs
