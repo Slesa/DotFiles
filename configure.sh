@@ -266,7 +266,9 @@ function installKeybase() {
 }
 
 function cloneSources() {
-    mkdir ~/work && cd ~/work
+	pushd .
+	mkdir -p ~/work/github
+	cd ~/work/github
     if [ ! -d Trinity ]; then
         echo "Cloning Trinity"
         git clone git@github.com:slesa/Trinity
@@ -277,6 +279,12 @@ function cloneSources() {
         git clone git@github.com:slesa/launchy
         cd launchy && git checkout develop && cd ..
     fi
+    if [ ! -d Godot ]; then
+        echo "Cloning Godot"
+        git clone git@github.com:slesa/Godot
+        cd Godot && git checkout develop && cd ..
+    fi
+	popd
 }
 
 function installLogin() {

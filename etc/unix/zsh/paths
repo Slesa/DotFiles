@@ -1,7 +1,7 @@
 hash -d launchy=~/work/github/launchy
 hash -d grauchy=~/work/github/Trinity/src/grauchy
 hash -d lsg=~/work/LiveStyleGuide/03-Production/LiveStyleGuide
-hash -d df=~/work/github/DotFiles
+hash -d df=~/.dotFiles
 hash -d play=~/work/github/Playground
 hash -d pos=~/work/github/Poseidon
 hash -d morph=~/work/github/Morpheus
