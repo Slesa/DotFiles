@@ -1,0 +1,11 @@
+; generated_rule thunderbird
+( if 
+( begin 
+( is ( application_name ) "Thunderbird" )
+) 
+( begin 
+( maximize )
+( set_workspace 2 )
+( println "match" )
+)
+)

@@ -1,0 +1,16 @@
+(if (is (application_name) "Pidgin")
+	(begin
+		(if (is (window_name) "Buddy List")
+			(begin
+				(set_workspace 2)
+				(geometry "199x767+0+0")
+			)
+		)
+		(if (is (window_role) "conversation")
+			(begin
+				(set_workspace 2)
+				(geometry "822x400+201+0")
+			)
+		)
+	)
+)

@@ -2,6 +2,23 @@
 
 BASEPATH=~/.dotFiles
 
+function readArguments() {
+	for i in "$@" 
+	do
+		case $i in
+			"host")
+				echo "Installing for a host"
+				DEST="host"
+				;;
+			"slave")
+				echo "Installing for a vm slave"
+				DEST="slave"
+				;;
+		esac
+		shift
+	done
+}
+
 function getSystem() {
     local UNAME=`uname -s`
     if [ $UNAME = "Darwin" ]; then
@@ -99,6 +116,10 @@ function installBasics() {
 }
 
 function installZsh() {
+	if [ "$SHELL"="`which zsh`" ]; then
+	    echo "Zsh already login shell"
+		return 0
+	fi
     echo "Setting default shell to zsh"
     chsh -s `which zsh`
     if [ ! -f ~/.zshrc ]; then
@@ -107,6 +128,7 @@ function installZsh() {
 }
 
 function installLinks() {
+#pidgin xfce
     if [ ! -d ~/bin ]; then
         echo "Creating local bin directory"
         mkdir ~/bin
@@ -127,13 +149,42 @@ function installLinks() {
         echo "Creating vim config"
         ln -s $BASEPATH/etc/unix/vimrc ~/.vimrc
     fi
-    if [ ! -L ~/.config/autostart ]; then
-        if [ -d ~/.config/autostart ]; then
-            mv ~/.config/autostart ~/.config/autostart.bak
-        fi
-        echo "Creating autostarts"
-        ln -s $BASEPATH/etc/unix/autostart ~/.config/autostart
+    if [ ! -L ~/.devilspie ]; then
+        echo "Creating devilspie config"
+        ln -s $BASEPATH/etc/unix/devilspie ~/.devilspie
     fi
+
+	echo "Creating autostarts"
+	if [ ! -d ~/.config/autostart ]; then
+		mkdir ~/.config/autostart
+	fi
+
+	if [ ! -L ~/.config/autostart/devilspie.desktop ]; then
+		ln -s $BASEPATH/etc/unix/autostart/devilspie.desktop ~/.config/autostart/devilspie.desktop
+	fi
+	if [ ! -L ~/.config/autostart/Pidgin.desktop ]; then
+		ln -s $BASEPATH/etc/unix/autostart/Pidgin.desktop ~/.config/autostart/Pidgin.desktop
+	fi
+	if [ ! -L ~/.config/autostart/Launchy.desktop ]; then
+		ln -s $BASEPATH/etc/unix/autostart/Launchy.desktop ~/.config/autostart/Launchy.desktop
+	fi
+	if [ "$DEST"="host" ]; then
+		if [ ! -L ~/.config/autostart/ownCloud.desktop ]; then
+			ln -s $BASEPATH/etc/unix/autostart/ownCloud.desktop ~/.config/autostart/ownCloud.desktop
+		fi
+		if [ ! -L ~/.config/autostart/Twitter.desktop ]; then
+			ln -s $BASEPATH/etc/unix/autostart/Twitter.desktop ~/.config/autostart/Twitter.desktop
+		fi
+		if [ ! -L ~/.config/autostart/Thunderbird.desktop ]; then
+			ln -s $BASEPATH/etc/unix/autostart/Thunderbird.desktop ~/.config/autostart/Thunderbird.desktop
+		fi
+		if [ ! -L ~/.config/autostart/TimeTracker.desktop ]; then
+			ln -s $BASEPATH/etc/unix/autostart/TimeTracker.desktop ~/.config/autostart/TimeTracker.desktop
+		fi
+		if [ ! -L ~/.config/autostart/Skype.desktop ]; then
+			ln -s $BASEPATH/etc/unix/autostart/Skype.desktop ~/.config/autostart/Skype.desktop
+		fi
+	fi
 }
 
 function installPrograms() {
@@ -152,7 +203,9 @@ function installPrograms() {
 }
 
 function installXPrograms() {
-    local packs="launchy launchy-plugins launchy-skins doublecmd-gtk vim-gtk devilspie gdevilspie owncloud-client wmctrl inkscape audacity vlc gimp retext chromium-browser"
+    local packs="launchy launchy-plugins launchy-skins doublecmd-gtk vim-gtk devilspie gdevilspie wmctrl inkscape audacity vlc gimp retext chromium-browser"
+	local extPacks="owncloud-client"
+
 #unetbootin sublime
     #local ubuntu_packs=""
     echo "Installing X11 programs..."
@@ -160,6 +213,9 @@ function installXPrograms() {
     case $SYSTEM in
         "ubuntu")
             $INSTALL $packs
+			if [ "$DEST"="host" ]; then
+				$INSTALL extPacks
+			fi
             #$INSTALL $ubuntu_packs
             ;;
         "cygwin")
@@ -233,6 +289,11 @@ function installLogin() {
     sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 }
 
+readArguments $@
+if [ -z $DEST ]; then
+	echo "Please mention either host or slave"
+	exit 1
+fi
 getSystem
 ensureRoot
 installPrereqs

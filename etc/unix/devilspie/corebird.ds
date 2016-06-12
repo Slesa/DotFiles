@@ -1,0 +1,12 @@
+; generated_rule corebird
+( if 
+( begin 
+( is ( window_name ) "@joergpreiss" )
+) 
+( begin 
+( set_workspace 2 )
+( geometry "400x1100+1270+0" )
+( maximize_vertically )
+( println "match" )
+)
+)
