@@ -55,12 +55,16 @@ function createSshKey() {
 }
 
 function installFonts() {
+    if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
+        echo "Fonts already installed"
+        return 0
+    fi
     sudo cp $BASEPATH/data/font/*.ttf /usr/share/fonts
     fc-cache -f -v
 }
 
 function installPrereqs() {
-    local packs="xsel git" 
+    local packs="xsel git vim" 
     echo "Installing prereqs..."
     case $SYSTEM in
         "ubuntu")
@@ -70,8 +74,10 @@ function installPrereqs() {
 }
 
 function installDotFiles() {
-    if [-d $BASEPATH ]; then
+    if [ -d $BASEPATH ]; then
         echo "Dot files already installed"
+        cd $BASEPATH
+        git pull origin master
         return 0
     fi
     echo "Cloning dot files..."
@@ -79,7 +85,7 @@ function installDotFiles() {
 }
 
 function installBasics() {
-    local packs="gitflow zsh zsh-lovers fortune"
+    local packs="git-flow zsh zsh-lovers fortune"
     echo "Installing basics..."
     case $SYSTEM in
         "ubuntu")
@@ -89,19 +95,46 @@ function installBasics() {
 }
 
 function installZsh() {
+    echo "Setting default shell to zsh"
     chsh -s `which zsh`
     if [ ! -f ~/.zshrc ]; then
         cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
+    fi
+}
+
+function installLinks() {
+    if [ ! -d ~/bin ]; then
+        echo "Creating local bin directory"
+        mkdir ~/bin
+    fi
+    if [ ! -d ~/bin/tools ]; then
+        echo "Creating link to tools"
+        ln -s $BASEPATH/bin/tools ~/bin/tools
+    fi
+    if [ ! -d ~/.zsh ]; then
+        echo "Creating zsh configs"
+        ln -s $BASEPATH/etc/unix/zsh ~/.zsh
+    fi
+    if [ ! -f ~/.gitconfig ]; then
+        echo "Creating git config"
+        ln -s $BASEPATH/etc/unix/gitconfig ~/.gitconfig
+    fi
+    if [ ! -f ~/.vimrc ]; then
+        echo "Creating vim config"
+        ln -s $BASEPATH/etc/unix/vimrc ~/.vimrc
+    fi
 }
 
 #function installPrograms() {
 #}
 
 getSystem
-ensureRoot
-installPrereqs
-createSshKey
+#ensureRoot
+#installPrereqs
+#createSshKey
 installBasics
+installDotFiles
 installFonts
 installZsh
+installLinks
 echo "Done"
