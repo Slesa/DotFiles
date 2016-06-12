@@ -70,6 +70,8 @@ function installPrereqs() {
         "ubuntu")
             $INSTALL $packs
             ;;
+        "cygwin")
+            ;;
     esac
 }
 
@@ -85,11 +87,13 @@ function installDotFiles() {
 }
 
 function installBasics() {
-    local packs="git-flow zsh zsh-lovers fortune"
+    local packs="git-flow zsh zsh-lovers fortunes fortunes-de"
     echo "Installing basics..."
     case $SYSTEM in
         "ubuntu")
             $INSTALL $packs
+            ;;
+        "cygwin")
             ;;
     esac
 }
@@ -107,34 +111,141 @@ function installLinks() {
         echo "Creating local bin directory"
         mkdir ~/bin
     fi
-    if [ ! -d ~/bin/tools ]; then
+    if [ ! -L ~/bin/tools ]; then
         echo "Creating link to tools"
         ln -s $BASEPATH/bin/tools ~/bin/tools
     fi
-    if [ ! -d ~/.zsh ]; then
+    if [ ! -L ~/.zsh ]; then
         echo "Creating zsh configs"
         ln -s $BASEPATH/etc/unix/zsh ~/.zsh
     fi
-    if [ ! -f ~/.gitconfig ]; then
+    if [ ! -L ~/.gitconfig ]; then
         echo "Creating git config"
         ln -s $BASEPATH/etc/unix/gitconfig ~/.gitconfig
     fi
-    if [ ! -f ~/.vimrc ]; then
+    if [ ! -L ~/.vimrc ]; then
         echo "Creating vim config"
         ln -s $BASEPATH/etc/unix/vimrc ~/.vimrc
     fi
+    if [ ! -L ~/.config/autostart ]; then
+        if [ -d ~/.config/autostart ]; then
+            mv ~/.config/autostart ~/.config/autostart.bak
+        fi
+        echo "Creating autostarts"
+        ln -s $BASEPATH/etc/unix/autostart ~/.config/autostart
+    fi
 }
 
-#function installPrograms() {
-#}
+function installPrograms() {
+    local packs="synaptic openssh-server curl npm mc dos2unix w3m links ncdu htop nmap lshw vim vim-addon-manager vim-pathogen"
+    #local ubuntu_packs=""
+    echo "Installing programs..."
+
+    case $SYSTEM in
+        "ubuntu")
+            $INSTALL $packs
+            #$INSTALL $ubuntu_packs
+            ;;
+        "cygwin")
+            ;;
+    esac
+}
+
+function installXPrograms() {
+    local packs="launchy launchy-plugins launchy-skins doublecmd-gtk vim-gtk devilspie gdevilspie owncloud-client wmctrl inkscape audacity vlc gimp retext chromium-browser"
+#unetbootin sublime
+    #local ubuntu_packs=""
+    echo "Installing X11 programs..."
+
+    case $SYSTEM in
+        "ubuntu")
+            $INSTALL $packs
+            #$INSTALL $ubuntu_packs
+            ;;
+        "cygwin")
+            ;;
+    esac
+}
+
+function installCompilers() {
+    local packs="subversion meld qt5-default cgdb gdb cmake"
+#gitkraken qt5
+    #local ubuntu_packs=""
+    echo "Installing compilers..."
+
+    case $SYSTEM in
+        "ubuntu")
+            $INSTALL $packs
+            #$INSTALL $ubuntu_packs
+            ;;
+        "cygwin")
+            ;;
+    esac
+}
+
+function installTwitter() {
+    local bird=`which corebird`
+    if [ -n "$bird" ]; then
+        echo "Twitter already installed"
+        return 0
+    fi
+    echo "Installing twitter..."
+    sudo add-apt-repository ppa:ubuntuhandbook1/corebird
+    sudo apt-get update
+    sudo apt-get install corebird
+}
+
+function installKeybase() {
+    local keyb=`which keybase`
+    if [ -n "$keyb" ]; then
+        echo "Keybase already installed"
+        return 0
+    fi
+    echo "Installing keybase..."
+    sudo ln -s /usr/bin/nodejs /usr/bin/node
+    sudo npm install -g keybase-installer
+    sudo keybase-installer
+    keybase login
+}
+
+function cloneSources() {
+    mkdir ~/work && cd ~/work
+    if [ ! -d Trinity ]; then
+        echo "Cloning Trinity"
+        git clone git@github.com:slesa/Trinity
+        cd Trinity && git checkout develop && cd ..
+    fi
+    if [ ! -d launchy ]; then
+        echo "Cloning launchy"
+        git clone git@github.com:slesa/launchy
+        cd launchy && git checkout develop && cd ..
+    fi
+}
+
+function installLogin() {
+    if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
+        echo "Login logo already installed"
+        return 0
+    fi
+    sudo cp $BASEPATH/data/imgs/StarTrekLogo1920x1080.jpg /usr/hare/backgrounds
+    sudo chmod +r /usr/hare/backgrounds/StarTrekLogo1920x1080.jpg
+    sudo sed -i '/background=/c\background=/usr/hare/backgrounds/StarTrekLogo1920x1080.jpg'
+    sudo sed -i '/#background=/c\background=/usr/hare/backgrounds/StarTrekLogo1920x1080.jpg'
+}
 
 getSystem
-#ensureRoot
+ensureRoot
 #installPrereqs
 #createSshKey
-installBasics
-installDotFiles
-installFonts
-installZsh
+#installBasics
+#installDotFiles
+#installFonts
+#installZsh
 installLinks
+#installPrograms
+#installXPrograms
+#installCompilers
+installTwitter
+installKeybase
+installLogin
 echo "Done"
