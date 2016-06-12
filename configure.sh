@@ -310,4 +310,5 @@ installCompilers
 installTwitter
 installKeybase
 installLogin
+cloneSources
 echo "Done"
