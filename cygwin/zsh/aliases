@@ -1,4 +1,4 @@
-alias ls='ls --color=auto'
+#alias ls='ls --color=auto'
 alias lsbig='ls -Slh | head'
 alias lssmall='ls -Slhr | head'
 alias lsnew='ls -tlh | head'
@@ -27,4 +27,10 @@ alias unstage="git reset HEAD"
 # Suffix-Aliase
 alias -s txt=vim
 alias -s de=$BROWSER com=$BROWSER org=$BROWSER
+
+
+# Antlr
+alias runantlr='java org.antlr.v4.Tool'
+alias grun='java org.antlr.v4.gui.TestRig'
+alias antlr4='java -jar /usr/local/lib/antlr-4.5.1-complete.jar'
 

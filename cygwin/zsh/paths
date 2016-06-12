@@ -6,4 +6,6 @@ hash -d play=~/work/github/Playground
 hash -d pos=~/work/github/Poseidon
 hash -d morph=~/work/github/Morpheus
 hash -d godot=~/work/github/Godot
+hash -d trinity=~/work/github/Trinity
 hash -d daimler=~/work/daimler
+hash -d qt=~/work/qt
