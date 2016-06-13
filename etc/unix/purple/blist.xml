@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<purple version='1.0'>
+	<blist>
+		<group>
+			<contact>
+				<buddy account='slesa@jabber.de/' proto='prpl-jabber'>
+					<name>ninimaus@jabber.de</name>
+					<alias>ninimaus@jabber.de</alias>
+				</buddy>
+			</contact>
+		</group>
+		<group name='Gtk'>
+			<setting name='collapsed' type='bool'>0</setting>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#Gtk+</component>
+				<setting name='gtk-mute-sound' type='bool'>0</setting>
+				<setting name='gtk-autojoin' type='bool'>1</setting>
+			</chat>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#gtk</component>
+				<setting name='gtk-autojoin' type='bool'>1</setting>
+			</chat>
+		</group>
+		<group name='Xfce'>
+			<setting name='collapsed' type='bool'>0</setting>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#xfce-dev</component>
+				<setting name='gtk-persistent' type='bool'>1</setting>
+				<setting name='gtk-mute-sound' type='bool'>0</setting>
+				<setting name='gtk-autojoin' type='bool'>1</setting>
+			</chat>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#xfce-de</component>
+			</chat>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#Xfce</component>
+				<setting name='gtk-persistent' type='bool'>1</setting>
+				<setting name='gtk-autojoin' type='bool'>1</setting>
+			</chat>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#Xubuntu</component>
+				<setting name='gtk-autojoin' type='bool'>1</setting>
+			</chat>
+		</group>
+		<group name='Lxde'/>
+		<group name='Chats'>
+			<setting name='collapsed' type='bool'>0</setting>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#freebsd</component>
+				<setting name='gtk-autojoin' type='bool'>1</setting>
+			</chat>
+			<chat proto='prpl-irc' account='Slesa@irc.ubuntu.com'>
+				<component name='channel'>#nixos</component>
+			</chat>
+		</group>
+	</blist>
+	<privacy>
+		<account proto='prpl-irc' name='Slesa@irc.ubuntu.com' mode='1'/>
+		<account proto='prpl-jabber' name='slesa@jabber.de/' mode='4'/>
+		<account proto='prpl-icq' name='joerg.preiss@slesa.de' mode='1'/>
+	</privacy>
+</purple>

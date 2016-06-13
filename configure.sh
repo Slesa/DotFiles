@@ -14,6 +14,14 @@ function readArguments() {
 				echo "Installing for a vm slave"
 				DEST="slave"
 				;;
+			"games")
+				echo "Installing games"
+				INSTALL_GAMES=true
+				;;
+			"tex")
+				echo "Installing tex"
+				INSTALL_TEXT=true
+				;;
 		esac
 		shift
 	done
@@ -153,6 +161,10 @@ function installLinks() {
         echo "Creating devilspie config"
         ln -s $BASEPATH/etc/unix/devilspie ~/.devilspie
     fi
+    if [ ! -L ~/.purple ]; then
+        echo "Creating pidgin configs"
+        ln -s $BASEPATH/etc/unix/purple ~/.purple
+    fi
 
 	echo "Creating autostarts"
 	if [ ! -d ~/.config/autostart ]; then
@@ -189,7 +201,7 @@ function installLinks() {
 }
 
 function installPrograms() {
-    local packs="synaptic openssh-server curl npm mc dos2unix w3m links ncdu htop nmap lshw vim vim-addon-manager vim-pathogen"
+    local packs="synaptic openssh-server curl npm mc dos2unix w3m links ncdu htop nmap lshw vim vim-addon-manager vim-pathogen bacula-client"
     #local ubuntu_packs=""
     echo "Installing programs..."
 
@@ -205,7 +217,7 @@ function installPrograms() {
 
 function installXPrograms() {
     local packs="launchy launchy-plugins launchy-skins doublecmd-gtk vim-gtk devilspie gdevilspie wmctrl inkscape audacity vlc gimp retext chromium-browser"
-	local extPacks="owncloud-client"
+	local extPacks="owncloud-client bogofilter hunspell hunspell-de-de hunspell-ru hunspell-fr hunspell-es"
 
 #unetbootin sublime
     #local ubuntu_packs=""
@@ -226,9 +238,47 @@ function installXPrograms() {
 
 function installCompilers() {
     local packs="subversion meld qt5-default cgdb gdb cmake"
+	local python="python3-pyqt5, python3-pyqt5.quick, python3-pyqt5.qtsqk python3-pyqt5.qtsvg, python3-numpy, python3-psycopg2"
 #gitkraken qt5
     #local ubuntu_packs=""
     echo "Installing compilers..."
+
+    case $SYSTEM in
+        "ubuntu")
+            $INSTALL $packs
+			$INSTALL $python
+            #$INSTALL $ubuntu_packs
+            ;;
+        "cygwin")
+            ;;
+    esac
+}
+
+function installTex() {
+	if [ ! "$INSTALL_TEX" = true ]; then
+		return 0
+	fi
+    local packs="texmaker lyx texlive-music latex2html texstudio latexila xfonts-cyrillic"
+    #local ubuntu_packs=""
+    echo "Installing games..."
+
+    case $SYSTEM in
+        "ubuntu")
+            $INSTALL $packs
+            #$INSTALL $ubuntu_packs
+            ;;
+        "cygwin")
+            ;;
+    esac
+}
+
+function installGames() {
+	if [ ! "$INSTALL_GAMES" = true ]; then
+		return 0
+	fi
+    local packs="phalanx xboard pychess crafty supertux supertuxkart"
+    #local ubuntu_packs=""
+    echo "Installing games..."
 
     case $SYSTEM in
         "ubuntu")
@@ -265,6 +315,27 @@ function installKeybase() {
     keybase login
 }
 
+function installExternals() {
+	pushd .
+	cd ~/Downloads
+
+	# Sublime
+	local sublime=`which sublime_text_3`
+	if [ -z sublime ]; then
+		echo "Installing sublime text"
+		wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
+		sudo dpkg -i sublime-text_build-3114_amd64.deb
+	fi
+
+	if [ ! -d ~/work/qt ]; then
+		echo "Installing qt5"
+		wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
+		sh -x qt-unified-linux-x64-online.run
+	fi
+
+	popd
+}
+
 function cloneSources() {
 	pushd .
 	mkdir -p ~/work/github
@@ -284,6 +355,9 @@ function cloneSources() {
         git clone git@github.com:slesa/Godot
         cd Godot && git checkout develop && cd ..
     fi
+	if [ ! -d GammaRay ]; then
+		git clone https://github.com/KDAB/GammaRay
+		cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
 	popd
 }
 
@@ -317,6 +391,9 @@ installXPrograms
 installCompilers
 installTwitter
 installKeybase
+installGames
+installTex
+installExternals
 installLogin
 cloneSources
 echo "Done"
