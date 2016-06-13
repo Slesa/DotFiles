@@ -128,11 +128,11 @@ function installZsh() {
 	    echo "Zsh already login shell"
 		return 0
 	fi
-    echo "Setting default shell to zsh"
-    chsh -s `which zsh`
-    if [ ! -f ~/.zshrc ]; then
-        cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
-    fi
+	echo "Setting default shell to zsh"
+	chsh -s `which zsh`
+	if [ ! -f ~/.zshrc ]; then
+		cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
+	fi
 }
 
 function installLinks() {
@@ -160,11 +160,21 @@ function installLinks() {
     if [ ! -L ~/.devilspie ]; then
         echo "Creating devilspie config"
         ln -s $BASEPATH/etc/unix/devilspie ~/.devilspie
-    fi
-    if [ ! -L ~/.purple ]; then
-        echo "Creating pidgin configs"
-        ln -s $BASEPATH/etc/unix/purple ~/.purple
-    fi
+	fi
+	if [ ! -L ~/.purple ]; then
+		if [ -d ~/.purple ]; then
+			mv ~/.purple ~/.purple.orig
+		fi
+		echo "Creating pidgin configs"
+		ln -s $BASEPATH/etc/unix/purple ~/.purple
+	fi
+	if [ ! -L ~/.config/xfce ]; then
+		if [ -d ~/.config/xfce ]; then
+			mv ~/.config/xfce ~/.config/xfce.orig
+		fi
+		echo "Creating xfce configs"
+		ln -s $BASEPATH/etc/unix/xfce ~/.config/xfce
+	fi
 
 	echo "Creating autostarts"
 	if [ ! -d ~/.config/autostart ]; then
@@ -238,7 +248,7 @@ function installXPrograms() {
 
 function installCompilers() {
     local packs="subversion meld qt5-default cgdb gdb cmake"
-	local python="python3-pyqt5, python3-pyqt5.quick, python3-pyqt5.qtsqk python3-pyqt5.qtsvg, python3-numpy, python3-psycopg2"
+	local python="python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-numpy python3-psycopg2"
 #gitkraken qt5
     #local ubuntu_packs=""
     echo "Installing compilers..."
@@ -291,8 +301,7 @@ function installGames() {
 }
 
 function installTwitter() {
-    local bird=`which corebird`
-    if [ -n "$bird" ]; then
+    if which corebird; then
         echo "Twitter already installed"
         return 0
     fi
@@ -303,8 +312,7 @@ function installTwitter() {
 }
 
 function installKeybase() {
-    local keyb=`which keybase`
-    if [ -n "$keyb" ]; then
+    if which keybase; then
         echo "Keybase already installed"
         return 0
     fi
@@ -320,17 +328,30 @@ function installExternals() {
 	cd ~/Downloads
 
 	# Sublime
-	local sublime=`which sublime_text_3`
-	if [ -z sublime ]; then
+	#if ! which sublime_text_3; then
+	if ! which subl; then
 		echo "Installing sublime text"
 		wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
 		sudo dpkg -i sublime-text_build-3114_amd64.deb
+	else
+		echo "Sublime already installed"
+	fi
+
+	#if ! which gitkraken; then
+	if [ ! -f /usr/share/gitkraken/gitkraken ]; then
+		echo "Installing gitkraken"
+		wget https://release.gitkraken.com/linux/gitkraken-amd64.deb
+		sudo dpkg -i gitkraken-amd64.deb
+	else
+		echo "gitkraken already installed"
 	fi
 
 	if [ ! -d ~/work/qt ]; then
 		echo "Installing qt5"
 		wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
 		sh -x qt-unified-linux-x64-online.run
+	else
+		echo "qt5 already installed"
 	fi
 
 	popd
@@ -357,7 +378,8 @@ function cloneSources() {
     fi
 	if [ ! -d GammaRay ]; then
 		git clone https://github.com/KDAB/GammaRay
-		cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
+		#cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
+	fi
 	popd
 }
 
