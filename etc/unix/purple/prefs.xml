@@ -42,10 +42,10 @@
 			</pref>
 		</pref>
 		<pref name='savedstatus'>
-			<pref name='default' type='int' value='1387147176'/>
+			<pref name='default' type='int' value='1465935343'/>
 			<pref name='startup' type='int' value='0'/>
 			<pref name='startup_current_status' type='bool' value='1'/>
-			<pref name='idleaway' type='int' value='1387147973'/>
+			<pref name='idleaway' type='int' value='1465842803'/>
 			<pref name='isidleaway' type='bool' value='0'/>
 		</pref>
 		<pref name='conversations'>
@@ -84,38 +84,38 @@
 	</pref>
 	<pref name='plugins'>
 		<pref name='core'>
-			<pref name='newline'>
-				<pref name='im' type='bool' value='1'/>
-				<pref name='chat' type='bool' value='1'/>
+			<pref name='joinpart'>
+				<pref name='delay' type='int' value='10'/>
+				<pref name='threshold' type='int' value='20'/>
+				<pref name='hide_buddies' type='bool' value='0'/>
 			</pref>
-			<pref name='psychic'>
-				<pref name='buddies_only' type='bool' value='0'/>
-				<pref name='show_notice' type='bool' value='1'/>
-				<pref name='activate_online' type='bool' value='1'/>
-			</pref>
-			<pref name='core-plugin_pack-autoaccept'>
-				<pref name='path' type='string' value='/home/jpreiss/.purple/autoaccept'/>
-				<pref name='notify' type='bool' value='1'/>
-				<pref name='newdir' type='bool' value='1'/>
-				<pref name='escape' type='bool' value='1'/>
+			<pref name='nss_prefs'>
+				<pref name='cipher_list' type='stringlist'/>
+				<pref name='min_tls' type='int' value='0'/>
+				<pref name='max_tls' type='int' value='0'/>
 			</pref>
 			<pref name='statenotify'>
 				<pref name='notify_away' type='bool' value='1'/>
 				<pref name='notify_idle' type='bool' value='1'/>
 				<pref name='notify_signon' type='bool' value='1'/>
 			</pref>
-			<pref name='joinpart'>
-				<pref name='delay' type='int' value='10'/>
-				<pref name='threshold' type='int' value='20'/>
-				<pref name='hide_buddies' type='bool' value='0'/>
+			<pref name='psychic'>
+				<pref name='buddies_only' type='bool' value='0'/>
+				<pref name='show_notice' type='bool' value='1'/>
+				<pref name='activate_online' type='bool' value='1'/>
+			</pref>
+			<pref name='newline'>
+				<pref name='im' type='bool' value='1'/>
+				<pref name='chat' type='bool' value='1'/>
 			</pref>
 			<pref name='core-plugin_pack-offlinemsg'>
 				<pref name='always' type='bool' value='0'/>
 			</pref>
-			<pref name='nss_prefs'>
-				<pref name='cipher_list' type='stringlist'/>
-				<pref name='min_tls' type='int' value='0'/>
-				<pref name='max_tls' type='int' value='0'/>
+			<pref name='core-plugin_pack-autoaccept'>
+				<pref name='path' type='string' value='/home/jpreiss/.purple/autoaccept'/>
+				<pref name='notify' type='bool' value='1'/>
+				<pref name='newdir' type='bool' value='1'/>
+				<pref name='escape' type='bool' value='1'/>
 			</pref>
 		</pref>
 		<pref name='lopl'/>
@@ -146,16 +146,10 @@
 					<pref name='method_count_xprop' type='bool' value='0'/>
 					<pref name='method_raise' type='bool' value='0'/>
 					<pref name='method_present' type='bool' value='0'/>
-					<pref name='type_im_sys' type='bool' value='0'/>
-					<pref name='type_chat_sys' type='bool' value='0'/>
 				</pref>
 				<pref name='gestures'>
 					<pref name='visual' type='bool' value='0'/>
 				</pref>
-			</pref>
-			<pref name='extplacement'>
-				<pref name='placement_number' type='int' value='4'/>
-				<pref name='placement_number_separate' type='bool' value='0'/>
 			</pref>
 			<pref name='timestamp_format'>
 				<pref name='force' type='string' value='default'/>
@@ -163,6 +157,18 @@
 					<pref name='conversation' type='string' value='automatic'/>
 					<pref name='log' type='string' value='automatic'/>
 				</pref>
+			</pref>
+			<pref name='unity'>
+				<pref name='launcher_count' type='int' value='2'/>
+				<pref name='messaging_menu_text' type='int' value='0'/>
+				<pref name='alert_chat_nick' type='bool' value='1'/>
+			</pref>
+			<pref name='timestamp'>
+				<pref name='interval' type='int' value='300000'/>
+			</pref>
+			<pref name='extplacement'>
+				<pref name='placement_number' type='int' value='4'/>
+				<pref name='placement_number_separate' type='bool' value='0'/>
 			</pref>
 			<pref name='gtk-plugin_pack-convcolors'>
 				<pref name='ignore_incoming' type='bool' value='1'/>
@@ -193,6 +199,11 @@
 					<pref name='format' type='int' value='1'/>
 					<pref name='enabled' type='bool' value='1'/>
 				</pref>
+			</pref>
+			<pref name='cap'>
+				<pref name='max_seen_difference' type='int' value='1'/>
+				<pref name='max_msg_difference' type='int' value='10'/>
+				<pref name='threshold' type='int' value='5'/>
 			</pref>
 			<pref name='gtk-plugin_pack-markerline'>
 				<pref name='ims' type='bool' value='0'/>
@@ -244,14 +255,6 @@
 				</pref>
 				<pref name='disable-typing-notification' type='bool' value='0'/>
 			</pref>
-			<pref name='cap'>
-				<pref name='max_seen_difference' type='int' value='1'/>
-				<pref name='max_msg_difference' type='int' value='10'/>
-				<pref name='threshold' type='int' value='5'/>
-			</pref>
-			<pref name='timestamp'>
-				<pref name='interval' type='int' value='300000'/>
-			</pref>
 			<pref name='musicmessaging'>
 				<pref name='editor_path' type='string' value='/usr/bin/gscore'/>
 			</pref>
@@ -270,50 +273,6 @@
 				<pref name='only_available' type='bool' value='0'/>
 				<pref name='auto_loaded' type='bool' value='1'/>
 			</pref>
-			<pref name='unity'>
-				<pref name='launcher_count' type='int' value='2'/>
-				<pref name='messaging_menu_text' type='int' value='0'/>
-				<pref name='alert_chat_nick' type='bool' value='1'/>
-			</pref>
-		</pref>
-		<pref name='pidgin_twitter'>
-			<pref name='translate_recipient' type='bool' value='1'/>
-			<pref name='translate_sender' type='bool' value='1'/>
-			<pref name='translate_channel' type='bool' value='1'/>
-			<pref name='escape_pseudo' type='bool' value='0'/>
-			<pref name='strip_excess_lf' type='bool' value='1'/>
-			<pref name='playsound_recipient' type='bool' value='1'/>
-			<pref name='playsound_sender' type='bool' value='1'/>
-			<pref name='soundid_recipient' type='int' value='9'/>
-			<pref name='userlist_recipient' type='string' value='(list of users: separated with &apos; ,:;&apos;)'/>
-			<pref name='soundid_sender' type='int' value='9'/>
-			<pref name='userlist_sender' type='string' value='(list of users: separated with &apos; ,:;&apos;)'/>
-			<pref name='counter' type='bool' value='1'/>
-			<pref name='suppress_oops' type='bool' value='1'/>
-			<pref name='prevent_notification' type='bool' value='0'/>
-			<pref name='api_base_post' type='bool' value='1'/>
-			<pref name='api_base_get_interval' type='int' value='60'/>
-			<pref name='retrieve_count' type='int' value='20'/>
-			<pref name='screen_name_twitter' type='string' value=''/>
-			<pref name='password_twitter' type='string' value=''/>
-			<pref name='screen_name_wassr' type='string' value=''/>
-			<pref name='screen_name_identica' type='string' value=''/>
-			<pref name='screen_name_jisko' type='string' value=''/>
-			<pref name='screen_name_ffeed' type='string' value=''/>
-			<pref name='show_icon' type='bool' value='1'/>
-			<pref name='icon_size' type='int' value='48'/>
-			<pref name='update_icon' type='bool' value='1'/>
-			<pref name='icon_max_count' type='int' value='50'/>
-			<pref name='icon_max_days' type='int' value='7'/>
-			<pref name='log_output' type='bool' value='0'/>
-			<pref name='filter' type='bool' value='1'/>
-			<pref name='filter_exclude_reply' type='bool' value='1'/>
-			<pref name='filter_twitter' type='string' value='(list of users: separated with &apos; ,:;&apos;)'/>
-			<pref name='filter_wassr' type='string' value='(list of users: separated with &apos; ,:;&apos;)'/>
-			<pref name='filter_identica' type='string' value='(list of users: separated with &apos; ,:;&apos;)'/>
-			<pref name='filter_jisko' type='string' value='(list of users: separated with &apos; ,:;&apos;)'/>
-			<pref name='filter_ffeed' type='string' value='(list of users: separated with &apos; ,:;&apos;)'/>
-			<pref name='icon_dir' type='string' value='/home/jpreiss/.purple/pidgin-twitter/icons'/>
 		</pref>
 	</pref>
 	<pref name='pidgin'>
@@ -325,16 +284,16 @@
 		<pref name='plugins'>
 			<pref name='loaded' type='pathlist'>
 				<item value='/usr/lib/purple-2/pidgin-libnotify.so'/>
+				<item value='/usr/lib/pidgin/notify.so'/>
 				<item value='/usr/lib/purple-2/ssl-nss.so'/>
-				<item value='/usr/lib/pidgin/themeedit.so'/>
-				<item value='/usr/lib/pidgin/pidgin-twitter.so'/>
 				<item value='/usr/lib/purple-2/ssl.so'/>
+				<item value='/usr/lib/pidgin/unity.so'/>
 			</pref>
 		</pref>
 		<pref name='filelocations'>
 			<pref name='last_save_folder' type='path' value=''/>
 			<pref name='last_open_folder' type='path' value=''/>
-			<pref name='last_icon_folder' type='path' value='/home/jpreiss/Dropbox/usr/imgs'/>
+			<pref name='last_icon_folder' type='path' value=''/>
 		</pref>
 		<pref name='smileys'>
 			<pref name='theme' type='string' value='Default'/>
@@ -407,7 +366,7 @@
 				<pref name='width' type='int' value='520'/>
 				<pref name='height' type='int' value='321'/>
 			</pref>
-			<pref name='buddyicon' type='path' value='/home/jpreiss/Dropbox/usr/imgs/FSharpPixelAvatar.png'/>
+			<pref name='buddyicon' type='path' value=''/>
 		</pref>
 		<pref name='blist'>
 			<pref name='show_buddy_icons' type='bool' value='1'/>
@@ -418,10 +377,10 @@
 			<pref name='list_visible' type='bool' value='1'/>
 			<pref name='list_maximized' type='bool' value='0'/>
 			<pref name='sort_type' type='string' value='alphabetical'/>
-			<pref name='x' type='int' value='0'/>
+			<pref name='x' type='int' value='133'/>
 			<pref name='y' type='int' value='25'/>
-			<pref name='width' type='int' value='199'/>
-			<pref name='height' type='int' value='767'/>
+			<pref name='width' type='int' value='250'/>
+			<pref name='height' type='int' value='405'/>
 			<pref name='theme' type='string' value=''/>
 		</pref>
 		<pref name='conversations'>
@@ -448,7 +407,7 @@
 			<pref name='scrollback_lines' type='int' value='4000'/>
 			<pref name='chat'>
 				<pref name='entry_height' type='int' value='54'/>
-				<pref name='userlist_width' type='int' value='270'/>
+				<pref name='userlist_width' type='int' value='80'/>
 				<pref name='x' type='int' value='0'/>
 				<pref name='y' type='int' value='0'/>
 				<pref name='width' type='int' value='340'/>
@@ -488,9 +447,9 @@
 		</pref>
 		<pref name='docklet'>
 			<pref name='blink' type='bool' value='0'/>
-			<pref name='show' type='string' value='pending'/>
+			<pref name='show' type='string' value='never'/>
 			<pref name='gtk'>
-				<pref name='embedded' type='bool' value='1'/>
+				<pref name='embedded' type='bool' value='0'/>
 			</pref>
 		</pref>
 	</pref>

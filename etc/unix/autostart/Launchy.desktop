@@ -2,5 +2,5 @@
 Type=Application
 Name=Launchy
 Exec=launchy
-
+Hidden=true
 

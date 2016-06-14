@@ -1,0 +1,78 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>Conversation with #freebsd at Tue 14 Jun 2016 10:15:51 PM CEST on Slesa@irc.ubuntu.com (irc)</title></head><body><h3>Conversation with #freebsd at Tue 14 Jun 2016 10:15:51 PM CEST on Slesa@irc.ubuntu.com (irc)</h3>
+<font size="2">(10:15:51 PM)</font><b> Das Thema für #freebsd ist: Welcome to #FreeBSD! | Have fun, Be civilized, Respect people, Stay on-topic else { #freebsd-social } | /join #freebsd-ops for channel assistance</b><br/>
+<font size="2">(10:15:51 PM)</font><b> Das Thema für #freebsd gesetzt von koobs um 06:10:06 PM auf 01/09/2016</b><br/>
+<font color="#A82F2F"><font size="2">(10:16:07 PM)</font> <b>drac_boy:</b></font> btw seku just for random tidbit the card from pny has just over 2000 cores, opencl 1.2 support, and other more general things .. and its still a normal-sized card at the end of the day<br/>
+<font color="#A82F2F"><font size="2">(10:16:07 PM)</font> <b>blackflow:</b></font> wxl: or www:www, the group doesn&apos;t matter<br/>
+<font color="#A82F2F"><font size="2">(10:16:11 PM)</font> <b>drac_boy:</b></font> but I&apos;ll leave that to your own preference tho :)<br/>
+<font color="#A82F2F"><font size="2">(10:16:37 PM)</font> <b>drac_boy:</b></font> cuda cores*<br/>
+<font color="#A82F2F"><font size="2">(10:16:39 PM)</font> <b>wxl:</b></font> www:www<br/>
+<font color="#A82F2F"><font size="2">(10:17:06 PM)</font> <b>drac_boy:</b></font> anyway going off for now so mm have fun with this www thing (I&apos;m sure its not web is it? heh)<br/>
+<font size="2">(10:17:34 PM)</font><b> drac_boy hat den Raum verlassen.</b><br/>
+<font color="#A82F2F"><font size="2">(10:17:34 PM)</font> <b>seku:</b></font> drac_boy, as nice as it may be... if it isnt supported by the software i use, that wont help me<br/>
+<font color="#A82F2F"><font size="2">(10:17:50 PM)</font> <b>blackflow:</b></font> wxl: it doesn&apos;t make sense then why it wouldn&apos;t be writeable...<br/>
+<font color="#A82F2F"><font size="2">(10:18:30 PM)</font> <b>wxl:</b></font> ugh<br/>
+<font color="#A82F2F"><font size="2">(10:18:43 PM)</font> <b>wxl:</b></font> blackflow: you&apos;re telling me. i just touched errors, chowned it to www:www and literally +rx&apos;d and still same issues<br/>
+<font size="2">(10:20:34 PM)</font><b> spudowiar1 heißt jetzt spudowiar</b><br/>
+<font color="#A82F2F"><font size="2">(10:22:27 PM)</font> <b>wxl:</b></font> blackflow: shouldn&apos;t it be equally impossible for me to `su -m www -c &apos;touch /usr/local/www/roundcube/logs/errors&apos;`? cuz that works just fine<br/>
+<font color="#A82F2F"><font size="2">(10:23:35 PM)</font> <b>eichenwald:</b></font> anybody running a Lenovo T440p or T540p<br/>
+<font color="#A82F2F"><font size="2">(10:24:39 PM)</font> <b>eichenwald:</b></font> i&amp; 4700 w/ hybrid graphics (GeForce GT 730M)<br/>
+<font color="#A82F2F"><font size="2">(10:25:05 PM)</font> <b>eichenwald:</b></font> i&amp;*<br/>
+<font color="#A82F2F"><font size="2">(10:25:08 PM)</font> <b>eichenwald:</b></font> i7<br/>
+<font size="2">(10:25:29 PM)</font><b> ozmage [<em>~ozmage@unaffiliated/javashin</em>] hat den Raum betreten.</b><br/>
+<font color="#A82F2F"><font size="2">(10:25:57 PM)</font> <b>blackflow:</b></font> wxl: which means that php is not running as www, or there&apos;s something else involved, not sure what.<br/>
+<font color="#A82F2F"><font size="2">(10:27:06 PM)</font> <b>wxl:</b></font> blackflow: could i be confused by the results of ps? http://pastebin.com/P2DVKJEW<br/>
+<font size="2">(10:27:54 PM)</font><b> astrofog hat den Raum verlassen (quit: Quit: Quite).</b><br/>
+<font size="2">(10:28:13 PM)</font><b> kbw hat den Raum verlassen (quit: Quit: My Mac has gone to sleep. ZZZzzz…).</b><br/>
+<font size="2">(10:29:59 PM)</font><b> kbw [<em>~KeyboardW@68-204-174-189.res.bhn.net</em>] hat den Raum betreten.</b><br/>
+<font color="#A82F2F"><font size="2">(10:30:25 PM)</font> <b>blackflow:</b></font> wxl: you&apos;ve got two pools running. which one is roundcube attached to? chekc the nginx conf, socket directve<br/>
+<font color="#A82F2F"><font size="2">(10:30:34 PM)</font> <b>blackflow:</b></font> *directive<br/>
+<font color="#A82F2F"><font size="2">(10:31:51 PM)</font> <b>wxl:</b></font> fastcgi_pass   unix:/tmp/php-fpm.sock; :/<br/>
+<font size="2">(10:32:03 PM)</font><b> Gi0 hat den Raum verlassen (quit: Quit: Cheers).</b><br/>
+<font size="2">(10:33:20 PM)</font><b> q66 hat den Raum verlassen (quit: Quit: WeeChat 1.5).</b><br/>
+<font color="#A82F2F"><font size="2">(10:33:26 PM)</font> <b>wxl:</b></font> which seems to be default<br/>
+<font size="2">(10:34:03 PM)</font><b> acidfu_ hat den Raum verlassen (quit: Quit: My Mac has gone to sleep. ZZZzzz…).</b><br/>
+<font color="#A82F2F"><font size="2">(10:34:16 PM)</font> <b>wxl:</b></font> www is listening elsewhere<br/>
+<font color="#A82F2F"><font size="2">(10:35:03 PM)</font> <b>wxl:</b></font> so i should probably just change everything over to default and be good<br/>
+<font size="2">(10:37:38 PM)</font><b> swills hat den Raum verlassen (quit: Ping timeout: 244 seconds).</b><br/>
+<font color="#A82F2F"><font size="2">(10:37:42 PM)</font> <b>blackflow:</b></font> wxl: to whichever is www and not nobody.<br/>
+<font color="#A82F2F"><font size="2">(10:38:33 PM)</font> <b>wxl:</b></font> well it seems whoever set up this god forsaken server is using www to listen on a particular port and nobody has the socket directive<br/>
+<font color="#A82F2F"><font size="2">(10:38:37 PM)</font> <b>wxl:</b></font> chown&apos;ing to nobody:www works<br/>
+<font color="#A82F2F"><font size="2">(10:39:24 PM)</font> <b>blackflow:</b></font> yeah don&apos;t run as nobody.<br/>
+<font color="#A82F2F"><font size="2">(10:39:36 PM)</font> <b>wxl:</b></font> yeah<br/>
+<font color="#A82F2F"><font size="2">(10:39:42 PM)</font> <b>wxl:</b></font> tl;dr there&apos;s a lot of cleanup work to do but now i know where the problems lie at least<br/>
+<font color="#A82F2F"><font size="2">(10:39:44 PM)</font> <b>wxl:</b></font> you&apos;ve been most helpful<br/>
+<font size="2">(10:40:32 PM)</font><b> eracc_lappy [<em>~NotALefty@unaffiliated/eracc</em>] hat den Raum betreten.</b><br/>
+<font color="#A82F2F"><font size="2">(10:40:33 PM)</font> <b>blackflow:</b></font> excellent. too bad it&apos;s not a problem with the upgrade, I was priming to send an earful to the (i)responsible parties, but it looks like I won&apos;t :D<br/>
+<font color="#A82F2F"><font size="2">(10:40:38 PM)</font> <b>blackflow:</b></font> of course, I&apos;m just kidding with &quot;too bad&quot; :)<br/>
+<font color="#A82F2F"><font size="2">(10:40:39 PM)</font> <b>wxl:</b></font> i really appreciate all the time you spent<br/>
+<font size="2">(10:41:20 PM)</font><b> TRUNASUCI [<em>~trunasuci@115.132.91.38</em>] hat den Raum betreten.</b><br/>
+<font color="#A82F2F"><font size="2">(10:41:32 PM)</font> <b>blackflow:</b></font> you&apos;re welcome.<br/>
+<font size="2">(10:41:49 PM)</font><b> jjulian [<em>~jjulian@ip1f116ec2.dynamic.kabel-deutschland.de</em>] hat den Raum betreten.</b><br/>
+<font color="#A82F2F"><font size="2">(10:42:34 PM)</font> <b>wxl:</b></font> perhaps the reminder to run bin/update.sh might be good but other than that, yeah, this is all my issue :)<br/>
+<font color="#A82F2F"><font size="2">(10:42:38 PM)</font> <b>jjulian:</b></font> hi is there a way to show which packages are conflicting if installing? i just can see there are 5 conflicting and would like to try to solve it<br/>
+<font color="#A82F2F"><font size="2">(10:44:20 PM)</font> <b>blackflow:</b></font> wxl: there is, in roundcube&apos;s pkg-message, kind of... it says to read UPGRADING and follow instructions.<br/>
+<font color="#A82F2F"><font size="2">(10:44:26 PM)</font> <b>wxl:</b></font> yeah i guess that counts :)<br/>
+<font color="#A82F2F"><font size="2">(10:44:34 PM)</font> <b>blackflow:</b></font> in a way :)<br/>
+<font size="2">(10:44:44 PM)</font><b> dreamx hat den Raum verlassen (quit: Quit: dreamx).</b><br/>
+<font color="#A82F2F"><font size="2">(10:45:28 PM)</font> <b>blackflow:</b></font> jjulian: not sure. what are you trying to install?<br/>
+<font size="2">(10:45:29 PM)</font><b> ninefathom hat den Raum verlassen (quit: Quit: Leaving).</b><br/>
+<font color="#A82F2F"><font size="2">(10:46:20 PM)</font> <b>jjulian:</b></font> blackflow: im trying to install asterisk13 and got message about 5 packages conflicting and so did not install<br/>
+<font color="#A82F2F"><font size="2">(10:46:37 PM)</font> <b>jjulian:</b></font> blackflow: asterisk11 not 13 but its not telling me what 5 packages are conflicting<br/>
+<font color="#A82F2F"><font size="2">(10:47:34 PM)</font> <b>wxl:</b></font> well i do have tls but unfortunately changing roundcube&apos;s host uri from ssl to tls didn&apos;t seem to work<br/>
+<font color="#A82F2F"><font size="2">(10:48:35 PM)</font> <b>blackflow:</b></font> jjulian: surely it lists which packages are conflicting though not what with. can you pastebin what pkg is saying after you run pkp install, and before the confirmation prompt?<br/>
+<font size="2">(10:48:35 PM)</font><b> eichenwald hat den Raum verlassen (quit: Quit: eichenwald).</b><br/>
+<font size="2">(10:48:41 PM)</font><b> Nicop06 [<em>~nicolas@htr06-1-82-227-229-91.fbx.proxad.net</em>] hat den Raum betreten.</b><br/>
+<font color="#A82F2F"><font size="2">(10:48:52 PM)</font> <b>blackflow:</b></font> wxl: you don&apos;t need to change the uri (and I doubt that even works), just disable sslv2 and sslv3 in dovecot&apos;s config. it&apos;ll negotiate TLS automatically.<br/>
+<font color="#A82F2F"><font size="2">(10:49:31 PM)</font> <b>jjulian:</b></font> blackflow: its not telling at all<br/>
+<font color="#A82F2F"><font size="2">(10:49:33 PM)</font> <b>jjulian:</b></font> blackflow: http://pastebin.com/M1jfLBHE<br/>
+<font color="#A82F2F"><font size="2">(10:49:40 PM)</font> <b>blackflow:</b></font> there&apos;s this misnomer, using &quot;SSL&quot; to mean &quot;encrypted&quot;, where most of things nowadays are actually using TLS.<br/>
+<font size="2">(10:50:32 PM)</font><b> TRUNASUCI hat den Raum verlassen (quit: Quit: Leaving).</b><br/>
+<font size="2">(10:50:49 PM)</font><b> ozmage hat den Raum verlassen (quit: Remote host closed the connection).</b><br/>
+<font color="#A82F2F"><font size="2">(10:50:51 PM)</font> <b>blackflow:</b></font> jjulian: and of course, asterisk11 is NOT actually installed?<br/>
+<font color="#A82F2F"><font size="2">(10:51:44 PM)</font> <b>jjulian:</b></font> blackflow: nope its not. pkg info gives me: pkg: No package(s) matching asterisk11<br/>
+<font color="#A82F2F"><font size="2">(10:51:59 PM)</font> <b>jjulian:</b></font> blackflow: pkg info | grep aster gives me also an empty response<br/>
+<font color="#A82F2F"><font size="2">(10:52:02 PM)</font> <b>blackflow:</b></font> wxl: the android mail client being perfect example. If you choose &quot;SSL&quot; it means TTL over dedicated socket. If you use TLS, it means STARTTLS on plaintext socket. Not confusing AT ALL. :)<br/>
+<font color="#A82F2F"><font size="2">(10:53:09 PM)</font> <b>blackflow:</b></font> jjulian: which repo, quarterly or latest?<br/>
+<font color="#A82F2F"><font size="2">(10:53:54 PM)</font> <b>blackflow:</b></font> wxl: s/TTL/TLS<br/>
+<font size="2">(10:54:40 PM)</font><b> Das Konto wurde getrennt und Sie sind nicht mehr in diesem Chat. Sie werden den Chat automatisch wieder betreten, wenn das Konto wieder verbunden ist.</b><br/>
+</body></html>
