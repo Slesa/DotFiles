@@ -227,7 +227,7 @@ function installPrograms() {
 
 function installXPrograms() {
     local packs="launchy launchy-plugins launchy-skins doublecmd-gtk vim-gtk devilspie gdevilspie wmctrl inkscape audacity vlc gimp retext chromium-browser"
-	local extPacks="owncloud-client bogofilter hunspell hunspell-de-de hunspell-ru hunspell-fr hunspell-es"
+	local extPacks="owncloud-client bogofilter hunspell hunspell-de-de hunspell-ru hunspell-fr hunspell-es xfce4-eyes-plugin"
 
 #unetbootin sublime
     #local ubuntu_packs=""
@@ -311,21 +311,20 @@ function installTwitter() {
     sudo apt-get install corebird
 }
 
-function installKeybase() {
-    if which keybase; then
-        echo "Keybase already installed"
-        return 0
-    fi
-    echo "Installing keybase..."
-    sudo ln -s /usr/bin/nodejs /usr/bin/node
-    sudo npm install -g keybase-installer
-    sudo keybase-installer
-    keybase login
-}
 
 function installExternals() {
 	pushd .
 	cd ~/Downloads
+
+	# Keybase
+	if ! which keybase; then
+		echo "Installing keybase"
+		wget https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb
+		sudo dpkg -i dpkg -i keybase-latest-amd64.deb
+		keybase login
+	else
+		echo "Keybase already installed"
+	fi
 
 	# Sublime
 	#if ! which sublime_text_3; then
@@ -412,7 +411,6 @@ installPrograms
 installXPrograms
 installCompilers
 installTwitter
-installKeybase
 installGames
 installTex
 installExternals
