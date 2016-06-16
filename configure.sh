@@ -235,22 +235,34 @@ function installLinks() {
 }
 
 function installPrograms() {
-    local packs="curl npm mc w3m links ncdu htop nmap vim bacula-client"
-    local linpacks="synaptic openssh-server dos2unix lshw vim-addon-manager vim-pathogen"
-    #local bsdpacks=""
-    #local ubuntu_packs=""
-    echo "Installing programs..."
-    $INSTALL $packs
-    case $SYSTEM in
-        "ubuntu")
-            $INSTALL $linpacks
-            ;;
-        "freebsd")
-            #$INSTALL $bsdpacks
-            ;;
-        "cygwin")
-            ;;
-    esac
+	local packs="curl npm mc w3m links ncdu htop nmap vim bacula-client"
+	local linpacks="synaptic openssh-server dos2unix lshw vim-addon-manager vim-pathogen"
+	local bsdpacks="xorg xfce slim slim-themes"
+	#local ubuntu_packs=""
+	echo "Installing programs..."
+	$INSTALL $packs
+	case $SYSTEM in
+		"ubuntu")
+			$INSTALL $linpacks
+			;;
+		"freebsd")
+			$INSTALL $bsdpacks
+			if ! grep -q "startxfce4" ~/.xinitrc;  then
+				echo '/usr/local/bin/startxfce4' >> ~/.xinitrc
+			fi
+			if ! grep -q "slim_enable" /etc/rc.conf; then
+				echo 'slim_enable="YES"' | sudo tee -a /etc/rc.conf
+			fi
+			if ! grep -q "dbus_enable" /etc/rc.conf; then
+				echo 'dbus_enable="YES"' | sudo tee -a /etc/rc.conf
+			fi
+			if ! grep -q "hald_enable" /etc/rc.conf; then
+				echo 'hald_enable="YES"' | sudo tee -a /etc/rc.conf
+			fi
+			;;
+		"cygwin")
+			;;
+	esac
 }
 
 function installXPrograms() {
@@ -258,7 +270,7 @@ function installXPrograms() {
     local extPacks="bogofilter hunspell"
     local linpacks="launchy-plugins launchy-skins doublecmd-gtk vim-gtk gdevilspie retext chromium-browser"
     local linextPacks="owncloud-client hunspell-de-de hunspell-ru hunspell-fr hunspell-es xfce4-eyes-plugin"
-    local bsdpacks="doublecmd chromium"
+    local bsdpacks="doublecmd chromium xfce4-xkb-plugin xfce4-weather-plugin xfce-screenshooter-plugin xfce-cpugraph-plugin"
     local bsdextPacks="owncloudclient de-hunspell ru-hunspell fr-hunspell es-hunspell"
 
 #unetbootin sublime
@@ -377,47 +389,61 @@ function installTwitter() {
 
 
 function installExternals() {
-	pushd .
-	cd ~/Downloads
+	echo "Installing external applications..."
+	case $SYSTEM in
+		"ubuntu")
+			pushd .
+			cd ~/Downloads
 
-	# Keybase
-	if ! which keybase; then
-		echo "Installing keybase"
-		wget https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb
-		sudo dpkg -i dpkg -i keybase-latest-amd64.deb
-		keybase login
-	else
-		echo "Keybase already installed"
-	fi
+			# Keybase
+			if ! which keybase; then
+				echo "Installing keybase"
+				wget https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb
+				sudo dpkg -i dpkg -i keybase-latest-amd64.deb
+				keybase login
+			else
+				echo "Keybase already installed"
+			fi
 
-	# Sublime
-	#if ! which sublime_text_3; then
-	if ! which subl; then
-		echo "Installing sublime text"
-		wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
-		sudo dpkg -i sublime-text_build-3114_amd64.deb
-	else
-		echo "Sublime already installed"
-	fi
+			# Sublime
+			#if ! which sublime_text_3; then
+			if ! which subl; then
+				echo "Installing sublime text"
+				wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
+				sudo dpkg -i sublime-text_build-3114_amd64.deb
+			else
+				echo "Sublime already installed"
+			fi
 
-	#if ! which gitkraken; then
-	if [ ! -f /usr/share/gitkraken/gitkraken ]; then
-		echo "Installing gitkraken"
-		wget https://release.gitkraken.com/linux/gitkraken-amd64.deb
-		sudo dpkg -i gitkraken-amd64.deb
-	else
-		echo "gitkraken already installed"
-	fi
+			#if ! which gitkraken; then
+			if [ ! -f /usr/share/gitkraken/gitkraken ]; then
+				echo "Installing gitkraken"
+				wget https://release.gitkraken.com/linux/gitkraken-amd64.deb
+				sudo dpkg -i gitkraken-amd64.deb
+			else
+				echo "gitkraken already installed"
+			fi
 
-	if [ ! -d ~/work/qt ]; then
-		echo "Installing qt5"
-		wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-		sh -x qt-unified-linux-x64-online.run
-	else
-		echo "qt5 already installed"
-	fi
+			if [ ! -d ~/work/qt ]; then
+				echo "Installing qt5"
+				wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
+				sh -x qt-unified-linux-x64-online.run
+			else
+				echo "qt5 already installed"
+			fi
 
-	popd
+			popd
+			;;
+		"freebsd")
+			$INSTALL keybase linux-sublime3 qt5
+			;;
+		"cygwin")
+			;;
+	esac
+
+
+
+
 }
 
 function cloneSources() {
@@ -446,14 +472,23 @@ function cloneSources() {
 }
 
 function installLogin() {
-    if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
-        echo "Login logo already installed"
-        return 0
-    fi
-    sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
-    sudo chmod +r /usr/share/backgrounds/StarTrekLogo1920x1080.jpg
-    sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
-    sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+	echo "Installing login logo..."
+	case $SYSTEM in
+		"ubuntu")
+			if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
+				echo "Login logo already installed"
+				return 0
+			fi
+			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
+			sudo chmod +r /usr/share/backgrounds/StarTrekLogo1920x1080.jpg
+			sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+			sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+			;;
+		"freebsd")
+			;;
+		"cygwin")
+			;;
+	esac
 }
 
 readArguments $@
@@ -464,20 +499,20 @@ fi
 
 getSystem
 ensureRoot
-#installPrereqs
-#createSshKey
-#installBasics
-#installDotFiles
-#installFonts
-#installZsh
-#installLinks
-#installPrograms
-#installXPrograms
-#installCompilers
-#installTwitter
-#installGames
+installPrereqs
+createSshKey
+installBasics
+installDotFiles
+installFonts
+installZsh
+installPrograms
+installLinks
+installXPrograms
+installCompilers
+installTwitter
+installGames
 installTex
-#installExternals
-#installLogin
-#cloneSources
+installExternals
+installLogin
+cloneSources
 echo "Done"
