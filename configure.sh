@@ -20,7 +20,7 @@ function readArguments() {
 				;;
 			"tex")
 				echo "Installing tex"
-				INSTALL_TEXT=true
+				INSTALL_TEX=true
 				;;
 		esac
 		shift
@@ -32,6 +32,12 @@ function getSystem() {
     if [ $UNAME = "Darwin" ]; then
         echo "Found a Mac"
         SYSTEM="mac"
+        return 0
+    fi
+    if [ $UNAME = "FreeBSD" ]; then
+	echo "Found a FreeBSD"
+	SYSTEM="freebsd"
+	INSTALL="sudo pkg install -y "
         return 0
     fi
     local LOC_APT=`which apt`
@@ -50,6 +56,9 @@ function copyToClipboard() {
             pbcopy $1
             ;;
         "ubuntu")
+            cat $1 | xsel --clipboard
+            ;;
+        "freebsd")
             cat $1 | xsel --clipboard
             ;;
         "cygwin")
@@ -80,11 +89,19 @@ function createSshKey() {
 }
 
 function installFonts() {
-    if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
-        echo "Fonts already installed"
-        return 0
+    if [ $SYSTEM="freebsd" ]; then
+        if [ -f /usr/local/share/fonts/TTF/Envy\ Code\ R.ttf ]; then
+            echo "Fonts already installed"
+            return 0
+	fi
+	sudo cp $BASEPATH/data/font/*.ttf /usr/local/share/fonts/TTF
+    else
+        if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
+            echo "Fonts already installed"
+            return 0
+        fi
+        sudo cp $BASEPATH/data/font/*.ttf /usr/share/fonts
     fi
-    sudo cp $BASEPATH/data/font/*.ttf /usr/share/fonts
     fc-cache -f -v
 }
 
@@ -93,6 +110,9 @@ function installPrereqs() {
     echo "Installing prereqs..."
     case $SYSTEM in
         "ubuntu")
+            $INSTALL $packs
+            ;;
+	"freebsd")
             $INSTALL $packs
             ;;
         "cygwin")
@@ -112,11 +132,17 @@ function installDotFiles() {
 }
 
 function installBasics() {
-    local packs="git-flow zsh zsh-lovers fortunes fortunes-de"
+    local packs="zsh"
+    local linpacks="git-flow zsh-lovers fortunes fortunes-de"
+    local bsdpacks="gitflow fortune-mod-ferengi_rules_of_acquisition"
     echo "Installing basics..."
+    $INSTALL $packs
     case $SYSTEM in
         "ubuntu")
-            $INSTALL $packs
+            $INSTALL $linpacks
+            ;;
+        "freebsd")
+            $INSTALL $bsdpacks
             ;;
         "cygwin")
             ;;
@@ -124,15 +150,15 @@ function installBasics() {
 }
 
 function installZsh() {
-	if [ "$SHELL"="`which zsh`" ]; then
-	    echo "Zsh already login shell"
-		return 0
-	fi
-	echo "Setting default shell to zsh"
-	chsh -s `which zsh`
 	if [ ! -f ~/.zshrc ]; then
 		cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
 	fi
+	if [ "$SHELL"="`which zsh`" ]; then
+	    echo "Zsh already login shell"
+	    return 0
+	fi
+	echo "Setting default shell to zsh"
+	chsh -s `which zsh`
 }
 
 function installLinks() {
@@ -211,14 +237,18 @@ function installLinks() {
 }
 
 function installPrograms() {
-    local packs="synaptic openssh-server curl npm mc dos2unix w3m links ncdu htop nmap lshw vim vim-addon-manager vim-pathogen bacula-client"
+    local packs="curl npm mc w3m links ncdu htop nmap vim bacula-client"
+    local linpacks="synaptic openssh-server dos2unix lshw vim-addon-manager vim-pathogen"
+    #local bsdpacks=""
     #local ubuntu_packs=""
     echo "Installing programs..."
-
+    $INSTALL $packs
     case $SYSTEM in
         "ubuntu")
-            $INSTALL $packs
-            #$INSTALL $ubuntu_packs
+            $INSTALL $linpacks
+            ;;
+        "freebsd")
+            #$INSTALL $bsdpacks
             ;;
         "cygwin")
             ;;
@@ -226,20 +256,32 @@ function installPrograms() {
 }
 
 function installXPrograms() {
-    local packs="launchy launchy-plugins launchy-skins doublecmd-gtk vim-gtk devilspie gdevilspie wmctrl inkscape audacity vlc gimp retext chromium-browser"
-	local extPacks="owncloud-client bogofilter hunspell hunspell-de-de hunspell-ru hunspell-fr hunspell-es xfce4-eyes-plugin"
+    local packs="launchy devilspie wmctrl inkscape audacity vlc gimp"
+    local extPacks="bogofilter hunspell"
+    local linpacks="launchy-plugins launchy-skins doublecmd-gtk vim-gtk gdevilspie retext chromium-browser"
+    local linextPacks="owncloud-client hunspell-de-de hunspell-ru hunspell-fr hunspell-es xfce4-eyes-plugin"
+    local bsdpacks="doublecmd chromium"
+    local bsdextPacks="owncloudclient de-hunspell ru-hunspell fr-hunspell es-hunspell"
 
 #unetbootin sublime
-    #local ubuntu_packs=""
     echo "Installing X11 programs..."
 
+    $INSTALL $packs
+    if [ "$DEST" = "host" ]; then
+	$INSTALL $extPacks
+    fi
     case $SYSTEM in
         "ubuntu")
-            $INSTALL $packs
+			$INSTALL $linpacks
 			if [ "$DEST" = "host" ]; then
-				$INSTALL extPacks
+				$INSTALL $linextPacks
 			fi
-            #$INSTALL $ubuntu_packs
+            ;;
+        "freebsd")
+			$INSTALL $bsdpacks
+			if [ "$DEST" = "host" ]; then
+				$INSTALL $bsdextPacks
+			fi
             ;;
         "cygwin")
             ;;
@@ -247,17 +289,22 @@ function installXPrograms() {
 }
 
 function installCompilers() {
-    local packs="subversion meld qt5-default cgdb gdb cmake"
-	local python="python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-numpy python3-psycopg2"
-#gitkraken qt5
-    #local ubuntu_packs=""
+    local packs="subversion meld cgdb gdb cmake"
+    local linpacks="qt5-default"
+    local bsdpacks="qt5"
+
+    local python="python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-numpy python3-psycopg2"
+
     echo "Installing compilers..."
 
+    $INSTALL $packs
     case $SYSTEM in
         "ubuntu")
-            $INSTALL $packs
-			$INSTALL $python
-            #$INSTALL $ubuntu_packs
+            $INSTALL $linpacks
+	    $INSTALL $python
+            ;;
+        "freebsd")
+            $INSTALL $bsdpacks
             ;;
         "cygwin")
             ;;
@@ -265,17 +312,23 @@ function installCompilers() {
 }
 
 function installTex() {
+echo "Test"
 	if [ ! "$INSTALL_TEX" = true ]; then
 		return 0
 	fi
-    local packs="texmaker lyx texlive-music latex2html texstudio latexila xfonts-cyrillic"
-    #local ubuntu_packs=""
-    echo "Installing games..."
+    local packs="texmaker lyx latex2html texstudio latexila"
+    local linpacks="texlive-music xfonts-cyrillic"
+    local bsdpacks="texlive-full font-cronyx-cyrillic font-misc-cyrillic font-screen-cyrillic xorg-fonts-cyrillic"
+
+    echo "Installing tex..."
+    $INSTALL $packs
 
     case $SYSTEM in
         "ubuntu")
-            $INSTALL $packs
-            #$INSTALL $ubuntu_packs
+            $INSTALL $linpacks
+            ;;
+        "freebsd")
+            $INSTALL $bsdpacks
             ;;
         "cygwin")
             ;;
@@ -286,14 +339,18 @@ function installGames() {
 	if [ ! "$INSTALL_GAMES" = true ]; then
 		return 0
 	fi
-    local packs="phalanx xboard pychess crafty supertux supertuxkart"
-    #local ubuntu_packs=""
-    echo "Installing games..."
+    local packs="phalanx xboard crafty supertux supertuxkart"
+    local linpacks="pychess "
+    local bsdpacks="brutalchess chessx pouetchess" # glchess
 
+    echo "Installing games..."
+    $INSTALL $packs
     case $SYSTEM in
         "ubuntu")
-            $INSTALL $packs
-            #$INSTALL $ubuntu_packs
+            $INSTALL $linpacks
+            ;;
+        "freebsd")
+            $INSTALL $bsdpacks
             ;;
         "cygwin")
             ;;
@@ -306,9 +363,18 @@ function installTwitter() {
         return 0
     fi
     echo "Installing twitter..."
-    sudo add-apt-repository ppa:ubuntuhandbook1/corebird
-    sudo apt-get update
-    sudo apt-get install corebird
+    case $SYSTEM in
+        "ubuntu")
+	    sudo add-apt-repository ppa:ubuntuhandbook1/corebird
+	    sudo apt-get update
+	    sudo apt-get install corebird
+            ;;
+        "freebsd")
+            $INSTALL corebird
+            ;;
+        "cygwin")
+            ;;
+    esac
 }
 
 
@@ -398,22 +464,23 @@ if [ -z $DEST ]; then
 	echo "Please mention either host or slave"
 	exit 1
 fi
+
 getSystem
 ensureRoot
-installPrereqs
-createSshKey
-installBasics
-installDotFiles
-installFonts
-installZsh
-installLinks
-installPrograms
-installXPrograms
-installCompilers
-installTwitter
-installGames
+#installPrereqs
+#createSshKey
+#installBasics
+#installDotFiles
+#installFonts
+#installZsh
+#installLinks
+#installPrograms
+#installXPrograms
+#installCompilers
+#installTwitter
+#installGames
 installTex
-installExternals
-installLogin
-cloneSources
+#installExternals
+#installLogin
+#cloneSources
 echo "Done"
