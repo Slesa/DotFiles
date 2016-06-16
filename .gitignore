@@ -1,3 +1,4 @@
 profiles/cygwin/ssh/ssh/*
 profiles/cygwin/subversion/subversion/auth/*
 *.swp
+etc/unix/purple/logs/
