@@ -194,12 +194,10 @@ function installLinks() {
 		echo "Creating pidgin configs"
 		ln -s $BASEPATH/etc/unix/purple ~/.purple
 	fi
-	if [ ! -L ~/.config/xfce ]; then
-		if [ -d ~/.config/xfce ]; then
-			mv ~/.config/xfce ~/.config/xfce.orig
-		fi
+	if [ ! -d ~/.config/xfce4.orig ]; then
 		echo "Creating xfce configs"
-		ln -s $BASEPATH/etc/unix/xfce ~/.config/xfce
+		mv ~/.config/xfce4 ~/.config/xfce4.orig
+		cp -r $BASEPATH/etc/unix/xfce4 ~/.config/xfce4
 	fi
 
 	echo "Creating autostarts"
@@ -426,21 +424,20 @@ function cloneSources() {
 	pushd .
 	mkdir -p ~/work/github
 	cd ~/work/github
-    if [ ! -d Trinity ]; then
-        echo "Cloning Trinity"
-        git clone git@github.com:slesa/Trinity
-        cd Trinity && git checkout develop && cd ..
-    fi
-    if [ ! -d launchy ]; then
-        echo "Cloning launchy"
-        git clone git@github.com:slesa/launchy
-        cd launchy && git checkout develop && cd ..
-    fi
-    if [ ! -d Godot ]; then
-        echo "Cloning Godot"
-        git clone git@github.com:slesa/Godot
-        cd Godot && git checkout develop && cd ..
-    fi
+	if [ ! -d Trinity ]; then
+		echo "Cloning Trinity"
+		git clone git@github.com:slesa/Trinity
+		cd Trinity && git checkout develop && cd ..
+	fi
+	if [ ! -d launchy ]; then
+		echo "Cloning launchy"
+		git clone git@github.com:slesa/launchy
+		cd launchy && git checkout develop && cd ..
+	fi
+	if [ ! -d Godot ]; then
+		echo "Cloning Godot"
+		git clone git@github.com:slesa/Godot
+	fi
 	if [ ! -d GammaRay ]; then
 		git clone https://github.com/KDAB/GammaRay
 		#cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..

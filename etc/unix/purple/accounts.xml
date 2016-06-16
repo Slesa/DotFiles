@@ -6,15 +6,15 @@
 		<name>Slesa@irc.ubuntu.com</name>
 		<password>Ge1st3rbahn</password>
 		<statuses>
-			<status type='available' name='Available' active='true'>
+			<status type='available' name='Verfügbar' active='true'>
 				<attributes/>
 			</status>
-			<status type='away' name='Away' active='false'>
+			<status type='away' name='Abwesend' active='false'>
 				<attributes>
 					<attribute id='message' value='Ich bin gerade nicht hier'/>
 				</attributes>
 			</status>
-			<status type='offline' name='Offline' active='false'>
+			<status type='offline' name='Abgemeldet' active='false'>
 				<attributes/>
 			</status>
 		</statuses>
@@ -36,33 +36,33 @@
 		<name>slesa@jabber.de/</name>
 		<password>Jab$1971$ber</password>
 		<statuses>
-			<status type='available' name='Available' active='true'>
+			<status type='available' name='Verfügbar' active='true'>
 				<attributes/>
 			</status>
-			<status type='mood' name='Feeling' active='false'>
+			<status type='mood' name='Befinden' active='false'>
 				<attributes/>
 			</status>
-			<status type='freeforchat' name='Chatty' active='false'>
+			<status type='freeforchat' name='Gesprächig' active='false'>
 				<attributes/>
 			</status>
-			<status type='away' name='Away' active='false'>
+			<status type='away' name='Abwesend' active='false'>
 				<attributes>
 					<attribute id='message' value='Ich bin gerade nicht hier'/>
 				</attributes>
 			</status>
-			<status type='extended_away' name='Extended away' active='false'>
+			<status type='extended_away' name='Länger abwesend' active='false'>
 				<attributes/>
 			</status>
-			<status type='dnd' name='Do Not Disturb' active='false'>
+			<status type='dnd' name='Nicht stören' active='false'>
 				<attributes/>
 			</status>
-			<status type='offline' name='Offline' active='false'>
+			<status type='offline' name='Abgemeldet' active='false'>
 				<attributes/>
 			</status>
 		</statuses>
 		<userinfo>&lt;vCard xmlns=&apos;vcard-temp&apos; version=&apos;2.0&apos; prodid=&apos;-//HandGen//NONSGML vGen v1.0//EN&apos;&gt;&lt;N&gt;&lt;FAMILY&gt;Preiss&lt;/FAMILY&gt;&lt;/N&gt;&lt;NICKNAME&gt;Slesa&lt;/NICKNAME&gt;&lt;ADR&gt;&lt;CTRY&gt;Germany&lt;/CTRY&gt;&lt;/ADR&gt;&lt;PHOTO&gt;&lt;TYPE&gt;image/png&lt;/TYPE&gt;&lt;BINVAL&gt;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&lt;/BINVAL&gt;&lt;/PHOTO&gt;&lt;/vCard&gt;</userinfo>
 		<settings>
-			<setting name='buddy_icon_timestamp' type='int'>1465795659</setting>
+			<setting name='buddy_icon_timestamp' type='int'>1465940452</setting>
 			<setting name='auth_plain_in_clear' type='bool'>0</setting>
 			<setting name='custom_smileys' type='bool'>1</setting>
 			<setting name='port' type='int'>5222</setting>
@@ -83,48 +83,48 @@
 		<name>joerg.preiss@slesa.de</name>
 		<password>krille95</password>
 		<statuses>
-			<status type='available' name='Available' active='true'>
+			<status type='available' name='Verfügbar' active='true'>
 				<attributes/>
 			</status>
-			<status type='free4chat' name='Free For Chat' active='false'>
+			<status type='free4chat' name='Bereit zum Plaudern' active='false'>
 				<attributes/>
 			</status>
-			<status type='evil' name='Evil' active='false'>
+			<status type='evil' name='Böse' active='false'>
 				<attributes/>
 			</status>
 			<status type='depression' name='Depression' active='false'>
 				<attributes/>
 			</status>
-			<status type='athome' name='At home' active='false'>
+			<status type='athome' name='Zu Hause' active='false'>
 				<attributes/>
 			</status>
-			<status type='atwork' name='At work' active='false'>
+			<status type='atwork' name='Bei der Arbeit' active='false'>
 				<attributes/>
 			</status>
-			<status type='lunch' name='Lunch' active='false'>
+			<status type='lunch' name='Mittagspause' active='false'>
 				<attributes/>
 			</status>
-			<status type='away' name='Away' active='false'>
+			<status type='away' name='Abwesend' active='false'>
 				<attributes>
 					<attribute id='message' value='Ich bin gerade nicht hier'/>
 				</attributes>
 			</status>
-			<status type='invisible' name='Invisible' active='false'>
+			<status type='invisible' name='Unsichtbar' active='false'>
 				<attributes/>
 			</status>
-			<status type='occupied' name='Occupied' active='false'>
+			<status type='occupied' name='Beschäftigt' active='false'>
 				<attributes/>
 			</status>
-			<status type='dnd' name='Do Not Disturb' active='false'>
+			<status type='dnd' name='Nicht stören' active='false'>
 				<attributes/>
 			</status>
-			<status type='na' name='Not Available' active='false'>
+			<status type='na' name='Nicht verfügbar' active='false'>
 				<attributes/>
 			</status>
-			<status type='offline' name='Offline' active='false'>
+			<status type='offline' name='Abgemeldet' active='false'>
 				<attributes/>
 			</status>
-			<status type='mood' name='Feeling' active='true'>
+			<status type='mood' name='Befinden' active='true'>
 				<attributes>
 					<attribute id='mood' value='thinking'/>
 				</attributes>
@@ -133,7 +133,7 @@
 		<settings>
 			<setting name='encoding' type='string'>ISO-8859-1</setting>
 			<setting name='encryption' type='string'>opportunistic_encryption</setting>
-			<setting name='buddy_icon_timestamp' type='int'>1465795670</setting>
+			<setting name='buddy_icon_timestamp' type='int'>1465940456</setting>
 			<setting name='always_use_rv_proxy' type='bool'>0</setting>
 			<setting name='port' type='int'>5190</setting>
 			<setting name='check-mail' type='bool'>0</setting>
