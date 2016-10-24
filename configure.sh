@@ -2,54 +2,68 @@
 
 BASEPATH=~/.dotFiles
 
+### determine if installation is on a host or a virtual machine
+### additionally, packages can be turned on and off
 function readArguments() {
-	for i in "$@" 
-	do
-		case $i in
-			"host")
-				echo "Installing for a host"
-				DEST="host"
-				;;
-			"slave")
-				echo "Installing for a vm slave"
-				DEST="slave"
-				;;
-			"games")
-				echo "Installing games"
-				INSTALL_GAMES=true
-				;;
-			"tex")
-				echo "Installing tex"
-				INSTALL_TEX=true
-				;;
-		esac
-		shift
-	done
+    if [ -z "$@" ]; then
+        echo "Available parameters:"
+        echo $0 "[ host|vm ]" 
+        echo "  games|nogames  tex|notex" 
+    fi
+    for i in "$@" 
+    do
+        case $i in
+            "host")
+                echo "Installing for a host"
+                DEST="host"
+                ;;
+            "vm")
+                echo "Installing for a vm slave"
+                DEST="slave"
+                ;;
+            "games")
+                echo "Installing games"
+                INSTALL_GAMES=true
+                ;;
+            "nogames")
+                echo "Installing no games"
+                INSTALL_GAMES=false
+                ;;
+            "tex")
+                echo "Installing tex"
+                INSTALL_TEX=true
+                ;;
+        esac
+        shift
+    done
 }
 
+### determine the running OS. Can be Mac, BSD or Ubuntu
 function getSystem() {
     local UNAME=`uname -s`
+    echo "Operating system is reported as " $UNAME
     if [ $UNAME = "Darwin" ]; then
         echo "Found a Mac"
         SYSTEM="mac"
         return 0
     fi
     if [ $UNAME = "FreeBSD" ]; then
-	echo "Found a FreeBSD"
-	SYSTEM="freebsd"
-	INSTALL="sudo pkg install -y "
+        echo "Found a FreeBSD"
+        SYSTEM="freebsd"
+        INSTALL="sudo pkg install -y "
         return 0
     fi
     local LOC_APT=`which apt`
     if [ $LOC_APT = "/usr/bin/apt" ]; then
         echo "Found an Ubuntu"
         SYSTEM="ubuntu"
-	INSTALL="sudo apt-get install -y "
+        INSTALL="sudo apt-get install -y "
         return 0
     fi
     SYSTEM="unknown"
 }
 
+### Copy a string to the clipboard, using OS functions
 function copyToClipboard() {
     case $SYSTEM in
         "mac")
@@ -67,6 +81,7 @@ function copyToClipboard() {
     esac
 }
 
+### Ensure that we have root capabilities
 function ensureRoot() {
     if [[ $EUID -ne 0 ]]; then
         echo "Not started as root"
@@ -74,35 +89,6 @@ function ensureRoot() {
         return 0
     fi
     echo "We are already root"
-}
-
-function createSshKey() {
-    if [ -f ~/.ssh/id_rsa.pub ]; then
-        echo "SSH key already present"
-        return 0
-    fi
-    echo "Generating SSH key"
-    ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
-    echo "Add key to github"
-    copyToClipboard ~/.ssh/id_rsa.pub
-    firefox https://github.com/settings/keys
-}
-
-function installFonts() {
-    if [ $SYSTEM="freebsd" ]; then
-        if [ -f /usr/local/share/fonts/TTF/Envy\ Code\ R.ttf ]; then
-            echo "Fonts already installed"
-            return 0
-	fi
-	sudo cp $BASEPATH/data/font/*.ttf /usr/local/share/fonts/TTF
-    else
-        if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
-            echo "Fonts already installed"
-            return 0
-        fi
-        sudo cp $BASEPATH/data/font/*.ttf /usr/share/fonts
-    fi
-    fc-cache -f -v
 }
 
 function installPrereqs() {
@@ -118,6 +104,48 @@ function installPrereqs() {
         "cygwin")
             ;;
     esac
+}
+
+#function installOwnCube() {
+#    sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.10/ /' > /etc/apt/sources.list.d/owncloud-client.list"
+#    sudo apt-get update
+#    sudo apt-get install owncloud-client
+#}
+
+
+function createSshKey() {
+    if [ -f ~/.ssh/id_rsa.pub ]; then
+        echo "SSH key already present"
+        return 0
+    fi
+    echo "Generating SSH key"
+    ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
+    echo "Add key to github"
+    copyToClipboard ~/.ssh/id_rsa.pub
+    firefox https://github.com/settings/keys
+}
+
+function installFonts() {
+    echo "Installing fonts..."
+    case $SYSTEM in
+	"freebsd")
+            echo "Fonts for freebsd"
+            if [ -f /usr/local/share/fonts/TTF/Envy\ Code\ R.ttf ]; then
+                echo "Fonts already installed"
+                return 0
+            fi
+            sudo cp $BASEPATH/data/font/*.ttf /usr/local/share/fonts/TTF
+            ;;
+        "ubuntu"|"cygwin")
+            echo "Fonts for non freebsd"
+            if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
+                echo "Fonts already installed"
+                return 0
+            fi
+            sudo cp $BASEPATH/data/font/*.ttf /usr/share/fonts
+            ;;
+    esac
+    fc-cache -f -v
 }
 
 function installDotFiles() {
@@ -150,19 +178,49 @@ function installBasics() {
 }
 
 function installZsh() {
-	if [ ! -f ~/.zshrc ]; then
-		cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
-	fi
-	if [ "$SHELL"="`which zsh`" ]; then
-	    echo "Zsh already login shell"
-	    return 0
-	fi
-	echo "Setting default shell to zsh"
-	chsh -s `which zsh`
+    if [ ! -f ~/.zshrc ]; then
+        cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
+    fi
+    if [ "$SHELL"="`which zsh`" ]; then
+        echo "Zsh already login shell"
+        return 0
+    fi
+    echo "Setting default shell to zsh"
+    chsh -s `which zsh`
+}
+
+function installPrograms() {
+    local packs="curl npm mc w3m links ncdu htop nmap vim bacula-client"
+    local linpacks="synaptic openssh-server dos2unix lshw vim-addon-manager vim-pathogen"
+    local bsdpacks="xorg xfce slim slim-themes"
+    #local ubuntu_packs=""
+    echo "Installing programs..."
+    $INSTALL $packs
+    case $SYSTEM in
+        "ubuntu")
+            $INSTALL $linpacks
+            ;;
+        "freebsd")
+            $INSTALL $bsdpacks
+            if ! grep -q "startxfce4" ~/.xinitrc;  then
+                echo '/usr/local/bin/startxfce4' >> ~/.xinitrc
+            fi
+            if ! grep -q "slim_enable" /etc/rc.conf; then
+                echo 'slim_enable="YES"' | sudo tee -a /etc/rc.conf
+            fi
+            if ! grep -q "dbus_enable" /etc/rc.conf; then
+                echo 'dbus_enable="YES"' | sudo tee -a /etc/rc.conf
+            fi
+                if ! grep -q "hald_enable" /etc/rc.conf; then
+                echo 'hald_enable="YES"' | sudo tee -a /etc/rc.conf
+            fi
+            ;;
+        "cygwin")
+            ;;
+    esac
 }
 
 function installLinks() {
-#pidgin xfce
     if [ ! -d ~/bin ]; then
         echo "Creating local bin directory"
         mkdir ~/bin
@@ -186,87 +244,57 @@ function installLinks() {
     if [ ! -L ~/.devilspie ]; then
         echo "Creating devilspie config"
         ln -s $BASEPATH/etc/unix/devilspie ~/.devilspie
-	fi
-	if [ ! -L ~/.purple ]; then
-		if [ -d ~/.purple ]; then
-			mv ~/.purple ~/.purple.orig
-		fi
-		echo "Creating pidgin configs"
-		ln -s $BASEPATH/etc/unix/purple ~/.purple
-	fi
-	if [ ! -d ~/.config/xfce4.orig ]; then
-		echo "Creating xfce configs"
-		mv ~/.config/xfce4 ~/.config/xfce4.orig
-		cp -r $BASEPATH/etc/unix/xfce4 ~/.config/xfce4
-	fi
+    fi
+    if [ ! -L ~/.purple ]; then
+        if [ -d ~/.purple ]; then
+            mv ~/.purple ~/.purple.orig
+        fi
+        echo "Creating pidgin configs"
+        ln -s $BASEPATH/etc/unix/purple ~/.purple
+    fi
+    if [ ! -d ~/.config/xfce4.orig ]; then
+        echo "Creating xfce configs"
+        mv ~/.config/xfce4 ~/.config/xfce4.orig
+        cp -r $BASEPATH/etc/unix/xfce4 ~/.config/xfce4
+    fi
 
-	echo "Creating autostarts"
-	if [ ! -d ~/.config/autostart ]; then
-		mkdir ~/.config/autostart
-	fi
+    echo "Creating autostarts"
+    if [ ! -d ~/.config/autostart ]; then
+        mkdir ~/.config/autostart
+    fi
 
-	if [ ! -L ~/.config/autostart/devilspie.desktop ]; then
-		ln -s $BASEPATH/etc/unix/autostart/devilspie.desktop ~/.config/autostart/devilspie.desktop
-	fi
-	if [ ! -L ~/.config/autostart/Pidgin.desktop ]; then
-		ln -s $BASEPATH/etc/unix/autostart/Pidgin.desktop ~/.config/autostart/Pidgin.desktop
-	fi
-	if [ ! -L ~/.config/autostart/Launchy.desktop ]; then
-		ln -s $BASEPATH/etc/unix/autostart/Launchy.desktop ~/.config/autostart/Launchy.desktop
-	fi
-	if [ "$DEST" = "host" ]; then
-		echo "Creating host autostarts"
-		if [ ! -L ~/.config/autostart/ownCloud.desktop ]; then
-			ln -s $BASEPATH/etc/unix/autostart/ownCloud.desktop ~/.config/autostart/ownCloud.desktop
-		fi
-		if [ ! -L ~/.config/autostart/Twitter.desktop ]; then
-			ln -s $BASEPATH/etc/unix/autostart/Twitter.desktop ~/.config/autostart/Twitter.desktop
-		fi
-		if [ ! -L ~/.config/autostart/Thunderbird.desktop ]; then
-			ln -s $BASEPATH/etc/unix/autostart/Thunderbird.desktop ~/.config/autostart/Thunderbird.desktop
-		fi
-		if [ ! -L ~/.config/autostart/TimeTracker.desktop ]; then
-			ln -s $BASEPATH/etc/unix/autostart/TimeTracker.desktop ~/.config/autostart/TimeTracker.desktop
-		fi
-		if [ ! -L ~/.config/autostart/Skype.desktop ]; then
-			ln -s $BASEPATH/etc/unix/autostart/Skype.desktop ~/.config/autostart/Skype.desktop
-		fi
-	fi
+    if [ ! -L ~/.config/autostart/devilspie.desktop ]; then
+        ln -s $BASEPATH/etc/unix/autostart/devilspie.desktop ~/.config/autostart/devilspie.desktop
+    fi
+#    if [ ! -L ~/.config/autostart/Pidgin.desktop ]; then
+#        ln -s $BASEPATH/etc/unix/autostart/Pidgin.desktop ~/.config/autostart/Pidgin.desktop
+#    fi
+    if [ ! -L ~/.config/autostart/Launchy.desktop ]; then
+        ln -s $BASEPATH/etc/unix/autostart/Launchy.desktop ~/.config/autostart/Launchy.desktop
+    fi
+    if [ "$DEST" = "host" ]; then
+        echo "Creating host autostarts"
+        if [ ! -L ~/.config/autostart/ownCloud.desktop ]; then
+            ln -s $BASEPATH/etc/unix/autostart/ownCloud.desktop ~/.config/autostart/ownCloud.desktop
+        fi
+        if [ ! -L ~/.config/autostart/Twitter.desktop ]; then
+            ln -s $BASEPATH/etc/unix/autostart/Twitter.desktop ~/.config/autostart/Twitter.desktop
+        fi
+        if [ ! -L ~/.config/autostart/Thunderbird.desktop ]; then
+            ln -s $BASEPATH/etc/unix/autostart/Thunderbird.desktop ~/.config/autostart/Thunderbird.desktop
+        fi
+#        if [ ! -L ~/.config/autostart/TimeTracker.desktop ]; then
+#            ln -s $BASEPATH/etc/unix/autostart/TimeTracker.desktop ~/.config/autostart/TimeTracker.desktop
+#        fi
+        if [ ! -L ~/.config/autostart/Skype.desktop ]; then
+            ln -s $BASEPATH/etc/unix/autostart/Skype.desktop ~/.config/autostart/Skype.desktop
+        fi
+    fi
 }
 
-function installPrograms() {
-	local packs="curl npm mc w3m links ncdu htop nmap vim bacula-client"
-	local linpacks="synaptic openssh-server dos2unix lshw vim-addon-manager vim-pathogen"
-	local bsdpacks="xorg xfce slim slim-themes"
-	#local ubuntu_packs=""
-	echo "Installing programs..."
-	$INSTALL $packs
-	case $SYSTEM in
-		"ubuntu")
-			$INSTALL $linpacks
-			;;
-		"freebsd")
-			$INSTALL $bsdpacks
-			if ! grep -q "startxfce4" ~/.xinitrc;  then
-				echo '/usr/local/bin/startxfce4' >> ~/.xinitrc
-			fi
-			if ! grep -q "slim_enable" /etc/rc.conf; then
-				echo 'slim_enable="YES"' | sudo tee -a /etc/rc.conf
-			fi
-			if ! grep -q "dbus_enable" /etc/rc.conf; then
-				echo 'dbus_enable="YES"' | sudo tee -a /etc/rc.conf
-			fi
-			if ! grep -q "hald_enable" /etc/rc.conf; then
-				echo 'hald_enable="YES"' | sudo tee -a /etc/rc.conf
-			fi
-			;;
-		"cygwin")
-			;;
-	esac
-}
 
 function installXPrograms() {
-    local packs="launchy devilspie wmctrl inkscape audacity vlc gimp"
+    local packs="launchy thunderbird devilspie wmctrl inkscape audacity vlc gimp"
     local extPacks="bogofilter hunspell"
     local linpacks="launchy-plugins launchy-skins doublecmd-gtk vim-gtk gdevilspie retext chromium-browser"
     local linextPacks="owncloud-client hunspell-de-de hunspell-ru hunspell-fr hunspell-es xfce4-eyes-plugin"
@@ -278,20 +306,20 @@ function installXPrograms() {
 
     $INSTALL $packs
     if [ "$DEST" = "host" ]; then
-	$INSTALL $extPacks
+        $INSTALL $extPacks
     fi
     case $SYSTEM in
         "ubuntu")
-			$INSTALL $linpacks
-			if [ "$DEST" = "host" ]; then
-				$INSTALL $linextPacks
-			fi
+            $INSTALL $linpacks
+            if [ "$DEST" = "host" ]; then
+                $INSTALL $linextPacks
+            fi
             ;;
         "freebsd")
-			$INSTALL $bsdpacks
-			if [ "$DEST" = "host" ]; then
-				$INSTALL $bsdextPacks
-			fi
+            $INSTALL $bsdpacks
+            if [ "$DEST" = "host" ]; then
+                $INSTALL $bsdextPacks
+            fi
             ;;
         "cygwin")
             ;;
@@ -311,7 +339,7 @@ function installCompilers() {
     case $SYSTEM in
         "ubuntu")
             $INSTALL $linpacks
-	    $INSTALL $python
+            $INSTALL $python
             ;;
         "freebsd")
             $INSTALL $bsdpacks
@@ -323,9 +351,9 @@ function installCompilers() {
 
 function installTex() {
 echo "Test"
-	if [ ! "$INSTALL_TEX" = true ]; then
-		return 0
-	fi
+    if [ ! "$INSTALL_TEX" = true ]; then
+        return 0
+    fi
     local packs="texmaker lyx latex2html texstudio latexila"
     local linpacks="texlive-music xfonts-cyrillic"
     local bsdpacks="texlive-full font-cronyx-cyrillic font-misc-cyrillic font-screen-cyrillic xorg-fonts-cyrillic"
@@ -346,9 +374,9 @@ echo "Test"
 }
 
 function installGames() {
-	if [ ! "$INSTALL_GAMES" = true ]; then
-		return 0
-	fi
+    if [ ! "$INSTALL_GAMES" = true ]; then
+        return 0
+    fi
     local packs="phalanx xboard crafty supertux supertuxkart"
     local linpacks="pychess "
     local bsdpacks="brutalchess chessx pouetchess" # glchess
@@ -375,9 +403,9 @@ function installTwitter() {
     echo "Installing twitter..."
     case $SYSTEM in
         "ubuntu")
-	    sudo add-apt-repository ppa:ubuntuhandbook1/corebird
-	    sudo apt-get update
-	    sudo apt-get install corebird
+            sudo add-apt-repository ppa:ubuntuhandbook1/corebird
+            sudo apt-get update
+            sudo apt-get install corebird
             ;;
         "freebsd")
             $INSTALL corebird
@@ -389,121 +417,131 @@ function installTwitter() {
 
 
 function installExternals() {
-	echo "Installing external applications..."
-	case $SYSTEM in
-		"ubuntu")
-			pushd .
-			cd ~/Downloads
+    echo "Installing external applications..."
+    case $SYSTEM in
+        "ubuntu")
+            pushd .
+            cd ~/Downloads
 
-			# Keybase
-			if ! which keybase; then
-				echo "Installing keybase"
-				wget https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb
-				sudo dpkg -i dpkg -i keybase-latest-amd64.deb
-				keybase login
-			else
-				echo "Keybase already installed"
-			fi
+            # Keybase
+            if ! which keybase; then
+                echo "Installing keybase"
+                wget https://dist.keybase.io/linux/deb/keybase-latest-amd64.deb
+                sudo dpkg -i dpkg -i keybase-latest-amd64.deb
+                keybase login
+            else
+                echo "Keybase already installed"
+            fi
 
-			# Sublime
-			#if ! which sublime_text_3; then
-			if ! which subl; then
-				echo "Installing sublime text"
-				wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
-				sudo dpkg -i sublime-text_build-3114_amd64.deb
-			else
-				echo "Sublime already installed"
-			fi
+            # Sublime
+            #if ! which sublime_text_3; then
+            if ! which subl; then
+                echo "Installing sublime text"
+                wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
+                sudo dpkg -i sublime-text_build-3114_amd64.deb
+            else
+                echo "Sublime already installed"
+            fi
 
-			#if ! which gitkraken; then
-			if [ ! -f /usr/share/gitkraken/gitkraken ]; then
-				echo "Installing gitkraken"
-				wget https://release.gitkraken.com/linux/gitkraken-amd64.deb
-				sudo dpkg -i gitkraken-amd64.deb
-			else
-				echo "gitkraken already installed"
-			fi
+            #if ! which gitkraken; then
+            if [ ! -f /usr/share/gitkraken/gitkraken ]; then
+                echo "Installing gitkraken"
+                wget https://release.gitkraken.com/linux/gitkraken-amd64.deb
+                sudo dpkg -i gitkraken-amd64.deb
+            else    
+                echo "gitkraken already installed"
+            fi
 
-			if [ ! -d ~/work/qt ]; then
-				echo "Installing qt5"
-				wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-				sh -x qt-unified-linux-x64-online.run
-			else
-				echo "qt5 already installed"
-			fi
+            if [ ! -d ~/work/qt ]; then
+                echo "Installing qt5"
+                wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
+                sh -x qt-unified-linux-x64-online.run
+            else
+                echo "qt5 already installed"
+            fi
 
-			popd
-			;;
-		"freebsd")
-			$INSTALL keybase linux-sublime3 qt5
-			;;
-		"cygwin")
-			;;
-	esac
-
-
-
-
+            popd
+            ;;
+        "freebsd")
+            $INSTALL keybase linux-sublime3 qt5
+            ;;
+        "cygwin")
+            ;;
+    esac
 }
 
-function cloneSources() {
-	pushd .
-	mkdir -p ~/work/github
-	cd ~/work/github
-	if [ ! -d Trinity ]; then
-		echo "Cloning Trinity"
-		git clone git@github.com:slesa/Trinity
-		cd Trinity && git checkout develop && cd ..
-	fi
-	if [ ! -d launchy ]; then
-		echo "Cloning launchy"
-		git clone git@github.com:slesa/launchy
-		cd launchy && git checkout develop && cd ..
-	fi
-	if [ ! -d Godot ]; then
-		echo "Cloning Godot"
-		git clone git@github.com:slesa/Godot
-	fi
-	if [ ! -d GammaRay ]; then
-		git clone https://github.com/KDAB/GammaRay
-		#cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
-	fi
-	popd
+function cloneGithub() {
+    pushd .
+    mkdir -p ~/work/github
+    cd ~/work/github
+    if [ ! -d Trinity ]; then
+        echo "Cloning Trinity"
+        git clone git@github.com:slesa/Trinity
+        cd Trinity && git checkout develop && cd ..
+    fi
+    if [ ! -d launchy ]; then
+        echo "Cloning launchy"
+        git clone git@github.com:slesa/launchy
+        cd launchy && git checkout develop && cd ..
+    fi
+    if [ ! -d Godot ]; then
+        echo "Cloning Godot"
+        git clone git@github.com:slesa/Godot
+    fi
+    if [ ! -d GammaRay ]; then
+        git clone https://github.com/KDAB/GammaRay
+        #cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
+    fi
+    popd
+}
+
+function cloneGitlab() {
+    pushd .
+    mkdir -p ~/work/gitlab
+    cd ~/work/gitlab
+    if [ ! -d waiterwatch ]; then
+        echo "Cloning waiterwatch"
+        git clone git@gitlab.com:slesa/waiterwatch
+        cd waiterwatch && git checkout develop && cd ..
+    fi
+    popd
 }
 
 function installLogin() {
-	echo "Installing login logo..."
-	case $SYSTEM in
-		"ubuntu")
-			if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
-				echo "Login logo already installed"
-				return 0
-			fi
-			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
-			sudo chmod +r /usr/share/backgrounds/StarTrekLogo1920x1080.jpg
-			sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
-			sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
-			;;
-		"freebsd")
-			;;
-		"cygwin")
-			;;
-	esac
+    echo "Installing login logo..."
+    case $SYSTEM in
+        "ubuntu")
+            if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
+                echo "Login logo already installed"
+                return 0
+            fi
+            sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
+            sudo chmod +r /usr/share/backgrounds/StarTrekLogo1920x1080.jpg
+            sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+            sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+            ;;
+        "freebsd")
+            ;;
+        "cygwin")
+            ;;
+    esac
 }
+
 
 readArguments $@
 if [ -z $DEST ]; then
-	echo "Please mention either host or slave"
-	exit 1
+    echo "Please mention either host or slave"
+    exit 1
 fi
 
 getSystem
 ensureRoot
 installPrereqs
+#installOwnCube
 createSshKey
-installBasics
 installDotFiles
 installFonts
+installBasics
 installZsh
 installPrograms
 installLinks
@@ -514,5 +552,5 @@ installGames
 installTex
 installExternals
 installLogin
-cloneSources
+cloneGithub
 echo "Done"
