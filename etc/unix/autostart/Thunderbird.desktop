@@ -1,5 +1,5 @@
+#!/usr/bin/env xdg-open
 [Desktop Entry]
-Type=Application
-Name=Thunderbird
 Exec=thunderbird
-
+Name=Thunderbird
+Type=Application

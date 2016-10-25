@@ -1,6 +1,5 @@
 [Desktop Entry]
-Type=Application
-Name=Devilspie
-X-GNOME-Autostart-enabled=true
 Exec=devilspie
-
+Name=Devilspie
+Type=Application
+X-GNOME-Autostart-enabled=true

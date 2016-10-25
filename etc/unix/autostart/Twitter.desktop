@@ -1,5 +1,4 @@
 [Desktop Entry]
-Type=Application
-Name=Twitter
 Exec=corebird
-
+Name=Twitter
+Type=Application

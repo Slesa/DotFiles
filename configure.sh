@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASEPATH=~/.dotFiles
+BASEPATH=~/.dotfiles
 
 ### determine if installation is on a host or a virtual machine
 ### additionally, packages can be turned on and off
@@ -56,6 +56,12 @@ function getSystem() {
     local LOC_APT=`which apt`
     if [ $LOC_APT = "/usr/bin/apt" ]; then
         echo "Found an Ubuntu"
+        SYSTEM="ubuntu"
+        INSTALL="sudo apt-get install -y "
+        return 0
+    fi
+    if [ $LOC_APT = "/usr/local/bin/apt" ]; then
+        echo "Found Linux Mint"
         SYSTEM="ubuntu"
         INSTALL="sudo apt-get install -y "
         return 0
@@ -241,31 +247,31 @@ function installLinks() {
         echo "Creating vim config"
         ln -s $BASEPATH/etc/unix/vimrc ~/.vimrc
     fi
-    if [ ! -L ~/.devilspie ]; then
-        echo "Creating devilspie config"
-        ln -s $BASEPATH/etc/unix/devilspie ~/.devilspie
-    fi
-    if [ ! -L ~/.purple ]; then
-        if [ -d ~/.purple ]; then
-            mv ~/.purple ~/.purple.orig
-        fi
-        echo "Creating pidgin configs"
-        ln -s $BASEPATH/etc/unix/purple ~/.purple
-    fi
-    if [ ! -d ~/.config/xfce4.orig ]; then
-        echo "Creating xfce configs"
-        mv ~/.config/xfce4 ~/.config/xfce4.orig
-        cp -r $BASEPATH/etc/unix/xfce4 ~/.config/xfce4
-    fi
+    #if [ ! -L ~/.devilspie ]; then
+    #    echo "Creating devilspie config"
+    #    ln -s $BASEPATH/etc/unix/devilspie ~/.devilspie
+    #fi
+    #if [ ! -L ~/.purple ]; then
+    #    if [ -d ~/.purple ]; then
+    #        mv ~/.purple ~/.purple.orig
+    #    fi
+    #    echo "Creating pidgin configs"
+    #    ln -s $BASEPATH/etc/unix/purple ~/.purple
+    #fi
+    #if [ ! -d ~/.config/xfce4.orig ]; then
+    #    echo "Creating xfce configs"
+    #    mv ~/.config/xfce4 ~/.config/xfce4.orig
+    #    cp -r $BASEPATH/etc/unix/xfce4 ~/.config/xfce4
+    #fi
 
     echo "Creating autostarts"
     if [ ! -d ~/.config/autostart ]; then
         mkdir ~/.config/autostart
     fi
 
-    if [ ! -L ~/.config/autostart/devilspie.desktop ]; then
-        ln -s $BASEPATH/etc/unix/autostart/devilspie.desktop ~/.config/autostart/devilspie.desktop
-    fi
+#    if [ ! -L ~/.config/autostart/devilspie.desktop ]; then
+#        ln -s $BASEPATH/etc/unix/autostart/devilspie.desktop ~/.config/autostart/devilspie.desktop
+#    fi
 #    if [ ! -L ~/.config/autostart/Pidgin.desktop ]; then
 #        ln -s $BASEPATH/etc/unix/autostart/Pidgin.desktop ~/.config/autostart/Pidgin.desktop
 #    fi
@@ -283,9 +289,6 @@ function installLinks() {
         if [ ! -L ~/.config/autostart/Thunderbird.desktop ]; then
             ln -s $BASEPATH/etc/unix/autostart/Thunderbird.desktop ~/.config/autostart/Thunderbird.desktop
         fi
-#        if [ ! -L ~/.config/autostart/TimeTracker.desktop ]; then
-#            ln -s $BASEPATH/etc/unix/autostart/TimeTracker.desktop ~/.config/autostart/TimeTracker.desktop
-#        fi
         if [ ! -L ~/.config/autostart/Skype.desktop ]; then
             ln -s $BASEPATH/etc/unix/autostart/Skype.desktop ~/.config/autostart/Skype.desktop
         fi
@@ -295,10 +298,10 @@ function installLinks() {
 
 function installXPrograms() {
     local packs="launchy thunderbird devilspie wmctrl inkscape audacity vlc gimp"
-    local extPacks="bogofilter hunspell"
+    local extPacks="bogofilter hunspelli anki"
     local linpacks="launchy-plugins launchy-skins doublecmd-gtk vim-gtk gdevilspie retext chromium-browser"
-    local linextPacks="owncloud-client hunspell-de-de hunspell-ru hunspell-fr hunspell-es xfce4-eyes-plugin"
-    local bsdpacks="doublecmd chromium xfce4-xkb-plugin xfce4-weather-plugin xfce-screenshooter-plugin xfce-cpugraph-plugin"
+    local linextPacks="owncloud-client hunspell-de-de hunspell-ru hunspell-fr hunspell-es"
+    local bsdpacks="doublecmd chromium"
     local bsdextPacks="owncloudclient de-hunspell ru-hunspell fr-hunspell es-hunspell"
 
 #unetbootin sublime
@@ -326,9 +329,36 @@ function installXPrograms() {
     esac
 }
 
+function installXfcePrograms() {
+    local linextPacks="xfce4-eyes-plugin"
+    local bsdpacks="xfce4-xkb-plugin xfce4-weather-plugin xfce-screenshooter-plugin xfce-cpugraph-plugin"
+
+    local LOC_KWIN=`which kwin`
+    if [ $LOC_KWIN != "" ]; then
+        echo "Probably running on KDE"
+    else
+    case $SYSTEM in
+        "ubuntu")
+            #$INSTALL $linpacks
+            if [ "$DEST" = "host" ]; then
+                $INSTALL $linextPacks
+            fi
+            ;;
+        "freebsd")
+            $INSTALL $bsdpacks
+            #if [ "$DEST" = "host" ]; then
+            #    $INSTALL $bsdextPacks
+            #fi
+            ;;
+        "cygwin")
+            ;;
+    esac
+    fi
+}
+
 function installCompilers() {
     local packs="subversion meld cgdb gdb cmake"
-    local linpacks="qt5-default"
+    local linpacks="qt5-default fsharp mono-complete"
     local bsdpacks="qt5"
 
     local python="python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-numpy python3-psycopg2"
@@ -339,7 +369,7 @@ function installCompilers() {
     case $SYSTEM in
         "ubuntu")
             $INSTALL $linpacks
-            $INSTALL $python
+            #$INSTALL $python
             ;;
         "freebsd")
             $INSTALL $bsdpacks
@@ -451,11 +481,20 @@ function installExternals() {
             else    
                 echo "gitkraken already installed"
             fi
+            # Visual Studio Code
+            if ! which code; then
+                echo "Installing VS Code"
+                wget https://go.microsoft.com/fwlink/?LinkID=760868
+                sudo dpkg -i `find . -name code*_amd64.deb`
+            else    
+                echo "VS Code already installed"
+            fi
 
             if [ ! -d ~/work/qt ]; then
                 echo "Installing qt5"
                 wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-                sh -x qt-unified-linux-x64-online.run
+                chmod +x qt-unified-linux-x64-online.run
+                ./qt-unified-linux-x64-online.run
             else
                 echo "qt5 already installed"
             fi
@@ -477,16 +516,25 @@ function cloneGithub() {
     if [ ! -d Trinity ]; then
         echo "Cloning Trinity"
         git clone git@github.com:slesa/Trinity
-        cd Trinity && git checkout develop && cd ..
+        cd Trinity && git flow init -d && git checkout develop && cd ..
     fi
     if [ ! -d launchy ]; then
         echo "Cloning launchy"
         git clone git@github.com:slesa/launchy
-        cd launchy && git checkout develop && cd ..
+        cd launchy && git flow init -d && git checkout develop && cd ..
     fi
     if [ ! -d Godot ]; then
         echo "Cloning Godot"
         git clone git@github.com:slesa/Godot
+    fi
+    if [ ! -d fable-react_native-demo ]; then
+        echo "Cloning fable-react_native-demo"
+        git clone git@github.com:slesa/fable-react_native-demo
+        cd fable-react_native-demo && git flow init -d && cd ..
+    fi
+    if [ ! -d fable-elmish ]; then
+        echo "Cloning fable-elmish"
+        git clone git@github.com:slesa/fable-elmish
     fi
     if [ ! -d GammaRay ]; then
         git clone https://github.com/KDAB/GammaRay
@@ -502,7 +550,7 @@ function cloneGitlab() {
     if [ ! -d waiterwatch ]; then
         echo "Cloning waiterwatch"
         git clone git@gitlab.com:slesa/waiterwatch
-        cd waiterwatch && git checkout develop && cd ..
+        cd waiterwatch && git flow init -d && git checkout develop && cd ..
     fi
     popd
 }
@@ -533,6 +581,10 @@ if [ -z $DEST ]; then
     echo "Please mention either host or slave"
     exit 1
 fi
+if [ "$SYSTEM" == "unknown" ]; then
+    echo "No valid system found"
+    exit 1
+fi
 
 getSystem
 ensureRoot
@@ -546,6 +598,7 @@ installZsh
 installPrograms
 installLinks
 installXPrograms
+installXfcePrograms
 installCompilers
 installTwitter
 installGames
@@ -553,4 +606,5 @@ installTex
 installExternals
 installLogin
 cloneGithub
+cloneGitlab
 echo "Done"
