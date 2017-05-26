@@ -7,6 +7,6 @@
       <property name="Group" type="string" value="grp:shift_caps_switch"/>
     </property>
     <property name="XkbLayout" type="string" value="us,de,ru,jp"/>
-    <property name="XkbVariant" type="string" value=",,,"/>
+    <property name="XkbVariant" type="string" value=",,typewriter,"/>
   </property>
 </channel>
