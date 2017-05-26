@@ -1,8 +1,8 @@
-loc_name=NYC, New York
-lat=40.730599
-lon=-73.986581
-msl=21
-timezone=America/New_York
+loc_name=Güdingen, Bezirk Halberg
+lat=49.203205
+lon=7.031720
+msl=198
+timezone=Europe/Berlin
 cache_file_max_age=172800
 power_saving=true
 units_temperature=0
