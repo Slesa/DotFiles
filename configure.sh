@@ -57,6 +57,12 @@ function getSystem() {
 		INSTALL="sudo pkg install -y "
 		return 0
 	fi
+        if grep -q Microsoft /proc/version; then
+		echo "Found an Ubuntu on Windows"
+		SYSTEM="wwin10"
+		INSTALL="sudo apt-get install -y "
+		return 0
+	fi	
 	local LOC_APT=`which apt`
 	if [ $LOC_APT = "/usr/bin/apt" ]; then
 		echo "Found an Ubuntu"
@@ -83,6 +89,9 @@ function copyToClipboard() {
 			cat $1 | xsel --clipboard
 			;;
 		"freebsd")
+			cat $1 | xsel --clipboard
+			;;
+		"win10")
 			cat $1 | xsel --clipboard
 			;;
 		"cygwin")
@@ -112,6 +121,9 @@ function installPrereqs() {
 		"freebsd")
 			$INSTALL $packs
 			;;
+		"win10")
+			$INSTALL $packs
+			;;
 		"cygwin")
 			;;
 	esac
@@ -121,6 +133,9 @@ function installOwnCube() {
 #    sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.10/ /' > /etc/apt/sources.list.d/owncloud-client.list"
 #    sudo apt-get update
 #    sudo apt-get install owncloud-client
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	local packs="owncloud-client" 
 	echo "Installing owncube..."
 	case $SYSTEM in
@@ -168,6 +183,9 @@ function installDotFiles() {
 
 
 function installFonts() {
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	echo "Installing fonts..."
 	case $SYSTEM in
 		"freebsd")
@@ -202,6 +220,9 @@ function installBasics() {
 			;;
 		"freebsd")
 			$INSTALL $bsdpacks
+			;;
+		"win10")
+			$INSTALL $linpacks
 			;;
 		"cygwin")
 			;;
@@ -246,6 +267,9 @@ function installPrograms() {
 				echo 'hald_enable="YES"' | sudo tee -a /etc/rc.conf
 			fi
 			;;
+		"win10")
+			$INSTALL $linpacks
+			;;
 		"cygwin")
 			;;
 	esac
@@ -287,6 +311,9 @@ function installLinks() {
 	#    echo "Creating pidgin configs"
 	#    ln -s $BASEPATH/etc/unix/purple ~/.purple
 	#fi
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	if [ ! -L ~/launchy.ini ]; then
 		echo "Creating launchy config"
 		rm ~/launchy.ini
@@ -340,6 +367,10 @@ function installLinks() {
 }
 
 function installXfceLinks() {
+
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 
 	local xfceSource=$BASEPATH/etc/unix/xfce4
 	local xfceBase=~/.config/xfce4
@@ -443,6 +474,9 @@ function installXfceLinks() {
 
 
 function installXPrograms() {
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	local packs="launchy thunderbird gpgv2 wmctrl inkscape audacity vlc gimp devilspie corebird"
 	local extPacks="bogofilter hunspell anki unetbootin"
 	local linpacks="launchy-plugins launchy-skins doublecmd-gtk vim-gtk retext chromium-browser gdevilspie"
@@ -475,6 +509,9 @@ function installXPrograms() {
 }
 
 function installXfcePrograms() {
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	local linextPacks="xfce4-eyes-plugin"
 	local bsdpacks="xfce4-xkb-plugin xfce4-weather-plugin xfce-screenshooter-plugin xfce-cpugraph-plugin"
 
@@ -502,6 +539,9 @@ function installXfcePrograms() {
 }
 
 function installCompilers() {
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	local packs="subversion meld cgdb gdb cmake ccache"
 	local linpacks="qt5-default fsharp mono-complete"
 	local bsdpacks="qt5"
@@ -525,6 +565,9 @@ function installCompilers() {
 }
 
 function installTex() {
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	if [ ! "$INSTALL_TEX" = true ]; then
 		return 0
 	fi
@@ -548,6 +591,9 @@ function installTex() {
 }
 
 function installGames() {
+	if [ "$SYSTEM"="win10" ]; then
+		return 0
+	fi
 	if [ ! "$INSTALL_GAMES" = true ]; then
 		return 0
 	fi
@@ -679,9 +725,13 @@ function installExternals() {
 }
 
 function cloneGithub() {
+	local srcpath=~/work/github
+	if [ "$SYSTEM"="win10" ]; then
+		srcpath=/mnt/c/work/github
+	fi
 	pushd .
-	mkdir -p ~/work/github
-	cd ~/work/github
+	mkdir -p $srcpath
+	cd $srcpath
 	if [ ! -d Trinity ]; then
 		echo "Cloning Trinity"
 		git clone git@github.com:slesa/Trinity
@@ -755,26 +805,26 @@ if [ "$SYSTEM" == "unknown" ]; then
 	exit 1
 fi
 
-##getSystem
-##ensureRoot
-##installPrereqs
-##installOwnCube
-##createSshKey
-##installDotFiles
-##installFonts
-##installBasics
-##installZsh
-##installPrograms
+getSystem
+ensureRoot
+installPrereqs
+installOwnCube
+createSshKey
+installDotFiles
+installFonts
+installBasics
+installZsh
+installPrograms
 installLinks
 installXfceLinks
-##installXPrograms
-##installXfcePrograms
-##installLogin
-##installCompilers
-##installTex
-##installGames
+installXPrograms
+installXfcePrograms
+installLogin
+installCompilers
+installTex
+installGames
 #installTwitter
-##cloneGithub
+cloneGithub
 #cloneGitlab
-##installExternals
+installExternals
 echo "Done"
