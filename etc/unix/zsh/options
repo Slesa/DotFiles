@@ -7,7 +7,7 @@ setopt complete_in_word
 # Rechtschreibkorrektur bei Eingabe von Programmen
 # setopt correct
 # Verhindere das Löschen aller Dateien in einem Verzeichnis
-setopt rm_star_wait
+#setopt rm_star_wait
 
 # Farbausgabe anschalten
 autoload colors && colors
