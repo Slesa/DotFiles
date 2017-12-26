@@ -1,12 +1,20 @@
-hash -d launchy=~/work/github/launchy
-hash -d grauchy=~/work/github/Trinity/src/grauchy
-hash -d lsg=~/work/LiveStyleGuide/03-Production/LiveStyleGuide
+hash -d launchy=~/repos/github/launchy
+hash -d grauchy=~/repos/github/Trinity/src/grauchy
+hash -d lsg=~/repos/LiveStyleGuide/03-Production/LiveStyleGuide
 hash -d df=~/.dotFiles
-hash -d play=~/work/github/Playground
-hash -d pos=~/work/github/Poseidon
-hash -d morph=~/work/github/Morpheus
-hash -d godot=~/work/github/Godot
-hash -d gh=~/work/github
-hash -d trinity=~/work/github/Trinity
-hash -d dwx=~/work/github/dwx2017
-hash -d qt=~/work/qt
+hash -d play=~/repos/github/Playground
+hash -d pos=~/repos/github/Poseidon
+hash -d morph=~/repos/github/Morpheus
+hash -d godot=~/repos/github/Godot
+hash -d gh=~/repos/github
+hash -d trinity=~/repos/github/Trinity
+hash -d dwx=~/repos/github/dwx2017
+hash -d qt=~/repos/qt
+
+hash -d cpp=~/repos/git/Plus_Cpp
+hash -d global=~/repos/git/Plus_Global
+hash -d tools=~/repos/git/Plus_Tools
+hash -d forms=~/repos/git/Plus_WinForms
+hash -d core=~/repos/git/Plus_Core
+hash -d main=~/repos/tfs/PLUS_Daimler/main
+

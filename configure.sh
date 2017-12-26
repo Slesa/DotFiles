@@ -805,26 +805,5 @@ if [ "$SYSTEM" == "unknown" ]; then
 	exit 1
 fi
 
-getSystem
-ensureRoot
-installPrereqs
-installOwnCube
-createSshKey
-installDotFiles
-installFonts
-installBasics
-installZsh
-installPrograms
 installLinks
-installXfceLinks
-installXPrograms
-installXfcePrograms
-installLogin
-installCompilers
-installTex
-installGames
-#installTwitter
-cloneGithub
-#cloneGitlab
-installExternals
 echo "Done"
