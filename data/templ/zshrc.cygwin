@@ -1,0 +1,32 @@
+source ~/.zsh/options
+
+export EDITOR=vim
+export PAGER=less
+export BROWSER=`which firefox`
+
+
+# Qt5
+QTBASE=~/work/qt
+QTDIR=$QTBASE/5.7/gcc_64
+PATH=$QTDIR/bin:$QTBASE/Tools/QtCreator/bin:$PATH  
+LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH
+export QTBASE QTDIR PATH LD_LIBRARY_PATH
+
+
+# PyQt5 / Qml
+QT_PLUGIN_PATH=$QTDIR/plugins
+QML2_IMPORT_PATH=$QTDIR/qml
+export QT_PLUGIN_PATH QML_IMPORT_PATH
+
+
+# Antlr / Java
+#export CLASSPATH=".:/usr/local/lib/antlr-4.5.1-complete.jar:$CLASSPATH"
+
+
+source ~/.zsh/aliases
+source ~/.zsh/paths
+source ~/bin/tools/git/git_prompt.zsh
+
+#cd ~launchy
+
+fortune

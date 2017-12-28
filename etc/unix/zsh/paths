@@ -10,3 +10,8 @@ hash -d gh=~/work/github
 hash -d trinity=~/work/github/Trinity
 hash -d dwx=~/work/github/dwx2017
 hash -d qt=~/work/qt
+hash -d abat=~/work/abat
+hash -d cpp=~/work/abat/Plus_Cpp
+hash -d global=~/work/abat/Plus_Global
+hash -d tools=~/work/abat/Plus_Tools
+

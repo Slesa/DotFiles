@@ -1,15 +1,35 @@
 #!/bin/bash
 
 BASEPATH=~/.dotfiles
+ERR='\033[0;31m'
+OK='\033[0;32m'
+YEL='\033[0;33m'
+NC='\033[0m'
+TC='\033[0;33m'
+HEAD='\033[0;35m'
+
+SUDO="sudo"
 
 ### determine if installation is on a host or a virtual machine
 ### additionally, packages can be turned on and off
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function readArguments() {
+	echo -n "Determine arguments..."
+    if [ $SYSTEM == "cygwin" ]; then
+		echo -e "${TC}not necessary${NC}"
+		DEST="slave"
+		INSTALL_GAMES=false
+		INSTALL_TEXT=false
+		SUDO=""
+		return 0
+    fi
 	if [ -z "$@" ]; then
+		echo -e "${ERR}missing${NC}"
 		echo "Available parameters:"
 		echo $0 "[ host|vm ]" 
 		echo "  games|nogames  tex|notex" 
 	fi
+	echo -e "${OK}ok${NC}"
 	for i in "$@" 
 	do
 		case $i in
@@ -43,35 +63,42 @@ function waitForKey() {
 }
 
 ### determine the running OS. Can be Mac, BSD or Ubuntu
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function getSystem() {
 	local UNAME=`uname -s`
 	echo "Operating system is reported as " $UNAME
+	echo -n "Determine system..."
+    if [[ $UNAME == CYGWIN* ]]; then
+		echo -e "${OK}a cygwin system${NC}"
+		SYSTEM="cygwin"
+		return 0
+	fi
 	if [ $UNAME = "Darwin" ]; then
-		echo "Found a Mac"
+		echo -e "${OK}as a Mac${NC}"
 		SYSTEM="mac"
 		return 0
 	fi
 	if [ $UNAME = "FreeBSD" ]; then
-		echo "Found a FreeBSD"
+		echo -e "${OK} as a FreeBSD${NC}"
 		SYSTEM="freebsd"
 		INSTALL="sudo pkg install -y "
 		return 0
 	fi
         if grep -q Microsoft /proc/version; then
-		echo "Found an Ubuntu on Windows"
-		SYSTEM="wwin10"
+		echo -e "${OK}as Ubuntu on Windows${NC}"
+		SYSTEM="win10"
 		INSTALL="sudo apt-get install -y "
 		return 0
 	fi	
 	local LOC_APT=`which apt`
 	if [ $LOC_APT = "/usr/bin/apt" ]; then
-		echo "Found an Ubuntu"
+		echo -e "${OK}as an Ubuntu${NC}"
 		SYSTEM="ubuntu"
 		INSTALL="sudo apt-get install -y "
 		return 0
 	fi
 	if [ $LOC_APT = "/usr/local/bin/apt" ]; then
-		echo "Found Linux Mint"
+		echo -e "${OK}as  Linux Mint${NC}"
 		SYSTEM="ubuntu"
 		INSTALL="sudo apt-get install -y "
 		return 0
@@ -80,7 +107,9 @@ function getSystem() {
 }
 
 ### Copy a string to the clipboard, using OS functions
+### [ ] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function copyToClipboard() {
+	echo -n "Copy to clipboard "
 	case $SYSTEM in
 		"mac")
 			pbcopy $1
@@ -98,22 +127,30 @@ function copyToClipboard() {
 			echo "$1" > /dev/clipboard
 			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
 ### Ensure that we have root capabilities
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function ensureRoot() {
+	echo -n "Ensure root access..."
+    if [ $SYSTEM == "cygwin" ]; then
+		echo -e "${TC}not necessary${NC}"
+		return 0
+    fi
 	if [[ $EUID -ne 0 ]]; then
-		echo "Not started as root"
+		echo -e "${ERR}not started as root${NC}"
 		sudo ls > /dev/null
 		return 0
 	fi
-	echo "We are already root"
+	echo -e "${OK}ok${NC}"
 }
 
 ### We need at least an editor and a source code management
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installPrereqs() {
 	local packs="xsel git vim firefox" 
-	echo "Installing prereqs..."
+	echo -n "Installing prereqs..."
 	case $SYSTEM in
 		"ubuntu")
 			$INSTALL $packs
@@ -127,17 +164,20 @@ function installPrereqs() {
 		"cygwin")
 			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installOwnCube() {
 #    sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.10/ /' > /etc/apt/sources.list.d/owncloud-client.list"
 #    sudo apt-get update
 #    sudo apt-get install owncloud-client
-	if [ "$SYSTEM"="win10" ]; then
+	echo -n "Installing owncube..."
+	if [[ ($SYSTEM="win10") || ($SYSTEM = "cygwin")  ]]; then
+		echo -e "${TC}not necessary${NC}"
 		return 0
 	fi
 	local packs="owncloud-client" 
-	echo "Installing owncube..."
 	case $SYSTEM in
 		"ubuntu")
 			$INSTALL $packs
@@ -145,74 +185,89 @@ function installOwnCube() {
 		"freebsd")
 			$INSTALL $packs
 			;;
-		"cygwin")
-			;;
 	esac
+	echo -e "${OK}ok${NC}"
 	if [[ "$(pidof owncloud | wc -w)" -eq "0" ]]; then
-	echo "Starting owncube..."
-	owncloud &
-	waitForKey
+		echo "Starting owncube..."
+		owncloud &
+		waitForKey
+		echo -e "${OK}ok${NC}"
 	fi
 }
 
 
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function createSshKey() {
+	echo -n "Creating ssh key..."
 	if [ -f ~/.ssh/id_rsa.pub ]; then
-		echo "SSH key already present"
+		echo -e "${TC}SSH key already present${NC}"
 		return 0
 	fi
-	echo "Generating SSH key"
+	echo -n "Generating..."
 	ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N ""
-	echo "Add key to github"
+	echo -n "Add key to github..."
 	copyToClipboard ~/.ssh/id_rsa.pub
 	firefox https://github.com/settings/keys
 	waitForKey
+	echo -e "${OK}ok${NC}"
 }
 
 
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installDotFiles() {
+	echo -n "Installing dot files..."
 	if [ -d $BASEPATH ]; then
-		echo "Dot files already installed"
+		echo -e "${TC}Dot files already installed${NC}"
 		cd $BASEPATH
 		git pull origin master
 		return 0
 	fi
-	echo "Cloning dot files..."
+	echo -n "Cloning dot files..."
 	git clone git@github.com:slesa/DotFiles $BASEPATH
+	echo -e "${OK}ok${NC}"
 }
 
 
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installFonts() {
-	if [ "$SYSTEM"="win10" ]; then
+	echo -n "Installing fonts for $SYSTEM..."
+	if [ $SYSTEM == "win10" ]; then
+		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
-	echo "Installing fonts..."
 	case $SYSTEM in
 		"freebsd")
-			echo "Fonts for freebsd"
+			echo -n "Fonts for freebsd..."
 			if [ -f /usr/local/share/fonts/TTF/Envy\ Code\ R.ttf ]; then
-				echo "Fonts already installed"
+				echo -e "${TC}Fonts already installed${NC}"
 				return 0
 			fi
 			sudo cp $BASEPATH/data/font/*.ttf /usr/local/share/fonts/TTF
 			;;
 		"ubuntu"|"cygwin")
-			echo "Fonts for non freebsd"
+			echo -n "Fonts for non freebsd..."
 			if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
-				echo "Fonts already installed"
+				echo -e "${TC}Fonts already installed${NC}"
 				return 0
 			fi
-			sudo cp $BASEPATH/data/font/*.ttf /usr/share/fonts
+			$SUDO cp $BASEPATH/data/font/*.ttf /usr/share/fonts
 			;;
 	esac
 	fc-cache -f -v
+	echo -e "${OK}ok${NC}"
 }
 
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installBasics() {
+	echo -n "Installing basics..."
+	if [ $SYSTEM == "cygwin" ]; then
+		echo -e "${TC}Not necessary${NC}"
+		return 0
+	fi
 	local packs="zsh"
 	local linpacks="git-flow zsh-lovers fortunes fortunes-de hfsplus hfsutils"
 	local bsdpacks="gitflow fortune-mod-ferengi_rules_of_acquisition"
-	echo "Installing basics..."
 	$INSTALL $packs
 	case $SYSTEM in
 		"ubuntu")
@@ -224,29 +279,38 @@ function installBasics() {
 		"win10")
 			$INSTALL $linpacks
 			;;
-		"cygwin")
-			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installZsh() {
+	echo -n "Installing ZShell..."
 	if [ ! -f ~/.zshrc ]; then
 		cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
 	fi
 	if [ "$SHELL"="`which zsh`" ]; then
-		echo "Zsh already login shell"
+		echo -e "${TC}Zsh already login shell${NC}"
 		return 0
 	fi
 	echo "Setting default shell to zsh"
 	chsh -s `which zsh`
+	echo -e "${OK}ok${NC}"
 }
 
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installPrograms() {
+	echo -n "Installing programs..."
+	if [ $SYSTEM == "cygwin" ]; then
+		echo -e "${TC}Not necessary${NC}"
+		return 0
+	fi
 	local packs="curl npm mc w3m links ncdu htop nmap bacula-client tmux"
 	local linpacks="synaptic openssh-server dos2unix lshw vim-addon-manager vim-pathogen"
 	local bsdpacks="xorg xfce slim slim-themes"
 	#local ubuntu_packs=""
-	echo "Installing programs..."
 	$INSTALL $packs
 	case $SYSTEM in
 		"ubuntu")
@@ -273,8 +337,11 @@ function installPrograms() {
 		"cygwin")
 			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installLinks() {
 	if [ ! -d ~/bin ]; then
 		echo "Creating local bin directory"
@@ -311,7 +378,7 @@ function installLinks() {
 	#    echo "Creating pidgin configs"
 	#    ln -s $BASEPATH/etc/unix/purple ~/.purple
 	#fi
-	if [ "$SYSTEM"="win10" ]; then
+	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		return 0
 	fi
 	if [ ! -L ~/launchy.ini ]; then
@@ -364,11 +431,14 @@ function installLinks() {
 			ln -s $autostartSource/$autoSkypeFn $autoSkypeDf
 		fi
 	fi
+	echo -e "${OK}ok${NC}"
 }
 
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installXfceLinks() {
 
-	if [ "$SYSTEM"="win10" ]; then
+	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		return 0
 	fi
 
@@ -470,11 +540,13 @@ function installXfceLinks() {
 		mv $sessionRc $sessionRc.bak
 		ln -s $xfceSource/$sessionFn $sessionRc
 	fi
+	echo -e "${OK}ok${NC}"
 }
 
 
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installXPrograms() {
-	if [ "$SYSTEM"="win10" ]; then
+	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		return 0
 	fi
 	local packs="launchy thunderbird gpgv2 wmctrl inkscape audacity vlc gimp devilspie corebird"
@@ -506,10 +578,15 @@ function installXPrograms() {
 		"cygwin")
 			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installXfcePrograms() {
-	if [ "$SYSTEM"="win10" ]; then
+	echo "Installing XFCE programs..."
+	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
+		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
 	local linextPacks="xfce4-eyes-plugin"
@@ -532,14 +609,16 @@ function installXfcePrograms() {
 			#    $INSTALL $bsdextPacks
 			#fi
 			;;
-		"cygwin")
-			;;
 	esac
 	fi
+	echo -e "${OK}ok${NC}"
 }
 
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
 function installCompilers() {
-	if [ "$SYSTEM"="win10" ]; then
+	echo -n "Installing compilers..."
+	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
+		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
 	local packs="subversion meld cgdb gdb cmake ccache"
@@ -547,8 +626,6 @@ function installCompilers() {
 	local bsdpacks="qt5"
 
 	#local python="python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-numpy python3-psycopg2"
-
-	echo "Installing compilers..."
 
 	$INSTALL $packs
 	case $SYSTEM in
@@ -559,23 +636,24 @@ function installCompilers() {
 		"freebsd")
 			$INSTALL $bsdpacks
 			;;
-		"cygwin")
-			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
 function installTex() {
-	if [ "$SYSTEM"="win10" ]; then
+	echo -n "Installing tex..."
+	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
+		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
-	if [ ! "$INSTALL_TEX" = true ]; then
+	if [ ! "$INSTALL_TEX" == true ]; then
+		echo -e "${TC}Not set${NC}"
 		return 0
 	fi
 	local packs="texmaker lyx latex2html texstudio latexila cjk_latex latex-cjk-japanese t1-cyrillic texlive-lang-cyrillic texlive-fonts-extra"
 	local linpacks="texlive-music xfonts-cyrillic"
 	local bsdpacks="texlive-full font-cronyx-cyrillic font-misc-cyrillic font-screen-cyrillic xorg-fonts-cyrillic"
 
-	echo "Installing tex..."
 	$INSTALL $packs
 
 	case $SYSTEM in
@@ -585,23 +663,24 @@ function installTex() {
 		"freebsd")
 			$INSTALL $bsdpacks
 			;;
-		"cygwin")
-			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
 function installGames() {
-	if [ "$SYSTEM"="win10" ]; then
+	echo -n "Installing games..."
+	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
+		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
 	if [ ! "$INSTALL_GAMES" = true ]; then
+		echo -e "${TC}Not set${NC}"
 		return 0
 	fi
 	local packs="phalanx xboard crafty" # supertux supertuxkart
 	local linpacks="pychess "
 	local bsdpacks="brutalchess chessx pouetchess" # glchess
 
-	echo "Installing games..."
 	$INSTALL $packs
 	case $SYSTEM in
 		"ubuntu")
@@ -610,9 +689,8 @@ function installGames() {
 		"freebsd")
 			$INSTALL $bsdpacks
 			;;
-		"cygwin")
-			;;
 	esac
+	echo -e "${OK}ok${NC}"
 }
 
 #function installTwitter() {
@@ -726,8 +804,12 @@ function installExternals() {
 
 function cloneGithub() {
 	local srcpath=~/work/github
-	if [ "$SYSTEM"="win10" ]; then
+	if [ $SYSTEM == "win10" ]; then
 		srcpath=/mnt/c/work/github
+	fi
+	if [ ! -d "$srcpath" ]; then
+		echo -e "${ERR}Error: $srcpath does not exist! ${NC}"
+		exit -1
 	fi
 	pushd .
 	mkdir -p $srcpath
@@ -775,11 +857,11 @@ function cloneGitlab() {
 }
 
 function installLogin() {
-	echo "Installing login logo..."
+	echo -n "Installing login logo..."
 	case $SYSTEM in
 		"ubuntu")
 			if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
-				echo "Login logo already installed"
+				echo -e "${TC}Login logo already installed${NC}"
 				return 0
 			fi
 			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
@@ -789,11 +871,18 @@ function installLogin() {
 			;;
 		"freebsd")
 			;;
-		"cygwin")
+		"cygwin"|"win10")
+			echo -e "${TC}Not necessary${NC}"
+			return 0
 			;;
 	esac
+	echo -e "${Ok}Ok${NC}"
 }
 
+
+echo -e "${HEAD}[=== Configuring system ===]${NC}"
+getSystem
+echo -e "System is ${SYSTEM}"
 
 readArguments $@
 if [ -z $DEST ]; then
@@ -805,12 +894,11 @@ if [ "$SYSTEM" == "unknown" ]; then
 	exit 1
 fi
 
-getSystem
 ensureRoot
-installPrereqs
-installOwnCube
-createSshKey
-installDotFiles
+#installPrereqs
+#installOwnCube
+#createSshKey
+#installDotFiles
 installFonts
 installBasics
 installZsh
