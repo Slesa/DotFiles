@@ -14,4 +14,6 @@ hash -d abat=~/work/abat
 hash -d cpp=~/work/abat/Plus_Cpp
 hash -d global=~/work/abat/Plus_Global
 hash -d tools=~/work/abat/Plus_Tools
+hash -d tandem=~/work/abat/Tandem
+hash -d client=~/work/abat/Plus_Client
 
