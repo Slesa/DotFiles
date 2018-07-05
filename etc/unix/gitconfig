@@ -5,7 +5,7 @@
 	editor = vim
 	autocrlf = false
 [push]
-	default = matching
+	default = current
 
 [merge]
 	tool = meld
