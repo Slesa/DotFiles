@@ -9,18 +9,23 @@ TC='\033[0;33m'
 HEAD='\033[0;35m'
 
 SUDO="sudo"
+INSTALL_GAMES=false
+INSTALL_OWNCUBE=true
+INSTALL_SSHKEYS=true
+INSTALL_PROGRAMS=true
+INSTALL_XPROGRAMS=true
 
 ### determine if installation is on a host or a virtual machine
 ### additionally, packages can be turned on and off
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function readArguments() {
+	INSTALL_PREREQS=true
 	echo -n "Determine arguments..."
     if [ $SYSTEM == "cygwin" ]; then
 		echo -e "${TC}not necessary${NC}"
 		DEST="slave"
 		INSTALL_GAMES=false
 		INSTALL_TEXT=false
-		INSTALL_PREREQS=true
 		INSTALL_OWNCUBE=true
 		INSTALL_SSHKEYS=true
 		INSTALL_PROGRAMS=true
@@ -88,8 +93,8 @@ function waitForKey() {
 	echo "[Press key to continue]" && read -n 1 -s
 }
 
-### determine the running OS. Can be Mac, BSD or Ubuntu
-### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
+### determine the running OS. Can be Mac, BSD or Ubuntu/Manjaro
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function getSystem() {
 	local UNAME=`uname -s`
 	echo "Operating system is reported as " $UNAME
@@ -116,6 +121,14 @@ function getSystem() {
 		INSTALL="sudo apt-get install -y "
 		return 0
 	fi	
+	local LOC_PAC=`which pacman`
+	if [ $LOC_PAC = "/usr/bin/pacman" ]; then
+		echo -e "${OK}as an ArchLinux${NC}"
+		SYSTEM="arch"
+		INSTALL="sudo pacman --noconfirm -Syu "
+		INSTALL2="yaourt --noconfirm -S "
+		return 0
+	fi
 	local LOC_APT=`which apt`
 	if [ $LOC_APT = "/usr/bin/apt" ]; then
 		echo -e "${OK}as an Ubuntu${NC}"
@@ -133,7 +146,7 @@ function getSystem() {
 }
 
 ### Copy a string to the clipboard, using OS functions
-### [ ] Cygwin   [ ] Mac   [ ] Linux   [-] FreeBSD   [ ] LinuxOnWin
+### [ ] Cygwin   [ ] Mac   [ ] Linux   [-] FreeBSD   [ ] LinuxOnWin  [ ] Manjaro
 function copyToClipboard() {
 	echo -n "Copy to clipboard "
 	case $SYSTEM in
@@ -157,7 +170,7 @@ function copyToClipboard() {
 }
 
 ### Ensure that we have root capabilities
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function ensureRoot() {
 	echo -n "Ensure root access..."
     if [ $SYSTEM == "cygwin" ]; then
@@ -173,24 +186,29 @@ function ensureRoot() {
 }
 
 ### We need at least an editor and a source code management
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installPrereqs() {
 	if [ ! "$INSTALL_PREREQS" = true ]; then
 		echo -e "${TC}No prereqs${NC}"
 		return 0
 	fi
-	local packs="xsel git vim firefox" 
+	local packs="xsel git firefox" 
+	local archpacks="yaourt" 
+	local noarchpacks="vim" 
 	local bsdPacks="pidof" 
 	echo -n "Installing prereqs..."
 	case $SYSTEM in
+		"arch")
+			$INSTALL $packs $archpacks
+			;;
 		"ubuntu")
-			$INSTALL $packs
+			$INSTALL $packs $noarchpacks
 			;;
 		"freebsd")
-			$INSTALL $packs $bsdPacks
+			$INSTALL $packs $noarchpacks $bsdPacks
 			;;
 		"win10")
-			$INSTALL $packs
+			$INSTALL $packs $noarchpacks
 			;;
 		"cygwin")
 			;;
@@ -198,7 +216,7 @@ function installPrereqs() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installOwnCube() {
 #    sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.10/ /' > /etc/apt/sources.list.d/owncloud-client.list"
 #    sudo apt-get update
@@ -213,6 +231,9 @@ function installOwnCube() {
 		return 0
 	fi
 	case $SYSTEM in
+		"arch")
+			$INSTALL "owncloud-client"
+			;;
 		"ubuntu")
 			$INSTALL "owncloud-client"
 			;;
@@ -224,13 +245,14 @@ function installOwnCube() {
 	if [[ "$(pidof owncloud | wc -w)" -eq "0" ]]; then
 		echo "Starting owncube..."
 		owncloud &
+		echo "[Waiting for a key]"
 		waitForKey
 		echo -e "${OK}ok${NC}"
 	fi
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function createSshKey() {
 	if [ ! "$INSTALL_SSHKEYS" = true ]; then
 		echo -e "${TC}No ssh keys${NC}"
@@ -251,7 +273,7 @@ function createSshKey() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installDotFiles() {
 	echo -n "Installing dot files..."
 	if [ -d $BASEPATH ]; then
@@ -266,7 +288,7 @@ function installDotFiles() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installFonts() {
 	echo -n "Installing fonts for $SYSTEM..."
 	if [ $SYSTEM == "win10" ]; then
@@ -282,7 +304,7 @@ function installFonts() {
 			fi
 			sudo cp $BASEPATH/data/font/*.ttf /usr/local/share/fonts/TTF
 			;;
-		"ubuntu"|"cygwin")
+		"ubuntu"|"arch"|"cygwin")
 			echo -n "Fonts for non freebsd..."
 			if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
 				echo -e "${TC}Fonts already installed${NC}"
@@ -296,7 +318,7 @@ function installFonts() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installBasics() {
 	echo -n "Installing basics..."
 	if [ $SYSTEM == "cygwin" ]; then
@@ -304,10 +326,19 @@ function installBasics() {
 		return 0
 	fi
 	local packs="zsh"
+	local archpacks-"synergy forune-mod zsh-lovers"
 	local linpacks="git-flow zsh-lovers fortunes fortunes-de hfsplus hfsutils"
 	local bsdpacks="gitflow fortune-mod-bofh pstree inxi synergy"
 	$INSTALL $packs
 	case $SYSTEM in
+		"arch")
+			$INSTALL $archpacks
+			if ! which git-flow; then
+				$INSTALL2 gitflow-avh
+			else
+				echo "git flow already installed"
+			fi
+			;;
 		"ubuntu")
 			$INSTALL $linpacks
 			;;
@@ -322,7 +353,7 @@ function installBasics() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [?] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [?] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installZsh() {
 	echo -n "Installing ZShell..."
 	if [ ! -f ~/.zshrc ]; then
@@ -338,7 +369,7 @@ function installZsh() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installPrograms() {
 	if [ ! "$INSTALL_PROGRAMS" = true ]; then
 		echo -e "${TC}No programs${NC}"
@@ -349,12 +380,18 @@ function installPrograms() {
 		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
-	local packs="curl npm mc w3m links ncdu htop nmap bacula-client tmux"
-	local linpacks="synaptic openssh-server dos2unix lshw vim-addon-manager vim-pathogen"
-	local bsdpacks="xorg xfce slim slim-themes" # xfce4
+	local packs="curl npm mc w3m links ncdu htop nmap mux"
+	local archpacks="lshw ranger dos2unix"
+	local archpacks2="bacula-client vim-pathogen"
+	local linpacks="synaptic openssh-server dos2unix bacula-client lshw vim-addon-manager vim-pathogen"
+	local bsdpacks="bacula-client txorg xfce slim slim-themes" # xfce4
 	#local ubuntu_packs=""
 	$INSTALL $packs
 	case $SYSTEM in
+		"arch")
+			$INSTALL $archpacks
+			$INSTALL2 $archpacks2
+			;;
 		"ubuntu")
 			$INSTALL $linpacks
 			;;
@@ -383,7 +420,7 @@ function installPrograms() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installLinks() {
 	if [ ! -d ~/bin ]; then
 		echo "Creating local bin directory"
@@ -468,7 +505,6 @@ function installLinks() {
 		#local autoTwitterDf=$autostartDir/$autoTwitterFn
 		#if [ ! -L $autoTwitterDf ]; then
 		#	echo "Creating Twitter autostart"
-		#    ln -s $autostartSource/$autoTwitterFn $autoTwitterDf
 		#fi
 		local autoMailFn=Thunderbird.desktop
 		local autoMailFd=$autostartDir/$autoMailFn
@@ -487,7 +523,7 @@ function installLinks() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installXfceLinks() {
 	echo -n "Installing XFCE links..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -619,7 +655,7 @@ function installXfceLinks() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installXPrograms() {
 	if [ ! "$INSTALL_XPROGRAMS" = true ]; then
 		echo -e "${TC}No X11 programs${NC}"
@@ -629,11 +665,13 @@ function installXPrograms() {
 		return 0
 	fi
 	local packs="launchy thunderbird wmctrl inkscape audacity vlc gimp" #devilspie corebird"
-	local extPacks="bogofilter hunspell anki unetbootin"
+	local extPacks="bogofilter hunspell anki"
+	local archpacks="doublecmd-gtk2 retext chromium mc"
+	local archpacks2="gnome-commander-git file-commander-git"
 	local linpacks="launchy-plugins launchy-skins doublecmd-gtk vim-gtk retext chromium-browser gpgv2" # gdevilspie"
-	local linextPacks="hunspell-de-de hunspell-ru hunspell-fr hunspell-es"
+	local linextPacks="unetbootin hunspell-de-de hunspell-ru hunspell-fr hunspell-es"
 	local bsdpacks="doublecmd chromium gnupg20"
-	local bsdextPacks="owncloudclient de-hunspell ru-hunspell fr-hunspell es-hunspell"
+	local bsdextPacks="unetbootin owncloudclient de-hunspell ru-hunspell fr-hunspell es-hunspell"
 
 	echo "Installing X11 programs..."
 	$INSTALL $packs
@@ -642,6 +680,10 @@ function installXPrograms() {
 		$INSTALL $extPacks
 	fi
 	case $SYSTEM in
+		"arch")
+			$INSTALL $archpacks
+			$INSTALL $archpacks2
+			;;
 		"ubuntu")
 			$INSTALL $linpacks
 			if [ "$DEST" = "host" ]; then
@@ -661,7 +703,7 @@ function installXPrograms() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installXfcePrograms() {
 	echo "Installing XFCE programs..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -676,6 +718,9 @@ function installXfcePrograms() {
 		echo "Probably running on KDE"
 	else
 	case $SYSTEM in
+		"arch")
+			$INSTALL $bsdpacks
+			;;
 		"ubuntu")
 			#$INSTALL $linpacks
 			if [ "$DEST" = "host" ]; then
@@ -693,21 +738,30 @@ function installXfcePrograms() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installCompilers() {
 	echo -n "Installing compilers..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
-	local packs="subversion meld cgdb gdb cmake ccache"
+	local packs="subversion meld cgdb gdb cmake ccache nodejs yarn"
 	local linpacks="qt5-default fsharp mono-complete"
 	local bsdpacks="qt5 fsharp mono"
+	local archpacks="qt5 mono mono-tools"
 
 	#local python="python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-numpy python3-psycopg2"
 
 	$INSTALL $packs
 	case $SYSTEM in
+		"arch")
+			$INSTALL $archpacks
+			if ! which fsharpc; then
+				$INSTALL2 fsharp
+			else
+				echo "FSharp already installed"
+			fi
+			;;
 		"ubuntu")
 			$INSTALL $linpacks
 			#$INSTALL $python
@@ -719,7 +773,7 @@ function installCompilers() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installTex() {
 	echo -n "Installing tex..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -730,9 +784,10 @@ function installTex() {
 		echo -e "${TC}Not set${NC}"
 		return 0
 	fi
-	local packs="texmaker lyx latex2html texstudio latexila"
-	local linpacks="texlive-music xfonts-cyrillic cjk_latex latex-cjk-japanese t1-cyrillic texlive-lang-cyrillic texlive-fonts-extra"
-	local bsdpacks="texlive-full font-cronyx-cyrillic font-misc-cyrillic font-screen-cyrillic xorg-fonts-cyrillic"
+	local packs="texmaker lyx latex2html texstudio"
+	local linpacks="latexila texlive-music xfonts-cyrillic cjk_latex latex-cjk-japanese t1-cyrillic texlive-lang-cyrillic texlive-fonts-extra"
+	local bsdpacks="latexila texlive-full font-cronyx-cyrillic font-misc-cyrillic font-screen-cyrillic xorg-fonts-cyrillic"
+	local archpacks="texlive-music texlive-langcyrillic textlive-langjapanese"
 
 	$INSTALL $packs
 
@@ -747,7 +802,7 @@ function installTex() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installGames() {
 	echo -n "Installing games..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -758,12 +813,16 @@ function installGames() {
 		echo -e "${TC}Not set${NC}"
 		return 0
 	fi
-	local packs="phalanx xboard crafty" # supertux supertuxkart
-	local linpacks="pychess "
-	local bsdpacks="brutalchess chessx pouetchess" # glchess
+	local packs="xboard" # supertux supertuxkart
+	local archpacks="pychess"
+	local linpacks="phalanx pychess"
+	local bsdpacks="crafty brutalchess chessx pouetchess" # glchess
 
 	$INSTALL $packs
 	case $SYSTEM in
+		"arch")
+			$INSTALL $archpacks
+			;;
 		"ubuntu")
 			$INSTALL $linpacks
 			;;
@@ -795,10 +854,28 @@ function installGames() {
 #}
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function installExternals() {
 	echo "Installing external applications..."
 	case $SYSTEM in
+		"arch")
+			$INSTALL keybase
+			if ! which code; then
+				$INSTALL2 visual-studio-code-bin 
+			else
+				echo "Visual Studio Code already installed"
+			fi
+			if ! which gitkraken; then
+				$INSTALL2 gitkraken 
+			else
+				echo "GitKraken already installed"
+			fi
+			if ! which sky; then
+				sky
+			else
+				echo "Sky(pe) already installed"
+			fi
+			;;
 		"ubuntu")
 			pushd .
 			cd ~/Downloads
@@ -816,13 +893,13 @@ function installExternals() {
 
 			# Sublime
 			#if ! which sublime_text_3; then
-			if ! which subl; then
-				echo "Installing sublime text"
-				wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
-				sudo dpkg -i sublime-text_build-3126_amd64.deb
-			else
-				echo "Sublime already installed"
-			fi
+			#if ! which subl; then
+			#	echo "Installing sublime text"
+			#	wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
+			#	sudo dpkg -i sublime-text_build-3126_amd64.deb
+			#else
+			#	echo "Sublime already installed"
+			#fi
 
 			#if ! which gitkraken; then
 			if [ ! -f /usr/share/gitkraken/gitkraken ]; then
@@ -884,7 +961,7 @@ function installExternals() {
 	esac
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function cloneGithub() {
 	local srcpath=~/work/github
 	if [ $SYSTEM == "win10" ]; then
@@ -920,14 +997,14 @@ function cloneGithub() {
 		echo "Cloning fable-elmish"
 		git clone git@github.com:slesa/fable-elmish
 	fi
-	if [ ! -d GammaRay ]; then
-		git clone https://github.com/KDAB/GammaRay
+	#if [ ! -d GammaRay ]; then
+	#	git clone https://github.com/KDAB/GammaRay
 		#cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
-	fi
+	#fi
 	popd
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
 function cloneGitlab() {
 	pushd .
 	mkdir -p ~/work/gitlab
@@ -943,7 +1020,7 @@ function cloneGitlab() {
 function installLogin() {
 	echo -n "Installing login logo..."
 	case $SYSTEM in
-		"ubuntu")
+		"arch"|"ubuntu")
 			if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
 				echo -e "${TC}Login logo already installed${NC}"
 				return 0
