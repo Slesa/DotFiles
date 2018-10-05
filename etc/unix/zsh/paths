@@ -16,4 +16,6 @@ hash -d global=~/work/abat/Plus_Global
 hash -d tools=~/work/abat/Plus_Tools
 hash -d tandem=~/work/abat/Tandem
 hash -d client=~/work/abat/Plus_Client
+hash -d alib=~/work/abat/Abat_Lib
+hash -d awpf=~/work/abat/Abat_WpfControls
 
