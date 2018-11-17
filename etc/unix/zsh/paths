@@ -7,6 +7,7 @@ hash -d pos=~/work/github/Poseidon
 hash -d morph=~/work/github/Morpheus
 hash -d godot=~/work/github/Godot
 hash -d gh=~/work/github
+hash -d gl=~/work/gitlab
 hash -d trinity=~/work/github/Trinity
 hash -d dwx=~/work/github/dwx2017
 hash -d qt=~/work/qt
