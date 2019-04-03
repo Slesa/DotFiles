@@ -1,6 +1,5 @@
 hash -d launchy=~/work/github/launchy
 hash -d grauchy=~/work/github/Trinity/src/grauchy
-hash -d lsg=~/work/LiveStyleGuide/03-Production/LiveStyleGuide
 hash -d df=~/.dotFiles
 hash -d play=~/work/github/Playground
 hash -d pos=~/work/github/Poseidon
@@ -15,7 +14,8 @@ hash -d abat=~/work/abat
 hash -d cpp=~/work/abat/Plus_Cpp
 hash -d global=~/work/abat/Plus_Global
 hash -d tools=~/work/abat/Plus_Tools
-hash -d tandem=~/work/abat/Tandem
+hash -d prolog=~/work/github/prolog
+hash -d safe=~/work/github/safe
 hash -d client=~/work/abat/Plus_Client
 hash -d alib=~/work/abat/Abat_Lib
 hash -d awpf=~/work/abat/Abat_WpfControls
