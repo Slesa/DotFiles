@@ -115,12 +115,19 @@ function getSystem() {
 		INSTALL="sudo pkg install -y "
 		return 0
 	fi
-    if grep -q Microsoft /proc/version; then
+        if grep -q Microsoft /proc/version; then
 		echo -e "${OK}as Ubuntu on Windows${NC}"
 		SYSTEM="win10"
 		INSTALL="sudo apt-get install -y "
 		return 0
 	fi	
+	local LOC_YUM=`which yum`
+	if [ $LOC_YUM = "/usr/bin/yum" ]; then
+		echo -e "${OK}as an Fedora${NC}"
+		SYSTEM="fedora"
+		INSTALL="sudo yum install -y "
+		return 0
+	fi
 	local LOC_ZYP=`which zypper`
 	if [ $LOC_ZYP = "/usr/bin/zypper" ]; then
 		echo -e "${OK}as an SuSE${NC}"
@@ -160,7 +167,7 @@ function copyToClipboard() {
 		"mac")
 			pbcopy $1
 			;;
-		"ubuntu")
+		"fedora"|"suse"|"ubuntu")
 			cat $1 | xsel --clipboard
 			;;
 		"freebsd")
@@ -208,7 +215,7 @@ function installPrereqs() {
 		"arch")
 			$INSTALL $packs $archpacks
 			;;
-		"suse")
+		"suse"|"fedora")
 			$INSTALL $packs
 			;;
 		"ubuntu")
@@ -241,7 +248,7 @@ function installOwnCube() {
 		return 0
 	fi
 	case $SYSTEM in
-		"arch"|"suse"|"ubuntu")
+		"arch"|"suse"|"ubuntu"|"fedora")
 			$INSTALL "owncloud-client"
 			;;
 		"freebsd")
@@ -311,7 +318,7 @@ function installFonts() {
 			fi
 			sudo cp $BASEPATH/data/font/*.ttf /usr/local/share/fonts/TTF
 			;;
-		"ubuntu"|"arch"|"cygwin"|"suse")
+		"ubuntu"|"arch"|"cygwin"|"suse"|"fedora")
 			echo -n "Fonts for non freebsd..."
 			if [ -f /usr/share/fonts/Envy\ Code\ R.ttf ]; then
 				echo -e "${TC}Fonts already installed${NC}"
@@ -333,6 +340,7 @@ function installBasics() {
 		return 0
 	fi
 	local packs="zsh"
+	local fedorapacks="fortune-mod hfsutils gitflow zsh-lovers openconnect rdesktop gcc-c++"
 	local susepacks="fortune hfsutils" # git-flow"
 	local archpacks="synergy fortune-mod zsh-lovers"
 	local linpacks="git-flow zsh-lovers fortunes fortunes-de hfsplus hfsutils"
@@ -346,6 +354,10 @@ function installBasics() {
 			else
 				echo "git flow already installed"
 			fi
+			;;
+		"fedora")
+			$INSTALL http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-30.noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-30.noarch.rpm
+			$INSTALL $fedorapacks
 			;;
 		"suse")
 			sudo zypper ar http://download.opensuse.org/repositories/devel:/tools:/scm/openSUSE_13.1/ devel:tools:scm
@@ -394,6 +406,7 @@ function installPrograms() {
 		return 0
 	fi
 	local packs="curl npm mc w3m links ncdu htop nmap"
+	local fedorapacks="bacula-client dosemu"
 	local susepacks="tmux"
 	local archpacks="mux lshw ranger dos2unix"
 	local archpacks2="bacula-client vim-pathogen"
@@ -405,6 +418,9 @@ function installPrograms() {
 		"arch")
 			$INSTALL $archpacks
 			$INSTALL2 $archpacks2
+			;;
+		"fedora")
+			$INSTALL $fedorapacks
 			;;
 		"suse")
 			$INSTALL $susepacks
@@ -518,23 +534,24 @@ function installLinks() {
 			echo "Creating ownCloud autostart"
 			ln -s $autostartSource/$autoOwnCloudFn $autoOwnCloudDf
 		fi
-		#local autoTwitterFn=Twitter.desktop
-		#local autoTwitterDf=$autostartDir/$autoTwitterFn
-		#if [ ! -L $autoTwitterDf ]; then
-		#	echo "Creating Twitter autostart"
-		#fi
+		local autoTwitterFn=Twitter.desktop
+		local autoTwitterDf=$autostartDir/$autoTwitterFn
+		if [ ! -L $autoTwitterDf ]; then
+			echo "Creating Twitter autostart"
+			ln -s $autostartSource/$autoTwitterFn $autoTwitterDf
+		fi
 		local autoMailFn=Thunderbird.desktop
 		local autoMailFd=$autostartDir/$autoMailFn
 		if [ ! -L $autoMailFd ]; then
 			echo "Creating Thunderbird autostart"
 			ln -s $autostartSource/$autoMailFn $autoMailFd
 		fi
-		local autoSkypeFn=Skype.desktop
-		local autoSkypeDf=$autostartDir/$autoSkypeFn
-		if [ ! -L $autoSkypeDf ]; then
-			echo "Creating Skype autostart"
-			ln -s $autostartSource/$autoSkypeFn $autoSkypeDf
-		fi
+		#local autoSkypeFn=Skype.desktop
+		#local autoSkypeDf=$autostartDir/$autoSkypeFn
+		#if [ ! -L $autoSkypeDf ]; then
+		#	echo "Creating Skype autostart"
+		#	ln -s $autostartSource/$autoSkypeFn $autoSkypeDf
+		#fi
 	fi
 	echo -e "${OK}ok${NC}"
 }
@@ -685,8 +702,10 @@ function installXPrograms() {
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		return 0
 	fi
-	local packs="xaos thunderbird wmctrl inkscape audacity vlc gimp" #launchy devilspie corebird"
+	local packs="xaos thunderbird vlc wmctrl inkscape audacity gimp" #launchy devilspie corebird"
 	local extPacks="bogofilter hunspell anki"
+	local fedorapacks="gnome-commander chromium vim-X11 thunderbird corebird"
+	local fedoramulti="streamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras ffmpeg"
 	local susepacks="gnome-commander chromium"
 	local archpacks="doublecmd-gtk2 retext chromium mc"
 	local archpacks2="gnome-commander-git file-commander-git"
@@ -705,6 +724,13 @@ function installXPrograms() {
 		"arch")
 			$INSTALL $archpacks
 			$INSTALL $archpacks2
+			;;
+		"fedora")
+			$INSTALL $fedorapacks
+			if [ "$DEST" = "host" ]; then
+				$INSTALL $fedoramulti
+				$INSTALL $linextPacks
+			fi
 			;;
 		"suse")
 			$INSTALL $susepacks
@@ -778,6 +804,7 @@ function installCompilers() {
 		return 0
 	fi
 	local packs="subversion meld cgdb gdb cmake ccache nodejs yarn"
+	local fedorapacks="mono-complete ncurses-devel cmake-gui bacula-client"
 	local susepacks="fsharp mono-complete cmake-gui kdevelop5 kdevelop5-pg-qt"
 	local linpacks="qt5-default fsharp mono-complete"
 	local bsdpacks="qt5 fsharp mono"
@@ -794,6 +821,9 @@ function installCompilers() {
 			else
 				echo "FSharp already installed"
 			fi
+			;;
+		"fedora")
+			$INSTALL $fedorapacks
 			;;
 		"suse")
 			$INSTALL $susepacks
@@ -854,6 +884,7 @@ function installGames() {
 		return 0
 	fi
 	local packs="xboard" # supertux supertuxkart
+	local fedorapacks="dreamchess gnuchess"
 	local archpacks="pychess"
 	local susepacks="phalanx gnome-chess gnuchess lskat kiten"
 	local linpacks="phalanx pychess"
@@ -915,6 +946,45 @@ function installExternals() {
 				sky
 			else
 				echo "Sky(pe) already installed"
+			fi
+			;;
+		"fedora")
+			# Visual Studio Code
+			if ! which code; then
+				echo "Installing VS Code"
+				sudo cp etc/fedora/vscode.repo /etc/yum.repos.d/
+				sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+				sudo yum check-update
+				$INSTALL code
+			else    
+				echo "VS Code already installed"
+			fi
+			if [ -f /etc/yum.repo.d/microsoft-prod.repo ]; then
+				echo -e "${TC}Microsoft repo already present"
+			else
+				wget -q https://packages.microsoft.com/config/fedora/27/prod.repo
+				sudo mv prod.repo /etc/yum.repos.d/microsoft-prod.repo
+				sudo chown root:root /etc/yum.repos.d/microsoft-prod.repo
+				sudo yum check-update
+				$INSTALL dotnet-sdk-2.2
+			fi
+			# Keybase
+			if ! which keybase; then
+				echo "Installing keybase"
+				sudo dnf install -y https://prerelease.keybase.io/keybase_amd64.rpm
+				run_keybase
+			else
+				echo "Keybase already installed"
+			fi
+			if [ ! -d ~/work/qt ]; then
+				echo "Installing qt5"
+				pushd . && cd ~/Downloads
+				wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
+				chmod +x qt-unified-linux-x64-online.run
+				./qt-unified-linux-x64-online.run &
+				popd
+			else
+				echo "qt5 already installed"
 			fi
 			;;
 		"ubuntu")
@@ -1076,13 +1146,13 @@ function installLogin() {
 			sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 			#sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 			;;
-		"suse")
+		"suse"|"fedora")
 			if [ -f /usr/share/wallpapers/StarTrekLogo1920x1080.jpg ]; then
 				echo -e "${TC}Login logo already installed${NC}"
 				return 0
 			fi
-			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/wallpaper
-			sudo chmod +r /usr/share/wallpaper/StarTrekLogo1920x1080.jpg
+			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/wallpapers/
+			sudo chmod +r /usr/share/wallpapers/StarTrekLogo1920x1080.jpg
 			#sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 			#sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 			;;
