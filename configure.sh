@@ -406,7 +406,7 @@ function installPrograms() {
 		return 0
 	fi
 	local packs="curl npm mc w3m links ncdu htop nmap"
-	local fedorapacks="bacula-client dosemu"
+	local fedorapacks="bacula-client bacula-console-bat bacula-traymonitor dosemu"
 	local susepacks="tmux"
 	local archpacks="mux lshw ranger dos2unix"
 	local archpacks2="bacula-client vim-pathogen"
@@ -1153,7 +1153,7 @@ function installLogin() {
 			fi
 			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/wallpapers/
 			sudo chmod +r /usr/share/wallpapers/StarTrekLogo1920x1080.jpg
-			#sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+			sudo sed -i '/background=/c\background=/usr/share/wallpapers/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 			#sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
 			;;
 		"freebsd")
