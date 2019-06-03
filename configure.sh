@@ -340,7 +340,7 @@ function installBasics() {
 		return 0
 	fi
 	local packs="zsh"
-	local fedorapacks="fortune-mod hfsutils gitflow zsh-lovers openconnect rdesktop gcc-c++"
+	local fedorapacks="fortune-mod hfsutils gitflow zsh-lovers openconnect rdesktop gcc-c++ synergy"
 	local susepacks="fortune hfsutils" # git-flow"
 	local archpacks="synergy fortune-mod zsh-lovers"
 	local linpacks="git-flow zsh-lovers fortunes fortunes-de hfsplus hfsutils"
@@ -534,12 +534,12 @@ function installLinks() {
 			echo "Creating ownCloud autostart"
 			ln -s $autostartSource/$autoOwnCloudFn $autoOwnCloudDf
 		fi
-		local autoTwitterFn=Twitter.desktop
-		local autoTwitterDf=$autostartDir/$autoTwitterFn
-		if [ ! -L $autoTwitterDf ]; then
-			echo "Creating Twitter autostart"
-			ln -s $autostartSource/$autoTwitterFn $autoTwitterDf
-		fi
+		#local autoTwitterFn=Twitter.desktop
+		#local autoTwitterDf=$autostartDir/$autoTwitterFn
+		#if [ ! -L $autoTwitterDf ]; then
+		#	echo "Creating Twitter autostart"
+		#	ln -s $autostartSource/$autoTwitterFn $autoTwitterDf
+		#fi
 		local autoMailFn=Thunderbird.desktop
 		local autoMailFd=$autostartDir/$autoMailFn
 		if [ ! -L $autoMailFd ]; then
@@ -704,7 +704,7 @@ function installXPrograms() {
 	fi
 	local packs="xaos thunderbird vlc wmctrl inkscape audacity gimp" #launchy devilspie corebird"
 	local extPacks="bogofilter hunspell anki"
-	local fedorapacks="gnome-commander chromium vim-X11 thunderbird corebird"
+	local fedorapacks="gnome-commander chromium vim-X11 thunderbird"
 	local fedoramulti="streamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras ffmpeg"
 	local susepacks="gnome-commander chromium"
 	local archpacks="doublecmd-gtk2 retext chromium mc"
