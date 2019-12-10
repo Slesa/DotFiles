@@ -20,6 +20,11 @@ set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
 " Zeilennummern
 set number
 "set nonumber
+" Folding
+set fdm=indent
+" visual error
+set vb
+
 
 " Tab wird im Text durchn Leerzeichen mitet te
 set tabstop=4

@@ -1,4 +1,15 @@
 #!/bin/bash
+# V 0.1
+# External in SuSE:
+# - fsharp
+# - Login screen
+# - Qt5
+# - GitKraken
+# - Skype
+# - Rider
+# - PyCharm
+# - Steam
+
 
 BASEPATH=~/.dotfiles
 ERR='\033[0;31m'
@@ -9,97 +20,269 @@ TC='\033[0;33m'
 HEAD='\033[0;35m'
 
 SUDO="sudo"
-INSTALL_GAMES=false
-INSTALL_OWNCUBE=true
-INSTALL_SSHKEYS=true
-INSTALL_PROGRAMS=true
-INSTALL_XPROGRAMS=true
+
+I_ARGS=true
+I_FULL=false
+I_CORE=false
+I_OWNCUBE=false
+I_SSHKEYS=false
+I_DOTFILES=false
+I_FONTS=false
+I_BASICS=false
+I_ZSH=false
+I_PROGRAMS=false
+I_LINKS=false
+I_XPROGS=false
+I_COMPS=false
+I_LOGIN=false
+I_TEX=false
+I_GAMES=false
+I_GH=false
+I_GL=false
+I_EXT=false
+NO_QT=false
+NO_RIDER=false
+NO_CHARM=false
+NO_SKYPE=false
+
+
+### ----------------------------------------------------------------------------------------------
+### Helper functions
+### ----------------------------------------------------------------------------------------------
+
+function waitForKey() {
+	echo "[Press key to continue]" && read -n 1 -s
+}
+
+function printHelp() {
+	echo ""
+	echo "Syntax"
+	echo ""
+	echo -n $0 "[ full ] [core|nocore] [owncube|noowncube] [sshkeys|nosshkeys] [dotfiles|nodotfiles] " 
+	echo -n "[fonts|nofonts] [basics|nobasics] [zsh|nozsh] [progs|noprogs] [links|nolinks] [xprogs|noxprogs] " 
+	echo -n "[comps|nocomps] [login|nologin] [tex|notex] [games|nogames] [gh|nogh] [gl|nogl] [ext|noext] " 
+	echo "[noqt] [norider] [nocharm]"
+	echo ""
+}
+
 
 ### determine if installation is on a host or a virtual machine
 ### additionally, packages can be turned on and off
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function readArguments() {
 	INSTALL_PREREQS=true
 	echo -n "Determine arguments..."
-    if [ $SYSTEM == "cygwin" ]; then
+	if [ $SYSTEM == "cygwin" ]; then
 		echo -e "${TC}not necessary${NC}"
-		DEST="slave"
 		INSTALL_GAMES=false
-		INSTALL_TEXT=false
+		INSTALL_TEX=false
 		INSTALL_OWNCUBE=true
 		INSTALL_SSHKEYS=true
 		INSTALL_PROGRAMS=true
 		INSTALL_XPROGRAMS=true
 		SUDO=""
 		return 0
-    fi
-	if [ -z $# ]; then
-		echo -e "${ERR}missing${NC}"
-		echo "Available parameters:"
-		echo $0 "[ host|vm ]" 
-		echo "  games|nogames  tex|notex" 
-		echo "  [noprereqs|noowncube|nosshkeys|noprograms]" 
 	fi
-	echo -e "${OK}ok${NC}"
+	if [ $# -eq 0 ]; then
+		echo -e "${ERR}Missing argument!${NC}"
+		I_ARGS=false
+		return 1
+	fi
+	echo ""
 	for i in "$@" 
 	do
 		case $i in
-			"host")
-				echo "Installing for a host"
-				DEST="host"
+			"full")
+				echo "* Full installing"
+				I_CORE=true
+				I_OWNCUBE=true
+				I_SSHKEYS=true
+				I_DOTFILES=true
+				I_FONTS=true
+				I_BASICS=true
+				I_ZSH=true
+				I_PROGS=true
+				I_LINKS=true
+				I_XPROGS=true
+				I_COMPS=true
+				I_LOGIN=true
+				I_TEX=true
+				I_GAMES=true
+				I_GH=true
+				I_GL=true
+				I_EXT=true
 				;;
-			"vm")
-				echo "Installing for a vm slave"
-				DEST="slave"
+			"core")
+				echo "* Core installation"
+				I_CORE=true
 				;;
-			"games")
-				echo "Installing games"
-				INSTALL_GAMES=true
+			"nocore")
+				echo "* No core installation"
+				I_CORE=false
 				;;
-			"nogames")
-				echo "Installing no games"
-				INSTALL_GAMES=false
-				;;
-			"tex")
-				echo "Installing tex"
-				INSTALL_TEX=true
-				;;
-			"noprereqs")
-				echo "Installing no prereqs"
-				INSTALL_PREREQS=false
+			"owncube")
+				echo "* Owncube installaton"
+				I_OWNCUBE=true
 				;;
 			"noowncube")
-				echo "Installing no owncube"
-				INSTALL_OWNCUBE=false
+				echo "* No owncube installaton"
+				I_OWNCUBE=false
+				;;
+			"sshkeys")
+				echo "* Ssh keys installation"
+				I_SSHKEYS=true
 				;;
 			"nosshkeys")
-				echo "Installing no ssh keys"
-				INSTALL_SSHKEYS=false
+				echo "* No ssh keys installation"
+				unset I_SSHKEYS
 				;;
-			"noprograms")
-				echo "Installing no programs"
-				INSTALL_PROGRAMS=false
+			"dotfiles")
+				echo "* Dotfiles installation"
+				I_DOTFILES=true
 				;;
-			"noxprograms")
-				echo "Installing no X11 programs"
-				INSTALL_XPROGRAMS=false
+			"nodotfiles")
+				echo "* No dotfiles installation"
+				unset I_DOTFILES
+				;;
+			"fonts")
+				echo "* Font installation"
+				I_FONTS=true
+				;;
+			"nofonts")
+				echo "* No font installation"
+				unset I_FONTS
+				;;
+			"basics")
+				echo "* Basics installation"
+				I_BASICS=true
+				;;
+			"nobasics")
+				echo "* No basics installation"
+				unset I_BASICS
+				;;
+			"zsh")
+				echo "* Zsh installation"
+				I_ZSH=true
+				;;
+			"nozsh")
+				echo "* No zsh installation"
+				unset I_ZSH
+				;;
+			"progs")
+				echo "* Program installation"
+				I_PROGS=true
+				;;
+			"noprogs")
+				echo "* No program installation"
+				unset I_PROGS
+				;;
+			"links")
+				echo "* Symbolic links"
+				I_LINKS=true
+				;;
+			"nolinks")
+				echo "* No symbolic links"
+				unset I_LINKS
+				;;
+			"xprogs")
+				echo "* X Program installation"
+				I_XPROGS=true
+				;;
+			"noxprogs")
+				echo "* No X Program installation"
+				unset I_XPROGS
+				;;
+			"comps")
+				echo "* Compiler installation"
+				I_COMPS=true
+				;;
+			"nocomps")
+				echo "* No compiler installation"
+				unset I_COMPS
+				;;
+			"login")
+				echo "* Login wallpaper installation"
+				I_LOGIN=true
+				;;
+			"nologin")
+				echo "* No login wallpaper installation"
+				unset I_LOGIN
+				;;
+			"tex")
+				echo "* TeX installation"
+				I_TEX=true
+				;;
+			"notex")
+				echo "* No TeX installation"
+				unset I_TEX
+				;;
+			"games")
+				echo "* Games installation"
+				I_GAMES=true
+				;;
+			"nogames")
+				echo "* No games installation"
+				unset I_GAMES
+				;;
+			"gh")
+				echo "* Github cloning"
+				I_GH=true
+				;;
+			"nogh")
+				echo "* No github cloning"
+				unset I_GH
+				;;
+			"gl")
+				echo "* Gitlib cloning"
+				I_GL=true
+				;;
+			"nogl")
+				echo "* No githlib cloning"
+				unset I_GL
+				;;
+			"ext")
+				echo "* External installation"
+				I_EXT=true
+				;;
+			"noext")
+				echo "* No external installation"
+				unset I_EXT
+				;;
+			"noqt")
+				echo "* No Qt installation"
+				NO_QT=true
+				;;
+			"norider")
+				echo "* No Rider installation"
+				NO_RIDER=true
+				;;
+			"nocharm")
+				echo "* No PyCharm installation"
+				NO_CHARM=true
+				;;
+			"noskype")
+				echo "* No Skype installation"
+				NO_SKYPE=true
+				;;
+
+			*)
+				echo -e "${ERR}Unknown argument!${NC}"
+				I_ARGS=false
+				return 2
 				;;
 		esac
 		shift
 	done
-}
-
-function waitForKey() {
-	echo "[Press key to continue]" && read -n 1 -s
+	echo ""
 }
 
 ### determine the running OS. Can be Mac, BSD or Ubuntu/Manjaro
-### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [ ] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [ ] Manjaro  [0.1] SuSE
 function getSystem() {
 	local UNAME=`uname -s`
 	echo "Operating system is reported as " $UNAME
 	echo -n "Determine system..."
-    if [[ $UNAME == CYGWIN* ]]; then
+    if [ $UNAME == CYGWIN* ]; then
 		echo -e "${OK}a cygwin system${NC}"
 		SYSTEM="cygwin"
 		return 0
@@ -121,36 +304,36 @@ function getSystem() {
 		INSTALL="sudo apt-get install -y "
 		return 0
 	fi	
-	local LOC_YUM=`which yum`
-	if [ $LOC_YUM = "/usr/bin/yum" ]; then
+	local LOC_YUM=`which yum 2>/dev/null`
+	if [ "$LOC_YUM" = "/usr/bin/yum" ]; then
 		echo -e "${OK}as an Fedora${NC}"
 		SYSTEM="fedora"
 		INSTALL="sudo yum install -y "
 		return 0
 	fi
-	local LOC_ZYP=`which zypper`
-	if [ $LOC_ZYP = "/usr/bin/zypper" ]; then
+	local LOC_ZYP=`which zypper 2>/dev/null`
+	if [ "$LOC_ZYP" = "/usr/bin/zypper" ]; then
 		echo -e "${OK}as an SuSE${NC}"
 		SYSTEM="suse"
 		INSTALL="sudo zypper install -ly "
-		return 0
+		return 1
 	fi
-	local LOC_PAC=`which pacman`
-	if [ $LOC_PAC = "/usr/bin/pacman" ]; then
+	local LOC_PAC=`which pacman 2>/dev/null`
+	if [ "$LOC_PAC" = "/usr/bin/pacman" ]; then
 		echo -e "${OK}as an ArchLinux${NC}"
 		SYSTEM="arch"
 		INSTALL="sudo pacman --noconfirm -Syu "
 		INSTALL2="yaourt --noconfirm -S "
 		return 0
 	fi
-	local LOC_APT=`which apt`
-	if [ $LOC_APT = "/usr/bin/apt" ]; then
+	local LOC_APT=`which apt 2>/dev/null`
+	if [ "$LOC_APT" = "/usr/bin/apt" ]; then
 		echo -e "${OK}as an Ubuntu${NC}"
 		SYSTEM="ubuntu"
 		INSTALL="sudo apt-get install -y "
 		return 0
 	fi
-	if [ $LOC_APT = "/usr/local/bin/apt" ]; then
+	if [ "$LOC_APT" = "/usr/local/bin/apt" ]; then
 		echo -e "${OK}as  Linux Mint${NC}"
 		SYSTEM="ubuntu"
 		INSTALL="sudo apt-get install -y "
@@ -160,7 +343,7 @@ function getSystem() {
 }
 
 ### Copy a string to the clipboard, using OS functions
-### [ ] Cygwin   [ ] Mac   [ ] Linux   [-] FreeBSD   [ ] LinuxOnWin  [ ] Manjaro  [X] SuSE
+### [ ] Cygwin   [ ] Mac   [ ] Linux   [-] FreeBSD   [ ] LinuxOnWin  [ ] Manjaro  [0.1] SuSE
 function copyToClipboard() {
 	echo -n "Copy to clipboard "
 	case $SYSTEM in
@@ -184,7 +367,7 @@ function copyToClipboard() {
 }
 
 ### Ensure that we have root capabilities
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function ensureRoot() {
 	echo -n "Ensure root access..."
     if [ $SYSTEM == "cygwin" ]; then
@@ -199,18 +382,24 @@ function ensureRoot() {
 	echo -e "${OK}ok${NC}"
 }
 
+
+
+### ----------------------------------------------------------------------------------------------
+### Installations
+### ----------------------------------------------------------------------------------------------
+
 ### We need at least an editor and a source code management
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
-function installPrereqs() {
-	if [ ! "$INSTALL_PREREQS" = true ]; then
-		echo -e "${TC}No prereqs${NC}"
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+function installCore() {
+	if [ ! "$I_CORE" = true ]; then
+		echo -e "${TC}No core packages${NC}"
 		return 0
 	fi
-	local packs="xsel git firefox" 
-	local archpacks="yaourt" 
-	local noarchpacks="vim" 
-	local bsdPacks="pidof" 
-	echo -n "Installing prereqs..."
+	local packs="xsel git" 
+	local archpacks="yaourt firefox" 
+	local noarchpacks="vim firefox" 
+	local bsdPacks="pidof firefox" 
+	echo -n "Installing core packages..."
 	case $SYSTEM in
 		"arch")
 			$INSTALL $packs $archpacks
@@ -233,12 +422,12 @@ function installPrereqs() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installOwnCube() {
 #    sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.10/ /' > /etc/apt/sources.list.d/owncloud-client.list"
 #    sudo apt-get update
 #    sudo apt-get install owncloud-client
-	if [ ! "$INSTALL_OWNCUBE" = true ]; then
+	if [ ! "$I_OWNCUBE" = true ]; then
 		echo -e "${TC}No owncube${NC}"
 		return 0
 	fi
@@ -259,16 +448,16 @@ function installOwnCube() {
 	if [[ "$(pidof owncloud | wc -w)" -eq "0" ]]; then
 		echo "Starting owncube..."
 		owncloud &
-		echo "[Waiting for a key]"
-		waitForKey
+		# echo "[Waiting for a key]"
+		# waitForKey
 		echo -e "${OK}ok${NC}"
 	fi
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function createSshKey() {
-	if [ ! "$INSTALL_SSHKEYS" = true ]; then
+	if [ ! "$I_SSHKEYS" = true ]; then
 		echo -e "${TC}No ssh keys${NC}"
 		return 0
 	fi
@@ -287,8 +476,12 @@ function createSshKey() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [ ] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installDotFiles() {
+	if [ ! "$I_DOTFILES" = true ]; then
+		echo -e "${TC}No dotfiles${NC}"
+		return 0
+	fi
 	echo -n "Installing dot files..."
 	if [ -d $BASEPATH ]; then
 		echo -e "${TC}Dot files already installed${NC}"
@@ -302,8 +495,12 @@ function installDotFiles() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installFonts() {
+	if [ ! "$I_FONTS" = true ]; then
+		echo -e "${TC}No fonts${NC}"
+		return 0
+	fi
 	echo -n "Installing fonts for $SYSTEM..."
 	if [ $SYSTEM == "win10" ]; then
 		echo -e "${TC}Not necessary${NC}"
@@ -332,8 +529,12 @@ function installFonts() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installBasics() {
+	if [ ! "$I_BASICS" = true ]; then
+		echo -e "${TC}No basics${NC}"
+		return 0
+	fi
 	echo -n "Installing basics..."
 	if [ $SYSTEM == "cygwin" ]; then
 		echo -e "${TC}Not necessary${NC}"
@@ -341,7 +542,7 @@ function installBasics() {
 	fi
 	local packs="zsh"
 	local fedorapacks="fortune-mod hfsutils gitflow zsh-lovers openconnect rdesktop gcc-c++ synergy"
-	local susepacks="fortune hfsutils" # git-flow"
+	local susepacks="fortune hfsutils synergy qsynergy openconnect rdesktop gcc-c++ gcc git-flow"
 	local archpacks="synergy fortune-mod zsh-lovers"
 	local linpacks="git-flow zsh-lovers fortunes fortunes-de hfsplus hfsutils"
 	local bsdpacks="gitflow fortune-mod-bofh pstree inxi synergy"
@@ -360,9 +561,9 @@ function installBasics() {
 			$INSTALL $fedorapacks
 			;;
 		"suse")
-			sudo zypper ar http://download.opensuse.org/repositories/devel:/tools:/scm/openSUSE_13.1/ devel:tools:scm
-			#zypper in git-flow
-			$INSTALL $packs $susepacks
+			$SUDO zypper ar https://download.opensuse.org/repositories/devel:tools:scm/openSUSE_Tumbleweed/devel:tools:scm.repo 2>/dev/null
+			$SUDO zypper refresh
+			$INSTALL $susepacks
 			;;
 		"ubuntu")
 			$INSTALL $linpacks
@@ -378,11 +579,20 @@ function installBasics() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [?] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [?] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installZsh() {
+	if [ ! "$I_ZSH" = true ]; then
+		echo -e "${TC}No zsh${NC}"
+		return 0
+	fi
 	echo -n "Installing ZShell..."
 	if [ ! -f ~/.zshrc ]; then
-		cp $BASEPATH/data/templ/zshrc.$SYSTEM ~/.zshrc    
+		local loc_rc=$BASEPATH/data/templ/zshrc.$SYSTEM
+		if [ ! -f $loc_rc ]; then
+			cp $BASEPATH/data/templ/zshrc.linux ~/.zshrc
+		else
+			cp $loc_rc ~/.zshrc
+		fi
 	fi
 	if [ "$SHELL"=="`which zsh`" ]; then
 		echo -e "${TC}Zsh already login shell${NC}"
@@ -394,9 +604,9 @@ function installZsh() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installPrograms() {
-	if [ ! "$INSTALL_PROGRAMS" = true ]; then
+	if [ ! "$I_PROGS" = true ]; then
 		echo -e "${TC}No programs${NC}"
 		return 0
 	fi
@@ -407,7 +617,7 @@ function installPrograms() {
 	fi
 	local packs="curl npm mc w3m links ncdu htop nmap"
 	local fedorapacks="bacula-client bacula-console-bat bacula-traymonitor dosemu"
-	local susepacks="tmux"
+	local susepacks="tmux dosemu dos2unix ranger"
 	local archpacks="mux lshw ranger dos2unix"
 	local archpacks2="bacula-client vim-pathogen"
 	local linpacks="mux synaptic openssh-server dos2unix bacula-client lshw vim-addon-manager vim-pathogen"
@@ -453,8 +663,13 @@ function installPrograms() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installLinks() {
+	if [ ! "$I_LINKS" = true ]; then
+		echo -e "${TC}No links${NC}"
+		return 0
+	fi
+	echo -n "Installing links..."
 	if [ ! -d ~/bin ]; then
 		echo "Creating local bin directory"
 		mkdir ~/bin
@@ -557,7 +772,7 @@ function installLinks() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [-] SuSE
 function installXfceLinks() {
 	echo -n "Installing XFCE links..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -693,9 +908,9 @@ function installXfceLinks() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installXPrograms() {
-	if [ ! "$INSTALL_XPROGRAMS" = true ]; then
+	if [ ! "$I_XPROGS" = true ]; then
 		echo -e "${TC}No X11 programs${NC}"
 		return 0
 	fi
@@ -706,7 +921,7 @@ function installXPrograms() {
 	local extPacks="bogofilter hunspell anki"
 	local fedorapacks="gnome-commander chromium vim-X11 thunderbird"
 	local fedoramulti="streamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras ffmpeg"
-	local susepacks="gnome-commander chromium"
+	local susepacks="chromium gvim retext unetbootin"
 	local archpacks="doublecmd-gtk2 retext chromium mc"
 	local archpacks2="gnome-commander-git file-commander-git"
 	local linpacks="doublecmd-gtk vim-gtk retext chromium-browser gpgv2" # gdevilspie launchy-plugins launchy-skins "
@@ -717,7 +932,7 @@ function installXPrograms() {
 	echo "Installing X11 programs..."
 	$INSTALL $packs
 
-	if [ "$DEST" = "host" ]; then
+	if [ ! "$DEST" = "vm" ]; then
 		$INSTALL $extPacks
 	fi
 	case $SYSTEM in
@@ -734,9 +949,6 @@ function installXPrograms() {
 			;;
 		"suse")
 			$INSTALL $susepacks
-			if [ "$DEST" = "host" ]; then
-				$INSTALL $linextPacks
-			fi
 			;;
 		"ubuntu")
 			$INSTALL $linpacks
@@ -757,7 +969,7 @@ function installXPrograms() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [-] SuSE
 function installXfcePrograms() {
 	echo "Installing XFCE programs..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -796,19 +1008,23 @@ function installXfcePrograms() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installCompilers() {
+	if [ ! "$I_COMPS" = true ]; then
+		echo -e "${TC}No compilers${NC}"
+		return 0
+	fi
 	echo -n "Installing compilers..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
-	local packs="subversion meld cgdb gdb cmake ccache nodejs yarn"
-	local fedorapacks="mono-complete ncurses-devel cmake-gui bacula-client"
+	local packs="subversion meld cgdb gdb cmake ccache"
+	local fedorapacks="mono-complete ncurses-devel cmake-gui bacula-client nodejs yarn"
 	local susepacks="fsharp mono-complete cmake-gui kdevelop5 kdevelop5-pg-qt"
-	local linpacks="qt5-default fsharp mono-complete"
-	local bsdpacks="qt5 fsharp mono"
-	local archpacks="qt5 mono mono-tools"
+	local linpacks="qt5-default fsharp mono-complete nodejs yarn"
+	local bsdpacks="qt5 fsharp mono nodejs yarn"
+	local archpacks="qt5 mono mono-tools nodejs yarn"
 
 	#local python="python3-pyqt5 python3-pyqt5.qtquick python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-numpy python3-psycopg2"
 
@@ -826,6 +1042,8 @@ function installCompilers() {
 			$INSTALL $fedorapacks
 			;;
 		"suse")
+			# $SUDO zypper ar https://download.opensuse.org/repositories/openSUSE:Factory/standard/openSUSE:Factory.repo
+			# $SUDO zypper refresh
 			$INSTALL $susepacks
 			;;
 		"ubuntu")
@@ -839,17 +1057,17 @@ function installCompilers() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installTex() {
-	echo -n "Installing tex..."
+	if [ ! "$I_TEX" = true ]; then
+		echo -e "${TC}No TeX${NC}"
+		return 0
+	fi
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		echo -e "${TC}Not necessary${NC}"
 		return 0
 	fi
-	if [ ! "$INSTALL_TEX" == true ]; then
-		echo -e "${TC}Not set${NC}"
-		return 0
-	fi
+	echo -n "Installing tex..."
 	local packs="texmaker lyx latex2html texstudio"
 	local susepacks="latexila texlive-collection-music texlive-cyrillic"
 	local linpacks="latexila texlive-music xfonts-cyrillic cjk_latex latex-cjk-japanese t1-cyrillic texlive-lang-cyrillic texlive-fonts-extra"
@@ -872,15 +1090,15 @@ function installTex() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installGames() {
+	if [ ! "$I_GAMES" = true ]; then
+		echo -e "${TC}No games${NC}"
+		return 0
+	fi
 	echo -n "Installing games..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
 		echo -e "${TC}Not necessary${NC}"
-		return 0
-	fi
-	if [ ! "$INSTALL_GAMES" = true ]; then
-		echo -e "${TC}Not set${NC}"
 		return 0
 	fi
 	local packs="xboard" # supertux supertuxkart
@@ -897,6 +1115,9 @@ function installGames() {
 			;;
 		"ubuntu")
 			$INSTALL $linpacks
+			;;
+		"suse")
+			$INSTALL $susepacks
 			;;
 		"freebsd")
 			$INSTALL $bsdpacks
@@ -926,10 +1147,265 @@ function installGames() {
 #}
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+function cloneGithub() {
+	if [ ! "$I_GH" = true ]; then
+		echo -e "${TC}No github${NC}"
+		return 0
+	fi
+	echo -n "Cloning github..."
+	local srcpath=~/work/github
+	if [ $SYSTEM == "win10" ]; then
+		srcpath=/mnt/c/work/github
+	fi
+	if [ ! -d "$srcpath" ]; then
+		echo -e "${TC}Error: $srcpath does not exist, Creating ${NC}"
+		mkdir -p $srcpath
+	fi
+	pushd .
+	mkdir -p $srcpath
+	cd $srcpath
+	if [ ! -d Poseidon ]; then
+		echo "Cloning Poseidon"
+		git clone git@github.com:slesa/Poseidon
+		cd Poseidon && git flow init -d && git checkout develop && cd ..
+	fi
+	if [ ! -d gui.cs ]; then
+		echo "Cloning gui.cs"
+		git clone git@github.com:slesa/gui.cs
+		cd gui.cs && git flow init -d && git checkout develop && cd ..
+	fi
+	if [ ! -d sqlitestudio ]; then
+		echo "Cloning sqlitestudio"
+		git clone git@github.com:slesa/sqlitestudio
+		cd sqlitestudio && git flow init -d && git checkout develop && cd ..
+	fi
+	if [ ! -d Trinity ]; then
+		echo "Cloning Trinity"
+		git clone git@github.com:slesa/Trinity
+		cd Trinity && git flow init -d && git checkout develop && cd ..
+	fi
+	if [ ! -d launchy ]; then
+		echo "Cloning launchy"
+		git clone git@github.com:slesa/launchy
+		cd launchy && git flow init -d && git checkout develop && cd ..
+	fi
+	if [ ! -d Godot ]; then
+		echo "Cloning Godot"
+		git clone git@github.com:slesa/Godot
+	fi
+	#if [ ! -d fable-react_native-demo ]; then
+	#	echo "Cloning fable-react_native-demo"
+	#	git clone git@github.com:slesa/fable-react_native-demo
+	#	cd fable-react_native-demo && git flow init -d && cd ..
+	#fi
+	if [ ! -d fable-elmish ]; then
+		echo "Cloning fable-elmish"
+		git clone git@github.com:slesa/fable-elmish
+	fi
+	#if [ ! -d GammaRay ]; then
+	#	git clone https://github.com/KDAB/GammaRay
+		#cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
+	#fi
+	popd
+}
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+function cloneGitlab() {
+	if [ ! "$I_GL" = true ]; then
+		echo -e "${TC}No gitlab${NC}"
+		return 0
+	fi
+	echo -n "Cloning gitlab..."
+	pushd .
+	mkdir -p ~/work/gitlab
+	cd ~/work/gitlab
+	if [ ! -d waiterwatch ]; then
+		echo "Cloning waiterwatch"
+		git clone git@gitlab.com:slesa/waiterwatch
+		cd waiterwatch && git flow init -d && git checkout develop && cd ..
+	fi
+	if [ ! -d aikidoka ]; then
+		echo "Cloning aikidoka"
+		git clone git@gitlab.com:slesa/aikidoka
+		cd aikidoka && git flow init -d && git checkout develop && cd ..
+	fi
+	if [ ! -d monty ]; then
+		echo "Cloning monty"
+		git clone git@gitlab.com:slesa/monty
+		# cd monty && git flow init -d && git checkout develop && cd ..
+	fi
+	popd
+}
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [-] SuSE
+function installLogin() {
+	if [ ! "$I_LOGIN" = true ]; then
+		echo -e "${TC}No login wallpapers${NC}"
+		return 0
+	fi
+	echo -n "Installing login wallpapers..."
+	case $SYSTEM in
+		"arch"|"ubuntu")
+			if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
+				echo -e "${TC}Login logo already installed${NC}"
+				return 0
+			fi
+			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
+			sudo chmod +r /usr/share/backgrounds/StarTrekLogo1920x1080.jpg
+			sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+			#sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+			;;
+		"suse"|"fedora")
+			if [ -f /usr/share/wallpapers/StarTrekLogo1920x1080.jpg ]; then
+				echo -e "${TC}Login logo already installed${NC}"
+				return 0
+			fi
+			if [ -f /etc/lightdm/lightdm-gtk-greeter.conf ]; then
+				sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/wallpapers/
+				sudo chmod +r /usr/share/wallpapers/StarTrekLogo1920x1080.jpg
+				sudo sed -i '/background=/c\background=/usr/share/wallpapers/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+				#sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
+			fi
+			;;
+		"freebsd")
+			if [ -f /usr/local/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
+				echo -e "${TC}Login logo already installed${NC}"
+				return 0
+			fi
+			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/local/share/PCDM/themes/trueos
+			sudo chmod +r /usr/local/share/PCDM/themes/trueos/StarTrekLogo1920x1080.jpg
+			sudo sed -i -e "s/BACKGROUND_IMAGE=.*/BACKGROUND_IMAGE=StarTrekLogo1920x1080.jpg/g" /usr/local/share/PCDM/themes/trueos/trueos.theme
+			;;
+		"cygwin"|"win10")
+			echo -e "${TC}Not necessary${NC}"
+			return 0
+			;;
+	esac
+	echo -e "${Ok}Ok${NC}"
+}
+
+
+### ----------------------------------------------------------------------------------------------
+### External installers
+### ----------------------------------------------------------------------------------------------
+
+function installQt() {
+	if [ "$NO_QT" = true ]; then
+		echo "Ignore Qt"
+		return 0
+	fi
+	if [ -d ~/work/Qt ] || [ -d ~/work/qt ]; then
+		echo "qt5 already installed"
+		return 0
+	fi
+	echo "Installing qt5"
+	pushd . && cd ~/Downloads
+	if [ ! -f qt-unified-linux-x64-online.run ]; then
+		wget https://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
+	fi
+	chmod +x qt-unified-linux-x64-online.run
+	./qt-unified-linux-x64-online.run &
+	popd
+}
+
+function installRider() {
+	if [ "$NO_RIDER" = true ]; then
+		echo "Ignore Rider"
+		return 0
+	fi
+	if [ -d ~/bin/Jetbrains.Rider ]; then
+		echo "Rider already installed"
+		return 0
+	fi
+	pushd . && cd ~/Downloads
+	if [ ! -f JetBrains.Rider-2019.2.3.tar.gz ]; then
+		wget https://download.jetbrains.com/rider/JetBrains.Rider-2019.2.3.tar.gz
+	fi
+	cd ~/bin
+	tar xvzf ~/Downloads/JetBrains.Rider-2019.2.3.tar.gz
+	mv JetBrains\ Rider* JetBrains.Rider
+	popd
+}
+
+function installPyCharm() {
+	if [ "$NO_CHARM" = true ]; then
+		echo "Ignore PyCharm"
+		return 0
+	fi
+	if [ -d ~/bin/Jetbrains.PyCharm ]; then
+		echo "PyCharm already installed"
+		return 0
+	fi
+	pushd . && cd ~/Downloads
+	if [ ! -f pycharm-community-2019.2.4.tar.gz ]; then
+		wget https://download.jetbrains.com/python/pycharm-community-2019.2.4.tar.gz
+	fi
+	cd ~/bin
+	tar xvzf ~/Downloads/pycharm-community-2019.2.4.tar.gz
+	mv pycharm-community* Jetbrains.PyCharm
+	popd
+}
+
+function installSkype() {
+	if [ "$NO_SKYPE" = true ]; then
+		echo "Ignore Skype"
+		return 0
+	fi
+	if [ -d /usr/bin/skype ]; then
+		echo "Skype already installed"
+		return 0
+	fi
+	pushd . && cd ~/Downloads
+	if [ ! -f skypeforlinux-64.rpm ]; then
+		wget https://go.skype.com/skype.download/skypeforlinux-64.rpm ]
+	fi
+	sudo rpm -i skypeforlinux-64.rpm
+	popd
+}
+
+function installGitKraken() {
+	if [ -f /usr/share/gitkraken/gitkraken ]; then
+		echo "gitkraken already installed"
+		return 0
+	fi
+	echo "Installing Gitkraken..."
+	pushd . && cd ~/Downloads
+	if [ ! -f gitkraken-amd64.rpm ]; then
+		wget https://release.gitkraken.com/linux/gitkraken-amd64.rpm
+	fi
+	rpm -i gitkraken-amd64.rpm
+	popd
+}
+
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
 function installExternals() {
+	if [ ! "$I_EXT" = true ]; then
+		echo -e "${TC}No external apllications${NC}"
+		return 0
+	fi
 	echo "Installing external applications..."
 	case $SYSTEM in
+		"suse")
+			# Keybase
+			$INSTALL keybase-client
+			# Visual Studio Code
+			$SUDO zypper addrepo https://download.opensuse.org/repositories/devel:tools:scm/openSUSE_Tumbleweed/devel:tools:scm.repo
+			$SUDO zypper refresh
+			$INSTALL code
+			# Gitkraken
+			#wget https://www.gitkraken.com/download/linux-rpm
+			# Sublime Text
+			$SUDO rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+			$SUDO zypper addrepo -g -f https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+			$INSTALL install sublime-text
+			# Externals
+			installQt
+			installRider
+			installPyCharm
+			installSkype
+			installGitKraken
+			;;
 		"arch")
 			$INSTALL keybase
 			if ! which code; then
@@ -976,16 +1452,9 @@ function installExternals() {
 			else
 				echo "Keybase already installed"
 			fi
-			if [ ! -d ~/work/qt ]; then
-				echo "Installing qt5"
-				pushd . && cd ~/Downloads
-				wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-				chmod +x qt-unified-linux-x64-online.run
-				./qt-unified-linux-x64-online.run &
-				popd
-			else
-				echo "qt5 already installed"
-			fi
+			installQt
+			installRider
+			installPyCharm
 			;;
 		"ubuntu")
 			pushd .
@@ -1053,16 +1522,9 @@ function installExternals() {
 				echo "Skype already installed"
 			fi
 
-			if [ ! -d ~/work/qt ]; then
-				echo "Installing qt5"
-				wget http://download.qt.io/official_releases/online_installers/qt-unified-linux-x64-online.run
-				chmod +x qt-unified-linux-x64-online.run
-				./qt-unified-linux-x64-online.run &
-			else
-				echo "qt5 already installed"
-			fi
-
-			popd
+			installQt
+			installRider
+			installPyCharm
 			;;
 		"freebsd")
 			$INSTALL keybase linux-sublime3 qt5
@@ -1072,115 +1534,14 @@ function installExternals() {
 	esac
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
-function cloneGithub() {
-	local srcpath=~/work/github
-	if [ $SYSTEM == "win10" ]; then
-		srcpath=/mnt/c/work/github
-	fi
-	if [ ! -d "$srcpath" ]; then
-		echo -e "${TC}Error: $srcpath does not exist, Creating ${NC}"
-		mkdir -p $srcpath
-	fi
-	pushd .
-	mkdir -p $srcpath
-	cd $srcpath
-	if [ ! -d Trinity ]; then
-		echo "Cloning Trinity"
-		git clone git@github.com:slesa/Trinity
-		cd Trinity && git flow init -d && git checkout develop && cd ..
-	fi
-	if [ ! -d launchy ]; then
-		echo "Cloning launchy"
-		git clone git@github.com:slesa/launchy
-		cd launchy && git flow init -d && git checkout develop && cd ..
-	fi
-	if [ ! -d Godot ]; then
-		echo "Cloning Godot"
-		git clone git@github.com:slesa/Godot
-	fi
-	if [ ! -d fable-react_native-demo ]; then
-		echo "Cloning fable-react_native-demo"
-		git clone git@github.com:slesa/fable-react_native-demo
-		cd fable-react_native-demo && git flow init -d && cd ..
-	fi
-	if [ ! -d fable-elmish ]; then
-		echo "Cloning fable-elmish"
-		git clone git@github.com:slesa/fable-elmish
-	fi
-	#if [ ! -d GammaRay ]; then
-	#	git clone https://github.com/KDAB/GammaRay
-		#cd GammaRay && mkdir build && cd build && cmake .. && make && cd ../..
-	#fi
-	popd
-}
-
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [X] SuSE
-function cloneGitlab() {
-	pushd .
-	mkdir -p ~/work/gitlab
-	cd ~/work/gitlab
-	if [ ! -d waiterwatch ]; then
-		echo "Cloning waiterwatch"
-		git clone git@gitlab.com:slesa/waiterwatch
-		cd waiterwatch && git flow init -d && git checkout develop && cd ..
-	fi
-	if [ ! -d aikidoka ]; then
-		echo "Cloning aikidoka"
-		git clone git@gitlab.com:slesa/aikidoka
-		cd aikidoka && git flow init -d && git checkout develop && cd ..
-	fi
-	popd
-}
-
-function installLogin() {
-	echo -n "Installing login logo..."
-	case $SYSTEM in
-		"arch"|"ubuntu")
-			if [ -f /usr/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
-				echo -e "${TC}Login logo already installed${NC}"
-				return 0
-			fi
-			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/backgrounds
-			sudo chmod +r /usr/share/backgrounds/StarTrekLogo1920x1080.jpg
-			sudo sed -i '/background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
-			#sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
-			;;
-		"suse"|"fedora")
-			if [ -f /usr/share/wallpapers/StarTrekLogo1920x1080.jpg ]; then
-				echo -e "${TC}Login logo already installed${NC}"
-				return 0
-			fi
-			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/share/wallpapers/
-			sudo chmod +r /usr/share/wallpapers/StarTrekLogo1920x1080.jpg
-			sudo sed -i '/background=/c\background=/usr/share/wallpapers/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
-			#sudo sed -i '/#background=/c\background=/usr/share/backgrounds/StarTrekLogo1920x1080.jpg' /etc/lightdm/lightdm-gtk-greeter.conf
-			;;
-		"freebsd")
-			if [ -f /usr/local/share/backgrounds/StarTrekLogo1920x1080.jpg ]; then
-				echo -e "${TC}Login logo already installed${NC}"
-				return 0
-			fi
-			sudo cp $BASEPATH/data/img/StarTrekLogo1920x1080.jpg /usr/local/share/PCDM/themes/trueos
-			sudo chmod +r /usr/local/share/PCDM/themes/trueos/StarTrekLogo1920x1080.jpg
-			sudo sed -i -e "s/BACKGROUND_IMAGE=.*/BACKGROUND_IMAGE=StarTrekLogo1920x1080.jpg/g" /usr/local/share/PCDM/themes/trueos/trueos.theme
-			;;
-		"cygwin"|"win10")
-			echo -e "${TC}Not necessary${NC}"
-			return 0
-			;;
-	esac
-	echo -e "${Ok}Ok${NC}"
-}
-
 
 echo -e "${HEAD}[=== Configuring system ===]${NC}"
 getSystem
 echo -e "System is ${SYSTEM}"
 
 readArguments $@
-if [ -z $DEST ]; then
-	echo "Please mention either host or vm"
+if [ ! "$I_ARGS" == "true" ]; then
+	printHelp
 	exit 1
 fi
 if [ "$SYSTEM" == "unknown" ]; then
@@ -1189,7 +1550,7 @@ if [ "$SYSTEM" == "unknown" ]; then
 fi
 
 ensureRoot
-installPrereqs
+installCore
 installOwnCube
 createSshKey
 installDotFiles
@@ -1198,14 +1559,14 @@ installBasics
 installZsh
 installPrograms
 installLinks
-installXfceLinks
+installXfceLinks # no arg
 installXPrograms
-installXfcePrograms
-installLogin
+installXfcePrograms # no arg
 installCompilers
+installLogin
 installTex
 installGames
-#installTwitter
+##installTwitter
 cloneGithub
 cloneGitlab
 installExternals
