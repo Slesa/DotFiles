@@ -9,6 +9,10 @@
 # - Rider
 # - PyCharm
 # - Steam
+# Missing in Manjaro:
+# - GitKraken
+# - Skype ?
+# - FSharp
 
 
 BASEPATH=~/.dotfiles
@@ -68,7 +72,7 @@ function printHelp() {
 
 ### determine if installation is on a host or a virtual machine
 ### additionally, packages can be turned on and off
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function readArguments() {
 	INSTALL_PREREQS=true
 	echo -n "Determine arguments..."
@@ -277,7 +281,7 @@ function readArguments() {
 }
 
 ### determine the running OS. Can be Mac, BSD or Ubuntu/Manjaro
-### [ ] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [ ] Manjaro  [0.1] SuSE
+### [ ] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function getSystem() {
 	local UNAME=`uname -s`
 	echo "Operating system is reported as " $UNAME
@@ -343,7 +347,7 @@ function getSystem() {
 }
 
 ### Copy a string to the clipboard, using OS functions
-### [ ] Cygwin   [ ] Mac   [ ] Linux   [-] FreeBSD   [ ] LinuxOnWin  [ ] Manjaro  [0.1] SuSE
+### [ ] Cygwin   [ ] Mac   [ ] Linux   [-] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function copyToClipboard() {
 	echo -n "Copy to clipboard "
 	case $SYSTEM in
@@ -367,7 +371,7 @@ function copyToClipboard() {
 }
 
 ### Ensure that we have root capabilities
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function ensureRoot() {
 	echo -n "Ensure root access..."
     if [ $SYSTEM == "cygwin" ]; then
@@ -389,7 +393,7 @@ function ensureRoot() {
 ### ----------------------------------------------------------------------------------------------
 
 ### We need at least an editor and a source code management
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installCore() {
 	if [ ! "$I_CORE" = true ]; then
 		echo -e "${TC}No core packages${NC}"
@@ -422,7 +426,7 @@ function installCore() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installOwnCube() {
 #    sudo sh -c "echo 'deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_16.10/ /' > /etc/apt/sources.list.d/owncloud-client.list"
 #    sudo apt-get update
@@ -455,7 +459,7 @@ function installOwnCube() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function createSshKey() {
 	if [ ! "$I_SSHKEYS" = true ]; then
 		echo -e "${TC}No ssh keys${NC}"
@@ -476,7 +480,7 @@ function createSshKey() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installDotFiles() {
 	if [ ! "$I_DOTFILES" = true ]; then
 		echo -e "${TC}No dotfiles${NC}"
@@ -495,7 +499,7 @@ function installDotFiles() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [ ] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installFonts() {
 	if [ ! "$I_FONTS" = true ]; then
 		echo -e "${TC}No fonts${NC}"
@@ -529,7 +533,7 @@ function installFonts() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installBasics() {
 	if [ ! "$I_BASICS" = true ]; then
 		echo -e "${TC}No basics${NC}"
@@ -551,7 +555,12 @@ function installBasics() {
 		"arch")
 			$INSTALL $archpacks
 			if ! which git-flow; then
-				$INSTALL2 gitflow-avh
+				pushd .
+				cd /tmp
+				curl -OL https://raw.github.com/nvie/gitflow/develop/contrib/gitflow-installer.sh
+				chmod +x gitflow-installer.sh
+				sudo ./gitflow-installer.sh
+				# $INSTALL2 gitflow-avh
 			else
 				echo "git flow already installed"
 			fi
@@ -579,7 +588,7 @@ function installBasics() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [?] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [?] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installZsh() {
 	if [ ! "$I_ZSH" = true ]; then
 		echo -e "${TC}No zsh${NC}"
@@ -604,7 +613,7 @@ function installZsh() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installPrograms() {
 	if [ ! "$I_PROGS" = true ]; then
 		echo -e "${TC}No programs${NC}"
@@ -618,7 +627,7 @@ function installPrograms() {
 	local packs="curl npm mc w3m links ncdu htop nmap"
 	local fedorapacks="bacula-client bacula-console-bat bacula-traymonitor dosemu"
 	local susepacks="tmux dosemu dos2unix ranger"
-	local archpacks="mux lshw ranger dos2unix"
+	local archpacks="tmux lshw ranger dos2unix"
 	local archpacks2="bacula-client vim-pathogen"
 	local linpacks="mux synaptic openssh-server dos2unix bacula-client lshw vim-addon-manager vim-pathogen"
 	local bsdpacks="mux bacula-client txorg xfce slim slim-themes" # xfce4
@@ -663,7 +672,7 @@ function installPrograms() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installLinks() {
 	if [ ! "$I_LINKS" = true ]; then
 		echo -e "${TC}No links${NC}"
@@ -772,7 +781,7 @@ function installLinks() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [-] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [-] SuSE
 function installXfceLinks() {
 	echo -n "Installing XFCE links..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -908,7 +917,7 @@ function installXfceLinks() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installXPrograms() {
 	if [ ! "$I_XPROGS" = true ]; then
 		echo -e "${TC}No X11 programs${NC}"
@@ -922,7 +931,7 @@ function installXPrograms() {
 	local fedorapacks="gnome-commander chromium vim-X11 thunderbird"
 	local fedoramulti="streamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-bad-free gstreamer1-plugins-bad-freeworld gstreamer1-plugins-bad-free-extras ffmpeg"
 	local susepacks="chromium gvim retext unetbootin"
-	local archpacks="doublecmd-gtk2 retext chromium mc"
+	local archpacks="doublecmd-gtk2 retext chromium mc gvim"
 	local archpacks2="gnome-commander-git file-commander-git"
 	local linpacks="doublecmd-gtk vim-gtk retext chromium-browser gpgv2" # gdevilspie launchy-plugins launchy-skins "
 	local linextPacks="unetbootin hunspell-de-de hunspell-ru hunspell-fr hunspell-es"
@@ -969,7 +978,7 @@ function installXPrograms() {
 }
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [-] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [-] SuSE
 function installXfcePrograms() {
 	echo "Installing XFCE programs..."
 	if [[ ($SYSTEM == "win10") || ($SYSTEM == "cygwin") ]]; then
@@ -1008,7 +1017,7 @@ function installXfcePrograms() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installCompilers() {
 	if [ ! "$I_COMPS" = true ]; then
 		echo -e "${TC}No compilers${NC}"
@@ -1057,7 +1066,7 @@ function installCompilers() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installTex() {
 	if [ ! "$I_TEX" = true ]; then
 		echo -e "${TC}No TeX${NC}"
@@ -1090,7 +1099,7 @@ function installTex() {
 	echo -e "${OK}ok${NC}"
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function installGames() {
 	if [ ! "$I_GAMES" = true ]; then
 		echo -e "${TC}No games${NC}"
@@ -1103,7 +1112,7 @@ function installGames() {
 	fi
 	local packs="xboard" # supertux supertuxkart
 	local fedorapacks="dreamchess gnuchess"
-	local archpacks="pychess"
+	local archpacks="pychess chromium-bsu dosbox"
 	local susepacks="phalanx gnome-chess gnuchess lskat kiten"
 	local linpacks="phalanx pychess"
 	local bsdpacks="crafty brutalchess chessx pouetchess" # glchess
@@ -1147,7 +1156,7 @@ function installGames() {
 #}
 
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function cloneGithub() {
 	if [ ! "$I_GH" = true ]; then
 		echo -e "${TC}No github${NC}"
@@ -1210,7 +1219,7 @@ function cloneGithub() {
 	popd
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [0.1] SuSE
 function cloneGitlab() {
 	if [ ! "$I_GL" = true ]; then
 		echo -e "${TC}No gitlab${NC}"
@@ -1238,7 +1247,7 @@ function cloneGitlab() {
 	popd
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [-] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [0.1] Manjaro  [-] SuSE
 function installLogin() {
 	if [ ! "$I_LOGIN" = true ]; then
 		echo -e "${TC}No login wallpapers${NC}"
@@ -1356,12 +1365,26 @@ function installSkype() {
 		echo "Skype already installed"
 		return 0
 	fi
-	pushd . && cd ~/Downloads
-	if [ ! -f skypeforlinux-64.rpm ]; then
-		wget https://go.skype.com/skype.download/skypeforlinux-64.rpm ]
-	fi
-	sudo rpm -i skypeforlinux-64.rpm
-	popd
+	case $SYSTEM in
+	"suse")
+		pushd . && cd ~/Downloads
+		if [ ! -f skypeforlinux-64.rpm ]; then
+			wget https://go.skype.com/skype.download/skypeforlinux-64.rpm ]
+		fi
+		sudo rpm -i skypeforlinux-64.rpm
+		popd
+		;;
+	"arch")
+		if [ -d /src ]; then
+			sudo mkdir /src && chmod a+rwx /src
+		fi
+		pushd .
+		cd /src
+		git clone https://aur.archlinux.org/skypeforlinux-stable-bin.git && cd skypeforlinux-stable-bin/
+		makepkg -si
+		popd .
+		
+	esac
 }
 
 function installGitKraken() {
@@ -1378,7 +1401,7 @@ function installGitKraken() {
 	popd
 }
 
-### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [X] Manjaro  [0.1] SuSE
+### [X] Cygwin   [ ] Mac   [ ] Linux   [X] FreeBSD   [ ] LinuxOnWin  [ ] Manjaro  [0.1] SuSE
 function installExternals() {
 	if [ ! "$I_EXT" = true ]; then
 		echo -e "${TC}No external apllications${NC}"
@@ -1407,22 +1430,31 @@ function installExternals() {
 			installGitKraken
 			;;
 		"arch")
-			$INSTALL keybase
-			if ! which code; then
-				$INSTALL2 visual-studio-code-bin 
-			else
-				echo "Visual Studio Code already installed"
-			fi
-			if ! which gitkraken; then
-				$INSTALL2 gitkraken 
-			else
-				echo "GitKraken already installed"
-			fi
-			if ! which sky; then
-				sky
-			else
-				echo "Sky(pe) already installed"
-			fi
+			$INSTALL keybase code # AUR has to be turned on!
+			#if ! which code; then
+			#	$INSTALL2 visual-studio-code-bin 
+			#else
+			#	echo "Visual Studio Code already installed"
+			#fi
+			#if ! which gitkraken; then
+			#	$INSTALL2 gitkraken 
+			#else
+			#	echo "GitKraken already installed"
+			#fi
+			#if ! which sky; then
+			#	sky
+			#else
+			#	echo "Sky(pe) already installed"
+			#fi
+			curl -O https://download.sublimetext.com/sublimehq-pub.gpg && sudo pacman-key --add sublimehq-pub.gpg && sudo pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
+			echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | sudo tee -a /etc/pacman.conf
+			$INSTALL sublime-text
+			$INSTALL dotnet-sdk dotnet-runtime
+			installQt
+			installRider
+			installPyCharm
+			#installSkype
+			#installGitKraken
 			;;
 		"fedora")
 			# Visual Studio Code
