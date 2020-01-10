@@ -10,14 +10,9 @@ hash -d gl=~/work/gitlab
 hash -d trinity=~/work/github/Trinity
 hash -d dwx=~/work/github/dwx2017
 hash -d qt=~/work/qt
-hash -d abat=~/work/abat
-hash -d cpp=~/work/abat/Plus_Cpp
-hash -d global=~/work/abat/Plus_Global
-hash -d backend=~/work/abat/Plus_Backend
-hash -d tools=~/work/abat/Plus_Tools
 hash -d prolog=~/work/github/prolog
 hash -d safe=~/work/github/safe
-hash -d client=~/work/abat/Plus_Client.OneBranch
-hash -d alib=~/work/abat/Abat_Lib
-hash -d awpf=~/work/abat/Abat_WpfControls
+hash -d gf=~/work/42
+hash -d bm=~/work/42/bonviewer_frontend
+
 

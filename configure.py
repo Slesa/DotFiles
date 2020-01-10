@@ -103,7 +103,7 @@ def determine_os():
     # [ ] Fedora                    [ ] Mint
     output('Found...................: ', False)
     system = platform.system().lower()
-    if system == 'cygwin':
+    if system.startswith('cygwin'):
         output('<green>CygWin<nc>')
         return Systems.Cygwin
     if system == 'darwin':
@@ -188,6 +188,9 @@ def install(installprog, packages):
 
 def install_core(targetsys, installprog, options):
     output('Install core............: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
     if not options.core or (options.full and options.nocore):
         output('<yellow>pass<nc>')
         return
@@ -200,7 +203,7 @@ def install_core(targetsys, installprog, options):
 
 def install_zsh(targetsys, options):
     output('Install Zsh.............: ', False)
-    if not options.zsh or (options.full and options.nozsh):
+    if options.zsh and (not options.full or options.nozsh):
         output('<yellow>pass<nc>')
         return
     targetfile = str(Path.home()) + '/.zshrc'
@@ -209,7 +212,9 @@ def install_zsh(targetsys, options):
     else:
         output('<tc>copying<nc>')
         srcfile = 'zshrc.cygwin'
-        if targetsys == Systems.BSD:
+        if targetsys == Systems.Cygwin:
+            srcfile = 'zshrc.cygwin'
+        elif targetsys == Systems.BSD:
             srcfile = 'zshrc.freebsd'
         elif targetsys == Systems.Fedora:
             srcfile = 'zshrc.fedora'
@@ -220,7 +225,10 @@ def install_zsh(targetsys, options):
 
 def install_login(targetsys, options):
     output('Install Login...........: ', False)
-    if not options.zsh or (options.full and options.nozsh):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.zsh and (not options.full or options.nozsh):
         output('<yellow>pass<nc>')
         return
     targetdir = '/usr/share/backgrounds/'
@@ -240,9 +248,9 @@ def install_login(targetsys, options):
 
     output('<green>Ok<nc>')
 
-def install_links(options):
+def install_links(targetsys, options):
     output('Install Links...........: ', False)
-    if not options.links or (options.full and options.nolinks):
+    if options.links and (not options.full or options.nolinks):
         output('<yellow>pass<nc>')
         return
     bindir = str(Path.home()) + '/bin'
@@ -264,22 +272,26 @@ def install_links(options):
     if not os.path.islink(vimfile):
         os.symlink(Basepath + '/etc/unix/vimrc', vimfile)
 
-    autosource = Basepath + '/etc/unix/autostart/'
-    autostart = str(Path.home()) + '/.config/autostart/'
-    if not os.path.isdir(autostart):
-        os.mkdir(autostart)
-    autoOwnCloud = 'ownCloud.desktop'
-    if not os.path.isfile(autostart + autoOwnCloud):
-        os.symlink(autosource + autoOwnCloud, autostart + autoOwnCloud)
-    autoThunderbird = 'Thunderbird.desktop'
-    if not os.path.isfile(autostart + autoThunderbird):
-        os.symlink(autosource + autoThunderbird, autostart + autoThunderbird)
+    if not targetsys==Systems.Cygwin:
+        autosource = Basepath + '/etc/unix/autostart/'
+        autostart = str(Path.home()) + '/.config/autostart/'
+        if not os.path.isdir(autostart):
+            os.mkdir(autostart)
+        autoOwnCloud = 'ownCloud.desktop'
+        if not os.path.isfile(autostart + autoOwnCloud):
+            os.symlink(autosource + autoOwnCloud, autostart + autoOwnCloud)
+        autoThunderbird = 'Thunderbird.desktop'
+        if not os.path.isfile(autostart + autoThunderbird):
+            os.symlink(autosource + autoThunderbird, autostart + autoThunderbird)
     output('<green>Ok<nc>')
 
 
 def install_owncube(targetsys, installprog, options):
     output('Install owncube.........: ', False)
-    if not options.owncube or (options.full and options.noowncube):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.owncube and (not options.full or options.noowncube):
         output('<yellow>pass<nc>')
         return
     packages = ['owncloud-client']  if not targetsys == Systems.BSD else ['owncloudclient']
@@ -294,7 +306,7 @@ def install_owncube(targetsys, installprog, options):
 
 def install_dotfiles(options):
     output('Install dotfiles........: ', False)
-    if not options.dotfiles or (options.full and options.nodotfiles):
+    if options.dotfiles and (not options.full or options.nodotfiles):
         output('<yellow>pass<nc>')
         return
     if os.path.isdir(Basepath):
@@ -307,7 +319,10 @@ def install_dotfiles(options):
 
 def install_basics(targetsys, installprog, options):
     output('Install basics..........: ', False)
-    if not options.basics or (options.full and options.nobasics):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.basics and (not options.full or options.nobasics):
         output('<yellow>pass<nc>')
         return
     packages = ['zsh']
@@ -328,7 +343,10 @@ def install_basics(targetsys, installprog, options):
 # Ubuntu: tmuxinator, tmux-plugin-manager ranger
 def install_programs(targetsys, installprog, options):
     output('Install programs........: ', False)
-    if not options.programs or (options.full and options.noprograms):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.programs and (not options.full or options.noprograms):
         output('<yellow>pass<nc>')
         return
     packages = ['curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap']
@@ -351,7 +369,10 @@ def install_programs(targetsys, installprog, options):
 # Ubuntu: xaos, guake
 def install_xprograms(targetsys, installprog, options):
     output('Install X programs......: ', False)
-    if not options.xprograms or (options.full and options.noxprograms):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.xprograms and (not options.full or options.noxprograms):
         output('<yellow>pass<nc>')
         return
     packages = ['xaos', 'guake', 'thunderbird', 'vlc', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
@@ -374,7 +395,10 @@ def install_xprograms(targetsys, installprog, options):
 
 def install_compiler(targetsys, installprog, options):
     output('Install compiler........: ', False)
-    if not options.compiler or (options.full and options.nocompiler):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.compiler and (not options.full or options.nocompiler):
         output('<yellow>pass<nc>')
         return
     packages = ['meld', 'cgdb', 'gdb', 'cmake', 'ccache']
@@ -394,10 +418,13 @@ def install_compiler(targetsys, installprog, options):
 
 def install_xfce_programs(targetsys, installprog, options):
     output('Install XFCE programs...: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
     if not options.desktop == 'xfce':
         output('<yellow>XFCE not used<nc>')
         return
-    if not options.xfce or (options.full and options.noxfce):
+    if options.xfce and (not options.full or options.noxfce):
         output('<yellow>pass<nc>')
         return
     # packages = ['']
@@ -421,7 +448,10 @@ def install_xfce_programs(targetsys, installprog, options):
 
 def install_tex(targetsys, installprog, options):
     output('Install TeX.............: ', False)
-    if not options.tex or (options.full and options.notex):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.tex and (not options.full or options.notex):
         output('<yellow>pass<nc>')
         return
     packages = ['texmaker', 'lyx', 'latex2html', 'texstudio']
@@ -443,7 +473,10 @@ def install_tex(targetsys, installprog, options):
 
 def install_games(targetsys, installprog, options):
     output('Install Games...........: ', False)
-    if not options.games or (options.full and options.nogames):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.games and (not options.full or options.nogames):
         output('<yellow>pass<nc>')
         return
     packages = ['xboard']
@@ -463,7 +496,10 @@ def install_games(targetsys, installprog, options):
 
 def install_fonts(targetsys, options):
     output('Install Fonts...........: ', False)
-    if not options.fonts or (options.full and options.nofonts):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.fonts and (not options.full or options.nofonts):
         output('<yellow>pass<nc>')
         return
     targetdir = '/usr/share/fonts' if not targetsys == Systems.BSD else '/usr/local/share/fonts/TTF'
@@ -482,7 +518,7 @@ def install_fonts(targetsys, options):
 
 
 def clone_from_github(src, project, flow):
-    if os.isdir(src + project):
+    if os.path.isdir(src + project):
         return
     subprocess.check_call(['git', 'clone', 'git@github.com:slesa/' + project])
     if flow:
@@ -490,11 +526,11 @@ def clone_from_github(src, project, flow):
 
 def clone_github(root, options):
     output('Clone github ...........: ', False)
-    if not options.github or (options.full and options.nogithub):
+    if options.github and (not options.full or options.nogithub):
         output('<yellow>pass<nc>')
         return
     src = root + "/github/"
-    if not os.isdir(src):
+    if not os.path.isdir(src):
         os.mkdir(src)
 
     os.chdir(src)
@@ -508,7 +544,7 @@ def clone_github(root, options):
     output('Clone github............: <green>Done<nc>')
 
 def clone_from_gitlab(src, project, flow):
-    if os.isdir(src + project):
+    if os.path.isdir(src + project):
         return
     subprocess.check_call(['git', 'clone', 'git@gitlab.com:slesa/' + project])
     if flow:
@@ -516,11 +552,11 @@ def clone_from_gitlab(src, project, flow):
 
 def clone_gitlab(root, options):
     output('Clone gitlab ...........: ', False)
-    if not options.gitlab or (options.full and options.nogitlab):
+    if options.gitlab and (not options.full or options.nogitlab):
         output('<yellow>pass<nc>')
         return
-    src = root + "/gitlab"
-    if not os.isdir(src):
+    src = root + "/gitlab/"
+    if not os.path.isdir(src):
         os.mkdir(src)
 
     os.chdir(src)
@@ -540,7 +576,7 @@ def clone_all(options):
 
 def install_qt(targetsys, options, downloads, work):
     output('install Qt .............: ', False)
-    if not options.qt or (options.full and options.noqt):
+    if options.qt and (not options.full or options.noqt):
         output('<yellow>pass<nc>')
         return
 
@@ -549,19 +585,27 @@ def install_qt(targetsys, options, downloads, work):
         return
     path = os.getcwd()
     os.chdir(downloads)
-    qtinstaller = 'qt-unified-linux-x64-online.run'
+
+    qtinstaller = 'qt-unified-linux-x64-online.run' 
+    if targetsys==Systems.Cygwin:
+        qtinstaller = 'qt-unified-windows-x86-online.exe'
+    elif targetsys==Systems.MacOS:
+        qtinstaller = 'qt-unified-mac-x64-online.dmg'
     if not os.path.isfile(qtinstaller):
         subprocess.check_call(['wget', 'https://download.qt.io/official_releases/online_installers/'+qtinstaller])
         subprocess.check_call(['chmod', '+x', qtinstaller])
-    copy_text_to_clipboard(targetsys, work+'/qt')
+    #copy_text_to_clipboard(targetsys, work+'/qt')
     subprocess.check_call(['./'+qtinstaller])
 
     os.chdir(path)
     output('Qt installed ...........: <green>Done<nc>')
 
-def install_rider(options, downloads, bin):
+def install_rider(targetsys, options, downloads, bin):
     output('install Rider...........: ', False)
-    if not options.rider or (options.full and options.norider):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.rider and (not options.full or options.norider):
         output('<yellow>pass<nc>')
         return
 
@@ -581,14 +625,17 @@ def install_rider(options, downloads, bin):
     os.chdir(path)
     output('Rider installed ........: <green>Done<nc>')
 
-def install_pycharm(options, downloads, bin):
+def install_pycharm(targetsys, options, downloads, bin):
     output('install PyCharm.........: ', False)
-    if not options.pycharm or (options.full and options.nopycharm):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if options.pycharm and (not options.full or options.nopycharm):
         output('<yellow>pass<nc>')
         return
 
     charmdir = bin + '/Jetbrains.PyCharm'
-    if os.isdir(charmdir):
+    if os.path.isdir(charmdir):
         output('<yellow>already installed<nc>')
         return
     path = os.getcwd()
@@ -610,25 +657,27 @@ def install_externals(targetsys, options):
         output('<yellow>pass<nc>')
         return
     downloads = str(Path.home()) + '/Downloads'
+    if not os.path.isdir(downloads):
+        os.mkdir(downloads)
     work = str(Path.home()) + '/work'
     bin = str(Path.home()) + '/bin'
 
     install_qt(targetsys, options, downloads, work)
-    install_rider(options, downloads, bin)
-    install_pycharm(options, downloads, bin)
+    install_rider(targetsys, options, downloads, bin)
+    install_pycharm(targetsys, options, downloads, bin)
 
     output('Externals installed.....: <green>Done<nc>')
 
 
 def install_all(targetsys, installprog, options):
     install_core(targetsys, installprog, options)
+    install_dotfiles(options)
     install_zsh(targetsys, options)
     install_login(targetsys, options)
-    install_links( options)
+    install_links(targetsys, options)
     install_owncube(targetsys, installprog, options)
     clone_all(options)
     # create_ssh_key
-    install_dotfiles(options)
     install_basics(targetsys, installprog, options)
     install_programs(targetsys, installprog, options)
     install_xprograms(targetsys, installprog, options)
