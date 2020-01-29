@@ -13,6 +13,6 @@ hash -d qt=~/work/qt
 hash -d prolog=~/work/github/prolog
 hash -d safe=~/work/github/safe
 hash -d gf=~/work/42
-hash -d bm=~/work/42/bonviewer_frontend
+hash -d bm=~/work/42/bonviewer
 
 
