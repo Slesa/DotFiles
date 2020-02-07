@@ -64,3 +64,5 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
 	preview = diff --staged
 	review = log --oneline --patch -1
+[credential]
+	helper = store --file ~/.git-credentials
