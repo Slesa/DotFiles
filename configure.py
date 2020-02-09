@@ -223,7 +223,7 @@ def install_core(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.core, options.nocore):
         output('<yellow>pass<nc>')
         return
-    packages = ['xsel', 'vim']
+    packages = ['xsel', 'vim', 'zsh']
     if subsys == Subsys.Origin: # Not needed on Win Subsys
         packages += ['git', 'firefox']
     if targetsys == Systems.BSD:
