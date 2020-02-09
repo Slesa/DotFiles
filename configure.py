@@ -1,3 +1,4 @@
+# 0.3 - Cygwin
 # 0.2 - Ubuntu on Windows
 import os
 import platform
@@ -110,7 +111,7 @@ class Subsys(Enum):
 
 def determine_os():
     output(f'System..................: <green>{platform.system()}<nc>')
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -211,7 +212,7 @@ def flag_is_set(options, on_flag, off_flag):
   return False
 
 def install_core(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -234,12 +235,15 @@ def install_core(targetsys, subsys, installprog, options):
 
 
 def install_zsh(targetsys, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install Zsh.............: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
     if not flag_is_set(options, options.zsh, options.nozsh):
         output('<yellow>pass<nc>')
         return
@@ -270,7 +274,7 @@ def install_zsh(targetsys, options):
 
 
 def install_dotfiles(options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -289,7 +293,7 @@ def install_dotfiles(options):
 
 
 def install_login(targetsys, subsys, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -320,7 +324,7 @@ def install_login(targetsys, subsys, options):
 
 
 def install_links(targetsys, subsys, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -363,7 +367,7 @@ def install_links(targetsys, subsys, options):
 
 
 def install_owncube(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -386,7 +390,7 @@ def install_owncube(targetsys, subsys, installprog, options):
 #createSshKey
 
 def install_basics(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -417,7 +421,7 @@ def install_basics(targetsys, subsys, installprog, options):
 
 # Ubuntu: tmuxinator, tmux-plugin-manager ranger
 def install_programs(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -450,7 +454,7 @@ def install_programs(targetsys, subsys, installprog, options):
 
 # Ubuntu: xaos, guake
 def install_xprograms(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -481,7 +485,7 @@ def install_xprograms(targetsys, subsys, installprog, options):
     output('X Programs installation.: <green>Done<nc>')
 
 def install_compiler(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -509,7 +513,7 @@ def install_compiler(targetsys, subsys, installprog, options):
     output('Compiler installation...: <green>Done<nc>')
 
 def install_xfce_programs(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -544,7 +548,7 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
         output('XFCE programs ..........: <green>Done<nc>')
 
 def install_tex(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -574,7 +578,7 @@ def install_tex(targetsys, subsys, installprog, options):
     output('TeX installation........: <green>Done<nc>')
 
 def install_games(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -602,7 +606,7 @@ def install_games(targetsys, subsys, installprog, options):
     output('Games installation......: <green>Done<nc>')
 
 def install_fonts(targetsys, subsys, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -654,7 +658,7 @@ def clone_github(root, options):
     clone_from_github(src, 'Godot', False)
     os.chdir('..')
 
-    output('Clone github............: <green>Done<nc>')
+    output('<green>Done<nc>')
 
 def clone_from_gitlab(src, project, flow):
     if os.path.isdir(src + project):
@@ -678,13 +682,14 @@ def clone_gitlab(root, options):
     clone_from_gitlab(src, 'monty', False)
     os.chdir('..')
 
-    output('Clone gitlab............: <green>Done<nc>')
+    output('<green>Done<nc>')
 
 def clone_all(options):
     output('Cloning sources.........: ', False)
     if not flag_is_set(options, options.clone, options.noclone):
         output('<yellow>pass<nc>')
         return
+    output('')
     src = str(Path.home()) + '/work'
     if not os.path.isdir(src):
         os.mkdir(src)
@@ -695,7 +700,10 @@ def clone_all(options):
 
 def install_qt(targetsys, options, downloads, work):
     output('install Qt .............: ', False)
-    if options.qt and (not options.full or options.noqt):
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.qt, options.noqt):
         output('<yellow>pass<nc>')
         return
 
@@ -724,7 +732,7 @@ def install_rider(targetsys, options, downloads, bin):
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
-    if options.rider and (not options.full or options.norider):
+    if not flag_is_set(options, options.rider, options.norider):
         output('<yellow>pass<nc>')
         return
 
@@ -749,7 +757,7 @@ def install_pycharm(targetsys, options, downloads, bin):
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
-    if options.pycharm and (not options.full or options.nopycharm):
+    if not flag_is_set(options, options.pycharm, options.nopycharm):
         output('<yellow>pass<nc>')
         return
 
@@ -770,7 +778,7 @@ def install_pycharm(targetsys, options, downloads, bin):
     output('PyCharm installed.......: <green>Done<nc>')
 
 def install_externals(targetsys, subsys, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
@@ -783,6 +791,7 @@ def install_externals(targetsys, subsys, options):
     if options.noexternals:
         output('<yellow>pass<nc>')
         return
+    output('')
     downloads = str(Path.home()) + '/Downloads'
     if not os.path.isdir(downloads):
         os.mkdir(downloads)
@@ -797,7 +806,7 @@ def install_externals(targetsys, subsys, options):
 
 
 def install_all(targetsys, subsys, installprog, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.1] Ubuntu
