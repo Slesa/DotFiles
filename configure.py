@@ -1,3 +1,4 @@
+# 0.4 - Ubuntu
 # 0.3 - Cygwin
 # 0.2 - Ubuntu on Windows
 import os
@@ -49,6 +50,8 @@ def create_parser():
     parser.add_argument('--full', action='store_true')
     parser.add_argument('--zsh', action='store_true')
     parser.add_argument('--nozsh', action='store_true')
+    parser.add_argument('--prezto', action='store_true')
+    parser.add_argument('--noprezto', action='store_true')
     parser.add_argument('--login', action='store_true')
     parser.add_argument('--nologin', action='store_true')
     parser.add_argument('--links', action='store_true')
@@ -81,6 +84,8 @@ def create_parser():
     parser.add_argument('--nogithub', action='store_true')
     parser.add_argument('--gitlab', action='store_true')
     parser.add_argument('--nogitlab', action='store_true')
+    parser.add_argument('--gf', action='store_true')
+    parser.add_argument('--nogf', action='store_true')
     #parser.add_argument('--externals', action='store_true')
     parser.add_argument('--noexternals', action='store_true')
     parser.add_argument('--qt', action='store_true')
@@ -89,6 +94,8 @@ def create_parser():
     parser.add_argument('--norider', action='store_true')
     parser.add_argument('--pycharm', action='store_true')
     parser.add_argument('--nopycharm', action='store_true')
+    parser.add_argument('--clion', action='store_true')
+    parser.add_argument('--noclion', action='store_true')
     result = parser.parse_args()
     return result
 
@@ -114,7 +121,7 @@ def determine_os():
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     
     release =  platform.release().lower()
@@ -215,7 +222,7 @@ def install_core(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install core............: ', False)
     if targetsys == Systems.Cygwin:
@@ -238,7 +245,7 @@ def install_zsh(targetsys, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install Zsh.............: ', False)
     if targetsys == Systems.Cygwin:
@@ -272,12 +279,38 @@ def install_zsh(targetsys, options):
       subprocess.check_call(['chsh', '-s', shell])
       output('<green>Done<nc>')
 
+def install_prezto(targetsys, options):
+    # [ ] cygwin                    [ ] Fedora
+    # [ ] macos                     [ ] SuSE
+    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [ ] Ubuntu on Windows         [0.4] Ubuntu
+    # [ ] Fedora                    [ ] Mint
+    output('Install Prezto..........: ', False)
+    if not flag_is_set(options, options.prezto, options.noprezto):
+        output('<yellow>pass<nc>')
+        return
+    path = '~/.zprezto'
+    if os.path.isdir(path):
+        output('<yellow>already there<nc>')
+        return
+    subprocess.check_call(['git', 'clone', '--recursive', 'https://github.com/sorin-ionescu/prezto.git', path])
+
+    cmd = """setopt EXTENDED_GLOB; 
+             for rcfile in ~/.zprezto/runcoms/^README.md(.N); do
+               ln -s $rcfile ~/.zprezto/.${rcfile:t}
+             done"""
+    os.popen(cmd)
+
+    subprocess.check_call(['echo', '"~/.zprezto/init.zsh"', '>>', '~/.zshrc'])
+    output('<green>Done<nc>')
+
+
 
 def install_dotfiles(options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install dotfiles........: ', False)
     if not flag_is_set(options, options.dotfiles, options.nodotfiles):
@@ -296,7 +329,7 @@ def install_login(targetsys, subsys, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install Login...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -327,7 +360,7 @@ def install_links(targetsys, subsys, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install Links...........: ', False)
     if not flag_is_set(options, options.links, options.nolinks):
@@ -370,7 +403,7 @@ def install_owncube(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install owncube.........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -393,7 +426,7 @@ def install_basics(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install basics..........: ', False)
     if targetsys == Systems.Cygwin:
@@ -424,7 +457,7 @@ def install_programs(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install programs........: ', False)
     if targetsys == Systems.Cygwin:
@@ -433,13 +466,13 @@ def install_programs(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.programs, options.noprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap']
+    packages = ['postgresql', 'curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap']
     if targetsys == Systems.BSD:
         # fehlt: xfce slim slim-themes
         packages += ['mux', 'bacula-client', 'txorg']
     elif targetsys == Systems.Ubuntu:
         # 'tmuxp', 'tmuxinator', 'tmux-plugin-manager'
-        packages += ['ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen']
+        packages += ['tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen']
         if subsys == Subsys.Origin:
             packages += ['synaptic', 'bacula-client', 'openssh-server', 'lshw']
     elif targetsys == Systems.SuSE:
@@ -447,7 +480,7 @@ def install_programs(targetsys, subsys, installprog, options):
     elif targetsys == Systems.Arch:
         packages += ['tmux', 'lshw', 'ranger', 'dos2unix', 'bacula-client', 'vim-pathogen']
     elif targetsys == Systems.Fedora:
-        packages += ['bacula-client', 'bacula-console-bat', 'bacula-traymonitor', 'dosemu']
+        packages += ['tmux', 'bacula-client', 'bacula-console-bat', 'bacula-traymonitor', 'dosemu']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Programs installation...: <green>Done<nc>')
@@ -457,7 +490,7 @@ def install_xprograms(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install X programs......: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -466,7 +499,7 @@ def install_xprograms(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xprograms, options.noxprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['xaos', 'guake', 'thunderbird', 'vlc', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
+    packages = ['tuxcmd', 'xaos', 'guake', 'thunderbird', 'vlc', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
     if targetsys == Systems.BSD:
         packages += ['chromium', 'gnupg20', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
     elif targetsys == Systems.Ubuntu:
@@ -488,7 +521,7 @@ def install_compiler(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install compiler........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -516,7 +549,7 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install XFCE programs...: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -551,7 +584,7 @@ def install_tex(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install TeX.............: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -581,7 +614,7 @@ def install_games(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install Games...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -609,7 +642,7 @@ def install_fonts(targetsys, subsys, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install Fonts...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -637,7 +670,9 @@ def install_fonts(targetsys, subsys, options):
 def clone_from_github(src, project, flow):
     if os.path.isdir(src + project):
         return
-    subprocess.check_call(['git', 'clone', 'git@github.com:slesa/' + project])
+    header = 'git@' if '/' not in project else 'https://'
+    target = ':slesa/'+project if '/' not in project else '/'+project
+    subprocess.check_call(['git', 'clone', header + 'github.com' + target])
     if flow:
         os.system('cd '+project+" && git flow init -d && git checkout develop && cd ..")
 
@@ -656,6 +691,7 @@ def clone_github(root, options):
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
     clone_from_github(src, 'Godot', False)
+    clone_from_github(src, 'odoo/odoo', False)
     os.chdir('..')
 
     output('<green>Done<nc>')
@@ -684,6 +720,32 @@ def clone_gitlab(root, options):
 
     output('<green>Done<nc>')
 
+def clone_from_gf(src, sub, project, flow):
+    
+    if os.path.isdir(src + project):
+        return
+    subprocess.check_call(['git', 'clone', 'https://develop.42gmbh.com/bitbucket/scm/'+sub+'/'+project+'.git'])
+    if flow:
+        os.system('cd '+project+" && git flow init -d && cd ..")
+
+def clone_gf(root, options):
+    output('Clone 42................: ', False)
+    if not flag_is_set(options, options.gf, options.nogf):
+        output('<yellow>pass<nc>')
+        return
+    src = root + "/42/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_from_gf(src, 'macl', 'matrixclassic', True)
+    clone_from_gf(src, 'bv', 'bonviewer', True)
+    clone_from_gf(src, 'mat', 'matrixodooaddons', False)
+    clone_from_gf(src, 'mat', 'matrixbackoffice', False)
+    os.chdir('..')
+
+    output('<green>Done<nc>')
+
 def clone_all(options):
     output('Cloning sources.........: ', False)
     if not flag_is_set(options, options.clone, options.noclone):
@@ -695,6 +757,10 @@ def clone_all(options):
         os.mkdir(src)
     clone_github(src, options)
     clone_gitlab(src, options)
+    clone_gf(src, options)
+
+    output('<green>Done<nc>')
+
 
 #endregion Cloning
 
@@ -746,8 +812,10 @@ def install_rider(targetsys, options, downloads, bin):
     if not os.path.isfile(riderzip):
         subprocess.check_call(['wget', 'https://download.jetbrains.com/rider/'+riderzip])
     os.chdir(bin)
-    subprocess.check_call(['tar', 'xvzf', downloads+'/'+riderzip])
-    subprocess.check_call(['mv', 'JetBrains\ Rider*', riderdir])
+    os.mkdir(riderdir)
+    subprocess.check_call(['tar', 'xvzf', downloads+'/'+riderzip, '-C', riderdir, '--stripcomponent=1'])
+    #subprocess.check_call(['mv', "'JetBrains Rider-2019.2.3'", riderdir])
+    #subprocess.check_call(['mv', 'JetBrains\ Rider*', riderdir])
 
     os.chdir(path)
     output('Rider installed ........: <green>Done<nc>')
@@ -771,17 +839,44 @@ def install_pycharm(targetsys, options, downloads, bin):
     if not os.path.isfile(charmzip):
         subprocess.check_call(['wget', 'https://download.jetbrains.com/python/'+charmzip])
     os.chdir(bin)
-    subprocess.check_call(['tar', 'xvzf', downloads+'/'+charmzip])
-    subprocess.check_call(['mv', 'pycharm-community*', charmdir])
+    os.mkdir(charmdir)
+    subprocess.check_call(['tar', 'xvzf', downloads+'/'+charmzip, '-C', charmdir, '--strip-component=1'])
+    #subprocess.check_call(['mv', 'pycharm-community*', charmdir])
 
     os.chdir(path)
     output('PyCharm installed.......: <green>Done<nc>')
+
+def install_clion(targetsys, options, downloads, bin):
+    output('install CLion...........: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.clion, options.noclion):
+        output('<yellow>pass<nc>')
+        return
+
+    cliondir = bin + '/Jetbrains.CLion'
+    if os.path.isdir(cliondir):
+        output('<yellow>already installed<nc>')
+        return
+    path = os.getcwd()
+    os.chdir(downloads)
+    clionzip = 'CLion-2019.3.3.tar.gz'
+    if not os.path.isfile(clionzip):
+        subprocess.check_call(['wget', 'https://download.jetbrains.com/cpp/'+clionzip])
+    os.chdir(bin)
+    os.mkdir(cliondir)
+    subprocess.check_call(['tar', 'xvzf', downloads+'/'+clionzip, '-C', cliondir, '--strip-component=1'])
+    #subprocess.check_call(['mv', "'JetBrains CLion-2019.3.3'", cliondir])
+
+    os.chdir(path)
+    output('CLion installed.........: <green>Done<nc>')
 
 def install_externals(targetsys, subsys, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install externals.......: ', False)
     #if not options.externals or (options.full and options.noexternals):
@@ -801,6 +896,7 @@ def install_externals(targetsys, subsys, options):
     install_qt(targetsys, options, downloads, work)
     install_rider(targetsys, options, downloads, bin)
     install_pycharm(targetsys, options, downloads, bin)
+    install_clion(targetsys, options, downloads, bin)
 
     output('Externals installed.....: <green>Done<nc>')
 
@@ -809,11 +905,12 @@ def install_all(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.1] Ubuntu
+    # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     install_core(targetsys, subsys, installprog, options)
     install_dotfiles(options)
     install_zsh(targetsys, options)
+    install_prezto(targetsys, options)
     install_login(targetsys, subsys, options)
     install_links(targetsys, subsys, options)
     install_owncube(targetsys, subsys, installprog, options)
