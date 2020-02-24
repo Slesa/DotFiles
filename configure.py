@@ -248,9 +248,6 @@ def install_zsh(targetsys, options):
     # [0.2] Ubuntu on Windows       [0.4] Ubuntu
     # [ ] Fedora                    [ ] Mint
     output('Install Zsh.............: ', False)
-    if targetsys == Systems.Cygwin:
-        output('<tc>not necessary<nc>')
-        return
     if not flag_is_set(options, options.zsh, options.nozsh):
         output('<yellow>pass<nc>')
         return
@@ -289,7 +286,7 @@ def install_prezto(targetsys, options):
     if not flag_is_set(options, options.prezto, options.noprezto):
         output('<yellow>pass<nc>')
         return
-    path = '~/.zprezto'
+    path = str(Path.home()) + '/.zprezto'
     if os.path.isdir(path):
         output('<yellow>already there<nc>')
         return
