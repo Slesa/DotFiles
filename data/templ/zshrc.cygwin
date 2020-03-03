@@ -30,3 +30,4 @@ source ~/bin/tools/git/git_prompt.zsh
 #cd ~launchy
 
 fortune
+source ~/.zprezto/init.zsh

@@ -270,14 +270,15 @@ def install_zsh(targetsys, options):
             srcfile = 'zshrc.ubuntu'
         subprocess.check_call(['cp', Basepath + '/data/templ/' + srcfile, targetfile])
         output('zshrc installed.........: <green>Done<nc>')
-    output('set zsh shell...........: ', False)
-    currentshell = os.popen('echo $SHELL').read()
-    if 'zsh' in currentshell:
-        output('<yellow>already set<nc>')
-    else:
-      shell = os.popen('which zsh').read()[:-1]
-      subprocess.check_call(['chsh', '-s', shell])
-      output('<green>Done<nc>')
+    if targetsys != Systems.Cygwin:
+        output('set zsh shell...........: ', False)
+        currentshell = os.popen('echo $SHELL').read()
+        if 'zsh' in currentshell:
+            output('<yellow>already set<nc>')
+        else:
+            shell = os.popen('which zsh').read()[:-1]
+            subprocess.check_call(['chsh', '-s', shell])
+    output('<green>Done<nc>')
 
 def install_prezto(targetsys, options):
     # [ ] cygwin                    [ ] Fedora
