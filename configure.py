@@ -1,3 +1,4 @@
+# 0.6 - Fedora
 # 0.5 - Xubuntu
 # 0.4 - Ubuntu
 # 0.3 - Cygwin
@@ -222,7 +223,7 @@ def flag_is_set(options, on_flag, off_flag):
   return False
 
 def install_core(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -245,7 +246,7 @@ def install_core(targetsys, subsys, installprog, options):
 
 
 def install_zsh(targetsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -281,7 +282,7 @@ def install_zsh(targetsys, options):
     output('<green>Done<nc>')
 
 def install_prezto(targetsys, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [ ] cygwin                    [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [ ] Ubuntu on Windows         [0.5] Ubuntu
@@ -308,7 +309,7 @@ def install_prezto(targetsys, options):
 
 
 def install_dotfiles(options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -327,7 +328,7 @@ def install_dotfiles(options):
 
 
 def install_login(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -341,8 +342,10 @@ def install_login(targetsys, subsys, options):
         return
     targetdir = '/usr/share/backgrounds/'
     targetfile = 'StarTrekLogo1920x1080.jpg'
-    if targetsys == Systems.SuSE or targetsys == Systems.Fedora:
+    if targetsys == Systems.SuSE:
         targetdir = '/usr/share/wallpapers/'
+    elif targetsys == Systems.Fedora:
+        targetdir = '/usr/share/backgrounds/'
     elif targetsys == Systems.BSD:
         targetdir = '/usr/local/share/backgrounds/'
     if not os.path.isfile(targetdir + targetfile):
@@ -358,7 +361,7 @@ def install_login(targetsys, subsys, options):
 
 
 def install_links(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -401,7 +404,7 @@ def install_links(targetsys, subsys, options):
 
 
 def install_owncube(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -424,7 +427,7 @@ def install_owncube(targetsys, subsys, installprog, options):
 #createSshKey
 
 def install_basics(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -455,7 +458,7 @@ def install_basics(targetsys, subsys, installprog, options):
 
 # Ubuntu: tmuxinator, tmux-plugin-manager ranger
 def install_programs(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -481,14 +484,14 @@ def install_programs(targetsys, subsys, installprog, options):
     elif targetsys == Systems.Arch:
         packages += ['tmux', 'lshw', 'ranger', 'dos2unix', 'bacula-client', 'vim-pathogen']
     elif targetsys == Systems.Fedora:
-        packages += ['tmux', 'bacula-client', 'bacula-console-bat', 'bacula-traymonitor', 'dosemu']
+        packages += ['tmux', 'bacula-client', 'bacula-console-bat', 'bacula-traymonitor'] #, 'dosemu']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Programs installation...: <green>Done<nc>')
 
 # Ubuntu: xaos, guake
 def install_xprograms(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -500,26 +503,27 @@ def install_xprograms(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xprograms, options.noxprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['tuxcmd', 'xaos', 'guake', 'thunderbird', 'vlc', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
+    packages = ['xaos', 'guake', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
     if targetsys == Systems.BSD:
-        packages += ['chromium', 'gnupg20', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
+        packages += ['chromium', 'tuxcmd', 'vlc', 'gnupg20', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
     elif targetsys == Systems.Ubuntu:
-        packages += ['vim-gtk', 'retext', 'chromium-browser', 'gpgv2', 'hunspell-de-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
+        packages += ['vim-gtk', 'retext', 'vlc', 'tuxcmd', 'chromium-browser', 'gpgv2', 'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
     elif targetsys == Systems.SuSE:
-        packages += ['chromium', 'gvim', 'retext', 'unetbootin']
+        packages += ['chromium', 'gvim', 'vlc', 'tuxcmd', 'retext', 'unetbootin']
     elif targetsys == Systems.Arch:
         packages += ['retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git']
     elif targetsys == Systems.Fedora:
-        packages += ['gnome-commander', 'chromium', 'vim-X11', 'streamer1-plugins-base', 'gstreamer1-plugins-good',
-                     'gstreamer1-plugins-ugly', 'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free',
-                     'gstreamer1-plugins-bad-freeworld', 'gstreamer1-plugins-bad-free-extras', 'ffmpeg', 'unetbootin',
-                     'hunspell-de-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
+        packages += ['gnome-commander', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
+                     'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free',
+                     'gstreamer1-plugins-bad-free-extras', 'unetbootin',
+                     'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
+                     #['streamer1-plugins-base', 'gstreamer1-plugins-ugly','gstreamer1-plugins-bad-freeworld','ffmpeg',   ]
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('X Programs installation.: <green>Done<nc>')
 
 def install_compiler(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -541,13 +545,13 @@ def install_compiler(targetsys, subsys, installprog, options):
     elif targetsys == Systems.Arch:
         packages += ['qt5', 'mono', 'mono-tools', 'nodejs', 'yarn']
     elif targetsys == Systems.Fedora:
-        packages += ['mono-complete', 'ncurses-devel', 'cmake-gui', 'nodejs', 'yarn']
+        packages += ['mono-complete', 'ncurses-devel', 'cmake-gui', 'nodejs'] #, 'yarn']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Compiler installation...: <green>Done<nc>')
 
 def install_xfce_programs(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -562,11 +566,11 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xfce, options.noxfce):
         output('<yellow>pass<nc>')
         return
-    # packages = ['']
+    packages = ['']
     if targetsys == Systems.BSD or targetsys == Systems.Arch:
         packages = ['xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-screenshooter-plugin', 'xfce4-cpugraph-plugin',
                      'xfce4-battery-plugin', 'xfce4-mailwatch-plugin']
-    elif targetsys == Systems.Ubuntu:
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Fedora:
         packages = ['xfce4-eyes-plugin']
     #elif targetsys == Systems.SuSE:
     #    packages += ['']
@@ -582,7 +586,7 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
         output('XFCE programs ..........: <green>Done<nc>')
 
 def install_tex(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -612,7 +616,7 @@ def install_tex(targetsys, subsys, installprog, options):
     output('TeX installation........: <green>Done<nc>')
 
 def install_games(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -640,7 +644,7 @@ def install_games(targetsys, subsys, installprog, options):
     output('Games installation......: <green>Done<nc>')
 
 def install_fonts(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -692,7 +696,7 @@ def clone_github(root, options):
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
     clone_from_github(src, 'Godot', False)
-    clone_from_github(src, 'odoo/odoo', False)
+#    clone_from_github(src, 'odoo/odoo', False)
     os.chdir('..')
 
     output('<green>Done<nc>')
@@ -743,6 +747,7 @@ def clone_gf(root, options):
     clone_from_gf(src, 'bv', 'bonviewer', True)
     clone_from_gf(src, 'mat', 'matrixodooaddons', False)
     clone_from_gf(src, 'mat', 'matrixbackoffice', False)
+    clone_from_gf(src, 'bv', 'playground', False)
     os.chdir('..')
 
     output('<green>Done<nc>')
@@ -903,7 +908,7 @@ def install_code(targetsys, options, downloads, bin):
     output('VS Code installed.......: <green>Done<nc>')
 
 def install_externals(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -933,7 +938,7 @@ def install_externals(targetsys, subsys, options):
 
 
 def install_all(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
