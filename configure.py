@@ -1,3 +1,4 @@
+# 0.8 - Manjaro
 # 0.7 - Zorin
 # 0.6 - Fedora
 # 0.5 - Xubuntu
@@ -151,7 +152,7 @@ def determine_os():
         if 'suse' in linux:
             output('<green>SuSE<nc>')
             return (Systems.SuSE,subsys)
-        if 'arch' in linux:
+        if 'arch' in linux or 'manjaro' in linux:
             output('<green>Arch / Manjaro<nc>')
             return (Systems.Arch,subsys)
         if 'ubuntu' in linux:
