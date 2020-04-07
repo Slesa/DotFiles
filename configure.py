@@ -414,7 +414,7 @@ def install_owncube(targetsys, subsys, installprog, options):
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [ ] Fedora                    [0.7] Zorin
-    output('Install owncube.........: ', False)
+    output('Install nextcloud.......: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
         return
@@ -424,10 +424,10 @@ def install_owncube(targetsys, subsys, installprog, options):
     packages = ['nextcloud-client']  if not targetsys == Systems.BSD else ['nextcloudclient']
     output('<green>Ok<nc>')
     install(installprog, packages)
-    output('Owncube installation....: <green>Done<nc>')
+    output('nextcloud installation..: <green>Done<nc>')
 
-    if not get_pid('owncloud'):
-        subprocess.Popen('owncloud')
+    #if not get_pid('owncloud'):
+    #    subprocess.Popen('owncloud')
 
 #createSshKey
 
