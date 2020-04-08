@@ -302,11 +302,11 @@ def install_prezto(targetsys, options):
         return
     subprocess.check_call(['git', 'clone', '--recursive', 'https://github.com/sorin-ionescu/prezto.git', path])
 
-    cmd = """setopt EXTENDED_GLOB; 
-             for rcfile in ~/.zprezto/runcoms/^README.md(.N); do
-               ln -s $rcfile ~/.zprezto/.${rcfile:t}
-             done"""
-    os.popen(cmd)
+#    cmd = """setopt EXTENDED_GLOB; 
+#            for rcfile in ~/.zprezto/runcoms/^README.md(.N); do
+#             ln -s $rcfile ~/.zprezto/.${rcfile:t}
+#             done"""
+#    os.popen(cmd)
 
     subprocess.check_call(['echo', '"~/.zprezto/init.zsh"', '>>', '~/.zshrc'])
     output('<green>Done<nc>')
@@ -489,7 +489,7 @@ def install_programs(targetsys, subsys, installprog, options):
     elif targetsys == Systems.Arch:
         packages += ['tmux', 'lshw', 'ranger', 'dos2unix', 'bacula-client', 'vim-pathogen']
     elif targetsys == Systems.Fedora:
-        packages += ['tmux', 'bacula-client', 'bacula-console-bat', 'bacula-traymonitor'] #, 'dosemu']
+        packages += ['postgresql-server', 'postgresql-contrib', 'tmux', 'bacula-client', 'bacula-console-bat', 'bacula-traymonitor'] #, 'dosemu']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Programs installation...: <green>Done<nc>')
