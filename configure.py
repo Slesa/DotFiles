@@ -104,6 +104,8 @@ def create_parser():
     parser.add_argument('--nostorm', action='store_true')
     parser.add_argument('--code', action='store_true')
     parser.add_argument('--nocode', action='store_true')
+    parser.add_argument('--dotnet', action='store_true')
+    parser.add_argument('--nodotnet', action='store_true')
     result = parser.parse_args()
     return result
 
@@ -478,7 +480,7 @@ def install_programs(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.programs, options.noprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['postgresql', 'curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap']
+    packages = ['postgresql', 'curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap', 'byobu']
     if targetsys == Systems.BSD:
         # fehlt: xfce slim slim-themes
         packages += ['mux', 'bacula-client', 'txorg']
@@ -561,6 +563,40 @@ def install_compiler(targetsys, subsys, installprog, options):
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Compiler installation...: <green>Done<nc>')
+
+def install_dotnet(targetsys, options, installprog):
+    output('install .NET Core......: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.dotnet, options.nodotnet):
+        output('<yellow>pass<nc>')
+        return
+    path = os.getcwd()
+    os.chdir('/tmp')
+
+    packages = ['dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
+    if targetsys == Systems.BSD:
+        output('<red>unsupported<nc>')
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+        os.popen('wget https://packages.microsoft.com/config/ubuntu/19.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb')
+        os.popen('sudo dpkg -i packages-microsoft-prod.deb')
+    elif targetsys == Systems.SuSE:
+        os.popen('sudo zypper install libicu')
+        os.popen('sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc')
+        os.popen('wget https://packages.microsoft.com/config/opensuse/15/prod.repo')
+        os.popen('sudo mv prod.repo /etc/zypp/repos.d/microsoft-prod.repo')
+        os.popen('sudo chown root:root /etc/zypp/repos.d/microsoft-prod.repo')
+    elif targetsys == Systems.Arch:
+        output('<red>unsupported<nc>')
+    elif targetsys == Systems.Fedora:
+        os.popen('sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc')
+        os.popen('sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/31/prod.repo')
+
+    os.chdir(path)
+    output('<green>Ok<nc>')
+    install(installprog, packages)
+    output('..NET Core installation.: <green>Done<nc>')
 
 def install_xfce_programs(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [0.6] Fedora
@@ -915,6 +951,7 @@ def install_webstorm(targetsys, options, downloads, bin):
     os.chdir(path)
     output('WebStorm installed......: <green>Done<nc>')
 
+
 def install_code(targetsys, options, downloads, bin):
     return # Does not work
     output('install VS Code........: ', False)
@@ -924,6 +961,7 @@ def install_code(targetsys, options, downloads, bin):
     if not flag_is_set(options, options.code, options.nocode):
         output('<yellow>pass<nc>')
         return
+
 
     #codedir = bin + '/Code'
     #if os.path.isdir(codedir):
@@ -994,6 +1032,7 @@ def install_all(targetsys, subsys, installprog, options):
     install_programs(targetsys, subsys, installprog, options)
     install_xprograms(targetsys, subsys, installprog, options)
     install_compiler(targetsys, subsys, installprog, options)
+    install_dotnet(targetsys, options, installprog)
     install_xfce_programs(targetsys, subsys, installprog, options)
     install_tex(targetsys, subsys, installprog, options)
     install_games(targetsys, subsys, installprog, options)
