@@ -1,3 +1,4 @@
+# 0.8 - Manjaro
 # 0.7 - Zorin
 # 0.6 - Fedora
 # 0.5 - Xubuntu
@@ -99,6 +100,8 @@ def create_parser():
     parser.add_argument('--nopycharm', action='store_true')
     parser.add_argument('--clion', action='store_true')
     parser.add_argument('--noclion', action='store_true')
+    parser.add_argument('--storm', action='store_true')
+    parser.add_argument('--nostorm', action='store_true')
     parser.add_argument('--code', action='store_true')
     parser.add_argument('--nocode', action='store_true')
     result = parser.parse_args()
@@ -151,7 +154,7 @@ def determine_os():
         if 'suse' in linux:
             output('<green>SuSE<nc>')
             return (Systems.SuSE,subsys)
-        if 'arch' in linux:
+        if 'arch' in linux or 'manjaro' in linux:
             output('<green>Arch / Manjaro<nc>')
             return (Systems.Arch,subsys)
         if 'ubuntu' in linux:
@@ -887,6 +890,31 @@ def install_clion(targetsys, options, downloads, bin):
     os.chdir(path)
     output('CLion installed.........: <green>Done<nc>')
 
+def install_webstorm(targetsys, options, downloads, bin):
+    output('install WebStorm........: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.storm, options.nostorm):
+        output('<yellow>pass<nc>')
+        return
+
+    stormdir = bin + '/Jetbrains.WebStorm'
+    if os.path.isdir(stormdir):
+        output('<yellow>lready installed<nc>')
+        return
+    path = os.getcwd()
+    os.chdir(downloads)
+    stormzip = 'WebStorm-2020.1.tar.gz'
+    if not os.path.isfile(stormzip):
+        subprocess.check_call(['wget', 'https://download.jetbrains.com/WebStorm/'+stormzip])
+    os.chdir(bin)
+    os.mkdir(stormdir)
+    subprocess.check_call(['tar', 'xvzf', downloads+'/'+stormzip, '-C', stormdir, '--strip-component=1'])
+
+    os.chdir(path)
+    output('WebStorm installed......: <green>Done<nc>')
+
 def install_code(targetsys, options, downloads, bin):
     return # Does not work
     output('install VS Code........: ', False)
@@ -941,6 +969,7 @@ def install_externals(targetsys, subsys, options):
     install_rider(targetsys, options, downloads, bin)
     install_pycharm(targetsys, options, downloads, bin)
     install_clion(targetsys, options, downloads, bin)
+    install_webstorm(targetsys, options, downloads, bin)
     install_code(targetsys, options, downloads, bin)
 
     output('Externals installed.....: <green>Done<nc>')
@@ -984,5 +1013,3 @@ install_all(system, subsys, installer, args)
 
 
 #installXfceLinks # no arg
-##installTwitter
-#installExternals
