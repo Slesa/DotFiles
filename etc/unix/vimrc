@@ -2,6 +2,7 @@
 " ========================================
 
 
+
 " zeigt statuszeile fr einen buffer
 set laststatus=2
 " gibt die aktuelle cursorposition in der statuszeile an
@@ -28,8 +29,6 @@ set vb
 
 " Tab wird im Text durchn Leerzeichen mitet te
 set tabstop=4
-" Vim verhlt sich nicht wie Vi
-set nocompatible
 set nowrap
 set cursorline
 set shiftwidth=4
@@ -37,6 +36,37 @@ set autoindent
 set fileencoding=utf-8
 set encoding=utf-8
 "
+"--- Vundle ----------------------------
+" Vim verhält sich nicht wie Vi
+set nocompatible
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" vundle manages vundle
+Plugin 'VundleVim/Vundle.vim'
+
+"Utility
+Plugin 'scrooloose/nerdtree'
+Plugin 'matjutsushi/tagbar'
+Plugin 'ervandew/supertab'
+Plugin 'benmills/vimux'
+Plugin 'gilsondev/searchtasks.vim'
+Plugin 'Shougo/neocomplete.vim'
+
+" Generic Programming Support
+Plugin 'tobyS/vmustache'
+
+" Markdown
+Plugin 'tpope/vim-markdown'
+Plugin 'reedes/vim-pencil'
+
+call vundle#end()
+
+filetype plugin indent on
+"--- Vundle end ---------------------------
+
+
 " Syntaxhighlighting
 "
 let color = "true"
