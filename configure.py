@@ -250,7 +250,7 @@ def install_core(targetsys, subsys, installprog, options):
     if subsys == Subsys.Origin: # Not needed on Win Subsys
         packages += ['git', 'firefox']
     if targetsys == Systems.BSD:
-        packages += ['pidof', 'wget', 'bsdstats', 'linux_base-c7']
+        packages += ['pidof', 'wget', 'bsdstats', 'linux_base-c7', 'portmaster']
     else:
         packages += ['xsel']
     output('<green>Ok<nc>')
@@ -556,7 +556,11 @@ def install_compiler(targetsys, subsys, installprog, options):
         return
     packages = ['meld', 'cgdb', 'gdb', 'cmake', 'ccache']
     if targetsys == Systems.BSD:
-        packages += ['qt5', 'fsharp', 'mono', 'node-13.10.1_1', 'npm', 'yarn', 'openjdk14']
+        packages += ['qt5', 'qt5-core', 'qt5-3d', 'qt5-gui', 'qt5-serialbus', 'qt5-widgets', 'qt5-xml', 'qt5-xmlpatterns', 'qt5-qtpaths', 'qt5-charts', 'qt5-connectivity']
+        packages += ['qt5-examples', 'qt5-sensors', 'qt5-serialbus', 'qt5-serialport', 'qt5-speech', 'qt5-sql', 'qt5-sqldrivers-sqlite3', 'qt5-sqldrivers-pgsql']
+        packages += ['qt5-style-qtcurve', 'qt5-svg', 'qt5-uiplugin', 'qt5-wayland', 'qt5-webchannel', 'qt5-webglplugin', 'qt5-webkit', 'qt5-websockets', 'qt5-testlib']
+        packages += ['qt5-webview', 'qt5-widgets', 'qt5-scxml', 'qt5-printsupport', 'qt5-qdoc', 'qt5-qdbus', 'qt5-network', 'qt5-opengl', 'qt5-imageformats', 'qt5-buildtools']
+        packages += ['qt5-x11extras', 'qt5-designer', 'qtcreator', 'fsharp', 'mono', 'node-14.4.0', 'npm', 'yarn', 'openjdk14']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['qt5-default', 'fsharp', 'mono-complete', 'nodejs', 'yarn']
     elif targetsys == Systems.SuSE:
