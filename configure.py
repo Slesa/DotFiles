@@ -250,7 +250,7 @@ def install_core(targetsys, subsys, installprog, options):
     if subsys == Subsys.Origin: # Not needed on Win Subsys
         packages += ['git', 'firefox']
     if targetsys == Systems.BSD:
-        packages += ['pidof', 'wget', 'bsdstats', 'linux_base-c7', 'portmaster']
+        packages += ['gitflow', 'pidof', 'links', 'wget', 'bsdstats', 'linux_base-c7', 'portmaster']
     else:
         packages += ['xsel']
     output('<green>Ok<nc>')
@@ -366,7 +366,8 @@ def install_login(targetsys, subsys, options):
         subprocess.check_call(['sudo', 'chmod', '+r', targetdir + targetfile])
         if options.desktop=='xfce':
             if not targetsys == Systems.BSD:
-                subprocess.check_call(['sudo', 'sed', '+i', "'/background=/c\background=/usr/share/wallpapers/StarTrekLogo1920x1080.jpg'", '/etc/lightdm/lightdm-gtk-greeter.conf' ])
+                pass
+                #subprocess.check_call(['sudo', 'sed', '+i', "'/background=/c\background=/usr/share/wallpapers/StarTrekLogo1920x1080.jpg'", '/etc/lightdm/lightdm-gtk-greeter.conf' ])
             else:
                 subprocess.check_call(['sudo', 'sed', '+i', '-e', '"s/BACKGROUND_IMAGE=.*/BACKGROUND_IMAGE=StarTrekLogo1920x1080.jpg/g"', '/usr/local/share/PCDM/themes/trueos/trueos.theme' ])
 
@@ -414,6 +415,8 @@ def install_links(targetsys, subsys, options):
         if not os.path.isfile(autostart + autoThunderbird):
             os.symlink(autosource + autoThunderbird, autostart + autoThunderbird)
     output('<green>Ok<nc>')
+
+# todo:    subprocess.check_call(['git', 'clone', 'git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim', path])
 
 
 def install_owncube(targetsys, subsys, installprog, options):
@@ -556,11 +559,12 @@ def install_compiler(targetsys, subsys, installprog, options):
         return
     packages = ['meld', 'cgdb', 'gdb', 'cmake', 'ccache']
     if targetsys == Systems.BSD:
-        packages += ['qt5', 'qt5-core', 'qt5-3d', 'qt5-gui', 'qt5-serialbus', 'qt5-widgets', 'qt5-xml', 'qt5-xmlpatterns', 'qt5-qtpaths', 'qt5-charts', 'qt5-connectivity']
-        packages += ['qt5-examples', 'qt5-sensors', 'qt5-serialbus', 'qt5-serialport', 'qt5-speech', 'qt5-sql', 'qt5-sqldrivers-sqlite3', 'qt5-sqldrivers-pgsql']
-        packages += ['qt5-style-qtcurve', 'qt5-svg', 'qt5-uiplugin', 'qt5-wayland', 'qt5-webchannel', 'qt5-webglplugin', 'qt5-webkit', 'qt5-websockets', 'qt5-testlib']
-        packages += ['qt5-webview', 'qt5-widgets', 'qt5-scxml', 'qt5-printsupport', 'qt5-qdoc', 'qt5-qdbus', 'qt5-network', 'qt5-opengl', 'qt5-imageformats', 'qt5-buildtools']
-        packages += ['qt5-x11extras', 'qt5-designer', 'qtcreator', 'fsharp', 'mono', 'node-14.4.0', 'npm', 'yarn', 'openjdk14']
+        packages += ['qt5','qt5-designer', 'qtcreator']
+        #packages += ['qt5-core', 'qt5-3d', 'qt5-gui', 'qt5-serialbus', 'qt5-widgets', 'qt5-xml', 'qt5-xmlpatterns', 'qt5-qtpaths', 'qt5-charts', 'qt5-connectivity']
+        #packages += ['qt5-examples', 'qt5-sensors', 'qt5-serialport', 'qt5-speech', 'qt5-sql', 'qt5-sqldrivers-sqlite3', 'qt5-sqldrivers-pgsql', 'qt5-x11extras']
+        #packages += ['qt5-style-qtcurve', 'qt5-svg', 'qt5-uiplugin', 'qt5-wayland', 'qt5-webchannel', 'qt5-webglplugin', 'qt5-webkit', 'qt5-websockets', 'qt5-testlib']
+        #packages += ['qt5-webview', 'qt5-widgets', 'qt5-scxml', 'qt5-printsupport', 'qt5-qdoc', 'qt5-qdbus', 'qt5-network', 'qt5-opengl', 'qt5-imageformats', 'qt5-buildtools']
+        packages += ['fsharp', 'mono', 'node-14.4.0', 'npm', 'yarn', 'openjdk14']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['qt5-default', 'fsharp', 'mono-complete', 'nodejs', 'yarn']
     elif targetsys == Systems.SuSE:
@@ -587,6 +591,7 @@ def install_dotnet(targetsys, options, installprog):
     packages = ['dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
     if targetsys == Systems.BSD:
         output('<red>unsupported<nc>')
+        packages = ['linux-dotnet10-sdk', 'linux-dotnet10-runtime']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         os.popen('wget https://packages.microsoft.com/config/ubuntu/19.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb')
         os.popen('sudo dpkg -i packages-microsoft-prod.deb')
@@ -805,6 +810,7 @@ def clone_gf(root, options):
     clone_from_gf(src, 'bv', 'bonviewer', True)
     clone_from_gf(src, 'mat', 'matrixodooaddons', False)
     clone_from_gf(src, 'mat', 'matrixbackoffice', False)
+    clone_from_gf(src, 'mat', 'tseconnector', False)
     clone_from_gf(src, 'bv', 'playground', False)
     os.chdir('..')
 
