@@ -66,3 +66,5 @@
 	review = log --oneline --patch -1
 [credential]
 	helper = store --file ~/.git-credentials
+[branch]
+	autoSetupMerge = always
