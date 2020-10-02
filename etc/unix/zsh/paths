@@ -13,8 +13,7 @@ hash -d qt=~/work/qt
 hash -d prolog=~/work/github/prolog
 hash -d safe=~/work/github/safe
 hash -d gf=~/work/42
-hash -d bm=~/work/42/BonMonitor
-hash -d bv=~/work/42/bonviewer_frontend
-hash -d bs=~/work/42/project42bonviewerservice
+hash -d bm=~/work/42/bonviewer
+hash -d mc=~/work/42/matrixclassic
 
 

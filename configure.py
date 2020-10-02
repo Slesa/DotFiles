@@ -1,3 +1,7 @@
+# 0.9 - FreeBSD
+# 0.8 - Manjaro
+# 0.7 - Zorin
+# 0.6 - Fedora
 # 0.5 - Xubuntu
 # 0.4 - Ubuntu
 # 0.3 - Cygwin
@@ -97,8 +101,12 @@ def create_parser():
     parser.add_argument('--nopycharm', action='store_true')
     parser.add_argument('--clion', action='store_true')
     parser.add_argument('--noclion', action='store_true')
+    parser.add_argument('--storm', action='store_true')
+    parser.add_argument('--nostorm', action='store_true')
     parser.add_argument('--code', action='store_true')
     parser.add_argument('--nocode', action='store_true')
+    parser.add_argument('--dotnet', action='store_true')
+    parser.add_argument('--nodotnet', action='store_true')
     result = parser.parse_args()
     return result
 
@@ -115,6 +123,7 @@ class Systems(Enum):
   SuSE = 5
   Arch = 6
   Ubuntu = 7
+  Zorin = 8
 class Subsys(Enum):
   Origin = 0
   Windows = 1
@@ -123,9 +132,9 @@ def determine_os():
     output(f'System..................: <green>{platform.system()}<nc>')
     # [0.3] cygwin                  [ ] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     
     release =  platform.release().lower()
     subsys = Subsys.Windows if 'microsoft' in release else Subsys.Origin
@@ -148,12 +157,15 @@ def determine_os():
         if 'suse' in linux:
             output('<green>SuSE<nc>')
             return (Systems.SuSE,subsys)
-        if 'arch' in linux:
+        if 'arch' in linux or 'manjaro' in linux:
             output('<green>Arch / Manjaro<nc>')
             return (Systems.Arch,subsys)
         if 'ubuntu' in linux:
             output(f'<green>Ubuntu {subsys}<nc>')
             return (Systems.Ubuntu,subsys)
+        if 'zorin' in linux:
+            output(f'<green>Zorin {subsys}<nc>')
+            return (Systems.Zorin,subsys)
     output('<red>Unknown<nc>')
     output(f'Platform................: <yellow>{platform.platform()}<nc>')
     output(f'Release.................: <yellow>{platform.release()}<nc>')
@@ -171,7 +183,7 @@ def determine_installer(os):
         return ["sudo", "zypper", "install", "-ly"]
     if os == Systems.Arch:
         return ["sudo", "pacman", "--noconfirm", "-Syu"]
-    if os == Systems.Ubuntu:
+    if os == Systems.Ubuntu or os == Systems.Zorin:
         return ["sudo", "apt-get", "install", "-y"]
     return None
 
@@ -222,11 +234,11 @@ def flag_is_set(options, on_flag, off_flag):
   return False
 
 def install_core(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install core............: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -234,22 +246,24 @@ def install_core(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.core, options.nocore):
         output('<yellow>pass<nc>')
         return
-    packages = ['xsel', 'vim', 'zsh']
+    packages = ['vim', 'zsh']
     if subsys == Subsys.Origin: # Not needed on Win Subsys
         packages += ['git', 'firefox']
     if targetsys == Systems.BSD:
-        packages += ['pidof']
+        packages += ['gitflow', 'pidof', 'links', 'wget', 'bsdstats', 'linux_base-c7', 'portmaster']
+    else:
+        packages += ['xsel']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Core installation.......: <green>Done<nc>')
 
 
 def install_zsh(targetsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install Zsh.............: ', False)
     if not flag_is_set(options, options.zsh, options.nozsh):
         output('<yellow>pass<nc>')
@@ -266,7 +280,7 @@ def install_zsh(targetsys, options):
             srcfile = 'zshrc.freebsd'
         elif targetsys == Systems.Fedora:
             srcfile = 'zshrc.fedora'
-        elif targetsys == Systems.Ubuntu:
+        elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
             srcfile = 'zshrc.ubuntu'
         subprocess.check_call(['cp', Basepath + '/data/templ/' + srcfile, targetfile])
         output('zshrc installed.........: <green>Done<nc>')
@@ -281,11 +295,11 @@ def install_zsh(targetsys, options):
     output('<green>Done<nc>')
 
 def install_prezto(targetsys, options):
-    # [ ] cygwin                    [ ] Fedora
+    # [ ] cygwin                    [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [ ] Ubuntu on Windows         [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install Prezto..........: ', False)
     if not flag_is_set(options, options.prezto, options.noprezto):
         output('<yellow>pass<nc>')
@@ -296,11 +310,11 @@ def install_prezto(targetsys, options):
         return
     subprocess.check_call(['git', 'clone', '--recursive', 'https://github.com/sorin-ionescu/prezto.git', path])
 
-    cmd = """setopt EXTENDED_GLOB; 
-             for rcfile in ~/.zprezto/runcoms/^README.md(.N); do
-               ln -s $rcfile ~/.zprezto/.${rcfile:t}
-             done"""
-    os.popen(cmd)
+#    cmd = """setopt EXTENDED_GLOB; 
+#            for rcfile in ~/.zprezto/runcoms/^README.md(.N); do
+#             ln -s $rcfile ~/.zprezto/.${rcfile:t}
+#             done"""
+#    os.popen(cmd)
 
     subprocess.check_call(['echo', '"~/.zprezto/init.zsh"', '>>', '~/.zshrc'])
     output('<green>Done<nc>')
@@ -308,11 +322,11 @@ def install_prezto(targetsys, options):
 
 
 def install_dotfiles(options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install dotfiles........: ', False)
     if not flag_is_set(options, options.dotfiles, options.nodotfiles):
         output('<yellow>pass<nc>')
@@ -327,11 +341,11 @@ def install_dotfiles(options):
 
 
 def install_login(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install Login...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -341,8 +355,10 @@ def install_login(targetsys, subsys, options):
         return
     targetdir = '/usr/share/backgrounds/'
     targetfile = 'StarTrekLogo1920x1080.jpg'
-    if targetsys == Systems.SuSE or targetsys == Systems.Fedora:
+    if targetsys == Systems.SuSE:
         targetdir = '/usr/share/wallpapers/'
+    elif targetsys == Systems.Fedora:
+        targetdir = '/usr/share/backgrounds/'
     elif targetsys == Systems.BSD:
         targetdir = '/usr/local/share/backgrounds/'
     if not os.path.isfile(targetdir + targetfile):
@@ -350,7 +366,8 @@ def install_login(targetsys, subsys, options):
         subprocess.check_call(['sudo', 'chmod', '+r', targetdir + targetfile])
         if options.desktop=='xfce':
             if not targetsys == Systems.BSD:
-                subprocess.check_call(['sudo', 'sed', '+i', "'/background=/c\background=/usr/share/wallpapers/StarTrekLogo1920x1080.jpg'", '/etc/lightdm/lightdm-gtk-greeter.conf' ])
+                pass
+                #subprocess.check_call(['sudo', 'sed', '+i', "'/background=/c\background=/usr/share/wallpapers/StarTrekLogo1920x1080.jpg'", '/etc/lightdm/lightdm-gtk-greeter.conf' ])
             else:
                 subprocess.check_call(['sudo', 'sed', '+i', '-e', '"s/BACKGROUND_IMAGE=.*/BACKGROUND_IMAGE=StarTrekLogo1920x1080.jpg/g"', '/usr/local/share/PCDM/themes/trueos/trueos.theme' ])
 
@@ -358,11 +375,11 @@ def install_login(targetsys, subsys, options):
 
 
 def install_links(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install Links...........: ', False)
     if not flag_is_set(options, options.links, options.nolinks):
         output('<yellow>pass<nc>')
@@ -399,36 +416,38 @@ def install_links(targetsys, subsys, options):
             os.symlink(autosource + autoThunderbird, autostart + autoThunderbird)
     output('<green>Ok<nc>')
 
+# todo:    subprocess.check_call(['git', 'clone', 'git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim', path])
+
 
 def install_owncube(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
-    output('Install owncube.........: ', False)
+    # [ ] Fedora                    [0.7] Zorin
+    output('Install nextcloud.......: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
         return
     if not flag_is_set(options, options.owncube, options.noowncube):
         output('<yellow>pass<nc>')
         return
-    packages = ['owncloud-client']  if not targetsys == Systems.BSD else ['owncloudclient']
+    packages = ['nextcloud-client']  if not targetsys == Systems.BSD else ['nextcloudclient']
     output('<green>Ok<nc>')
     install(installprog, packages)
-    output('Owncube installation....: <green>Done<nc>')
+    output('nextcloud installation..: <green>Done<nc>')
 
-    if not get_pid('owncloud'):
-        subprocess.Popen('owncloud')
+    #if not get_pid('owncloud'):
+    #    subprocess.Popen('owncloud')
 
 #createSshKey
 
 def install_basics(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install basics..........: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -438,8 +457,8 @@ def install_basics(targetsys, subsys, installprog, options):
         return
     packages = ['zsh']
     if targetsys == Systems.BSD:
-        packages += ['gitflow', 'fortune-mod-bofh', 'pstree', 'inxi', 'synergy']
-    elif targetsys == Systems.Ubuntu:
+        packages += ['gitflow', 'fortune-mod-bofh', 'pstree', 'hexchat', 'synergy']
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['git-flow', 'fortunes', 'fortunes-de']
         if subsys==Subsys.Origin:
           packages += ['hfsplus', 'hfsutils', 'synergy', 'rdesktop']
@@ -455,11 +474,11 @@ def install_basics(targetsys, subsys, installprog, options):
 
 # Ubuntu: tmuxinator, tmux-plugin-manager ranger
 def install_programs(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install programs........: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -467,32 +486,34 @@ def install_programs(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.programs, options.noprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['postgresql', 'curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap']
+    packages = ['curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap', 'byobu']
     if targetsys == Systems.BSD:
         # fehlt: xfce slim slim-themes
-        packages += ['mux', 'bacula-client', 'txorg']
-    elif targetsys == Systems.Ubuntu:
-        # 'tmuxp', 'tmuxinator', 'tmux-plugin-manager'
-        packages += ['tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen']
-        if subsys == Subsys.Origin:
-            packages += ['synaptic', 'bacula-client', 'openssh-server', 'lshw']
-    elif targetsys == Systems.SuSE:
-        packages += ['tmux', 'dosemu', 'dos2unix', 'ranger']
-    elif targetsys == Systems.Arch:
-        packages += ['tmux', 'lshw', 'ranger', 'dos2unix', 'bacula-client', 'vim-pathogen']
-    elif targetsys == Systems.Fedora:
-        packages += ['tmux', 'bacula-client', 'bacula-console-bat', 'bacula-traymonitor', 'dosemu']
+        packages += ['postgresql12-server', 'postgresql12-client', 'tmux', 'bacula9-client', 'xorg']
+    else:
+        packages += ['postgresql']
+        if targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+            # 'tmuxp', 'tmuxinator', 'tmux-plugin-manager'
+            packages += ['tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen']
+            if subsys == Subsys.Origin:
+                packages += ['synaptic', 'bacula-client', 'openssh-server', 'lshw']
+        elif targetsys == Systems.SuSE:
+            packages += ['tmux', 'dosemu', 'dos2unix', 'ranger']
+        elif targetsys == Systems.Arch:
+            packages += ['tmux', 'lshw', 'ranger', 'dos2unix', 'bacula-client', 'vim-pathogen']
+        elif targetsys == Systems.Fedora:
+            packages += ['postgresql-server', 'postgresql-contrib', 'tmux', 'bacula-client', 'bacula-console-bat', 'bacula-traymonitor'] #, 'dosemu']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Programs installation...: <green>Done<nc>')
 
 # Ubuntu: xaos, guake
 def install_xprograms(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install X programs......: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -500,30 +521,35 @@ def install_xprograms(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xprograms, options.noxprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['tuxcmd', 'xaos', 'guake', 'thunderbird', 'vlc', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
+    packages = ['xaos', 'guake', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
     if targetsys == Systems.BSD:
-        packages += ['chromium', 'gnupg20', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
-    elif targetsys == Systems.Ubuntu:
-        packages += ['vim-gtk', 'retext', 'chromium-browser', 'gpgv2', 'hunspell-de-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
+        packages += ['chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+        if targetsys == Systems.Zorin:
+            packages += ['hunspell-de-de']
+        else:
+            packages += ['hunspell-de']
+        packages += ['vim-gtk', 'retext', 'vlc', 'tuxcmd', 'chromium-browser', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
     elif targetsys == Systems.SuSE:
-        packages += ['chromium', 'gvim', 'retext', 'unetbootin']
+        packages += ['chromium', 'gvim', 'vlc', 'tuxcmd', 'retext', 'unetbootin']
     elif targetsys == Systems.Arch:
         packages += ['retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git']
     elif targetsys == Systems.Fedora:
-        packages += ['gnome-commander', 'chromium', 'vim-X11', 'streamer1-plugins-base', 'gstreamer1-plugins-good',
-                     'gstreamer1-plugins-ugly', 'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free',
-                     'gstreamer1-plugins-bad-freeworld', 'gstreamer1-plugins-bad-free-extras', 'ffmpeg', 'unetbootin',
-                     'hunspell-de-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
+        packages += ['gnome-commander', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
+                     'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free',
+                     'gstreamer1-plugins-bad-free-extras', 'unetbootin',
+                     'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
+                     #['streamer1-plugins-base', 'gstreamer1-plugins-ugly','gstreamer1-plugins-bad-freeworld','ffmpeg',   ]
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('X Programs installation.: <green>Done<nc>')
 
 def install_compiler(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install compiler........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -533,25 +559,65 @@ def install_compiler(targetsys, subsys, installprog, options):
         return
     packages = ['meld', 'cgdb', 'gdb', 'cmake', 'ccache']
     if targetsys == Systems.BSD:
-        packages += ['qt5', 'fsharp', 'mono', 'nodejs', 'yarn']
-    elif targetsys == Systems.Ubuntu:
+        packages += ['qt5','qt5-designer', 'qtcreator']
+        #packages += ['qt5-core', 'qt5-3d', 'qt5-gui', 'qt5-serialbus', 'qt5-widgets', 'qt5-xml', 'qt5-xmlpatterns', 'qt5-qtpaths', 'qt5-charts', 'qt5-connectivity']
+        #packages += ['qt5-examples', 'qt5-sensors', 'qt5-serialport', 'qt5-speech', 'qt5-sql', 'qt5-sqldrivers-sqlite3', 'qt5-sqldrivers-pgsql', 'qt5-x11extras']
+        #packages += ['qt5-style-qtcurve', 'qt5-svg', 'qt5-uiplugin', 'qt5-wayland', 'qt5-webchannel', 'qt5-webglplugin', 'qt5-webkit', 'qt5-websockets', 'qt5-testlib']
+        #packages += ['qt5-webview', 'qt5-widgets', 'qt5-scxml', 'qt5-printsupport', 'qt5-qdoc', 'qt5-qdbus', 'qt5-network', 'qt5-opengl', 'qt5-imageformats', 'qt5-buildtools']
+        packages += ['fsharp', 'mono', 'node-14.4.0', 'npm', 'yarn', 'openjdk14']
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['qt5-default', 'fsharp', 'mono-complete', 'nodejs', 'yarn']
     elif targetsys == Systems.SuSE:
         packages += ['fsharp', 'mono-complete', 'cmake-gui', 'kdevelop5', 'kdevelop5-pg-qt']
     elif targetsys == Systems.Arch:
         packages += ['qt5', 'mono', 'mono-tools', 'nodejs', 'yarn']
     elif targetsys == Systems.Fedora:
-        packages += ['mono-complete', 'ncurses-devel', 'cmake-gui', 'nodejs', 'yarn']
+        packages += ['mono-complete', 'ncurses-devel', 'cmake-gui', 'nodejs'] #, 'yarn']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Compiler installation...: <green>Done<nc>')
 
+def install_dotnet(targetsys, options, installprog):
+    output('install .NET Core......: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.dotnet, options.nodotnet):
+        output('<yellow>pass<nc>')
+        return
+    path = os.getcwd()
+    os.chdir('/tmp')
+
+    packages = ['dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
+    if targetsys == Systems.BSD:
+        output('<red>unsupported<nc>')
+        packages = ['linux-dotnet10-sdk', 'linux-dotnet10-runtime']
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+        os.popen('wget https://packages.microsoft.com/config/ubuntu/19.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb')
+        os.popen('sudo dpkg -i packages-microsoft-prod.deb')
+    elif targetsys == Systems.SuSE:
+        os.popen('sudo zypper install libicu')
+        os.popen('sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc')
+        os.popen('wget https://packages.microsoft.com/config/opensuse/15/prod.repo')
+        os.popen('sudo mv prod.repo /etc/zypp/repos.d/microsoft-prod.repo')
+        os.popen('sudo chown root:root /etc/zypp/repos.d/microsoft-prod.repo')
+    elif targetsys == Systems.Arch:
+        output('<red>unsupported<nc>')
+    elif targetsys == Systems.Fedora:
+        os.popen('sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc')
+        os.popen('sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/31/prod.repo')
+
+    os.chdir(path)
+    output('<green>Ok<nc>')
+    install(installprog, packages)
+    output('..NET Core installation.: <green>Done<nc>')
+
 def install_xfce_programs(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install XFCE programs...: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -562,11 +628,11 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xfce, options.noxfce):
         output('<yellow>pass<nc>')
         return
-    # packages = ['']
+    packages = ['']
     if targetsys == Systems.BSD or targetsys == Systems.Arch:
         packages = ['xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-screenshooter-plugin', 'xfce4-cpugraph-plugin',
                      'xfce4-battery-plugin', 'xfce4-mailwatch-plugin']
-    elif targetsys == Systems.Ubuntu:
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.Fedora:
         packages = ['xfce4-eyes-plugin']
     #elif targetsys == Systems.SuSE:
     #    packages += ['']
@@ -582,11 +648,11 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
         output('XFCE programs ..........: <green>Done<nc>')
 
 def install_tex(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install TeX.............: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -596,9 +662,10 @@ def install_tex(targetsys, subsys, installprog, options):
         return
     packages = ['texmaker', 'lyx', 'latex2html', 'texstudio']
     if targetsys == Systems.BSD:
-        packages += ['latexila', 'texlive-full', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
+        # 'latexila',
+        packages += ['texlive-full', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
                      'xorg-fonts-cyrillic']
-    elif targetsys == Systems.Ubuntu:
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['latexila', 'texlive-music', 'xfonts-cyrillic', 'latex-cjk-japanese', 't1-cyrillic',
                      'texlive-lang-cyrillic', 'texlive-fonts-extra']
     elif targetsys == Systems.SuSE:
@@ -612,11 +679,11 @@ def install_tex(targetsys, subsys, installprog, options):
     output('TeX installation........: <green>Done<nc>')
 
 def install_games(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install Games...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -627,7 +694,7 @@ def install_games(targetsys, subsys, installprog, options):
     packages = ['xboard']
     if targetsys == Systems.BSD:
         packages += ['crafty', 'brutalchess', 'chessx', 'pouetchess']
-    elif targetsys == Systems.Ubuntu:
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['phalanx', 'pychess', 'dosbox']
     elif targetsys == Systems.SuSE:
         packages += ['phalanx', 'gnome-chess', 'gnuchess', 'lskat kiten']
@@ -640,11 +707,11 @@ def install_games(targetsys, subsys, installprog, options):
     output('Games installation......: <green>Done<nc>')
 
 def install_fonts(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install Fonts...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -692,7 +759,7 @@ def clone_github(root, options):
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
     clone_from_github(src, 'Godot', False)
-    clone_from_github(src, 'odoo/odoo', False)
+#    clone_from_github(src, 'odoo/odoo', False)
     os.chdir('..')
 
     output('<green>Done<nc>')
@@ -743,6 +810,8 @@ def clone_gf(root, options):
     clone_from_gf(src, 'bv', 'bonviewer', True)
     clone_from_gf(src, 'mat', 'matrixodooaddons', False)
     clone_from_gf(src, 'mat', 'matrixbackoffice', False)
+    clone_from_gf(src, 'mat', 'tseconnector', False)
+    clone_from_gf(src, 'bv', 'playground', False)
     os.chdir('..')
 
     output('<green>Done<nc>')
@@ -873,6 +942,32 @@ def install_clion(targetsys, options, downloads, bin):
     os.chdir(path)
     output('CLion installed.........: <green>Done<nc>')
 
+def install_webstorm(targetsys, options, downloads, bin):
+    output('install WebStorm........: ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.storm, options.nostorm):
+        output('<yellow>pass<nc>')
+        return
+
+    stormdir = bin + '/Jetbrains.WebStorm'
+    if os.path.isdir(stormdir):
+        output('<yellow>lready installed<nc>')
+        return
+    path = os.getcwd()
+    os.chdir(downloads)
+    stormzip = 'WebStorm-2020.1.tar.gz'
+    if not os.path.isfile(stormzip):
+        subprocess.check_call(['wget', 'https://download.jetbrains.com/WebStorm/'+stormzip])
+    os.chdir(bin)
+    os.mkdir(stormdir)
+    subprocess.check_call(['tar', 'xvzf', downloads+'/'+stormzip, '-C', stormdir, '--strip-component=1'])
+
+    os.chdir(path)
+    output('WebStorm installed......: <green>Done<nc>')
+
+
 def install_code(targetsys, options, downloads, bin):
     return # Does not work
     output('install VS Code........: ', False)
@@ -882,6 +977,7 @@ def install_code(targetsys, options, downloads, bin):
     if not flag_is_set(options, options.code, options.nocode):
         output('<yellow>pass<nc>')
         return
+
 
     #codedir = bin + '/Code'
     #if os.path.isdir(codedir):
@@ -903,11 +999,11 @@ def install_code(targetsys, options, downloads, bin):
     output('VS Code installed.......: <green>Done<nc>')
 
 def install_externals(targetsys, subsys, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     output('Install externals.......: ', False)
     #if not options.externals or (options.full and options.noexternals):
     if subsys == Subsys.Windows:
@@ -927,17 +1023,18 @@ def install_externals(targetsys, subsys, options):
     install_rider(targetsys, options, downloads, bin)
     install_pycharm(targetsys, options, downloads, bin)
     install_clion(targetsys, options, downloads, bin)
+    install_webstorm(targetsys, options, downloads, bin)
     install_code(targetsys, options, downloads, bin)
 
     output('Externals installed.....: <green>Done<nc>')
 
 
 def install_all(targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.6] Fedora
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [ ] Mint
+    # [ ] Fedora                    [0.7] Zorin
     install_core(targetsys, subsys, installprog, options)
     install_dotfiles(options)
     install_zsh(targetsys, options)
@@ -951,6 +1048,7 @@ def install_all(targetsys, subsys, installprog, options):
     install_programs(targetsys, subsys, installprog, options)
     install_xprograms(targetsys, subsys, installprog, options)
     install_compiler(targetsys, subsys, installprog, options)
+    install_dotnet(targetsys, options, installprog)
     install_xfce_programs(targetsys, subsys, installprog, options)
     install_tex(targetsys, subsys, installprog, options)
     install_games(targetsys, subsys, installprog, options)
@@ -970,5 +1068,3 @@ install_all(system, subsys, installer, args)
 
 
 #installXfceLinks # no arg
-##installTwitter
-#installExternals
