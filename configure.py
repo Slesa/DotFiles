@@ -1,3 +1,4 @@
+# 0.A - MX
 # 0.9 - FreeBSD
 # 0.8 - Manjaro
 # 0.7 - Zorin
@@ -124,13 +125,14 @@ class Systems(Enum):
   Arch = 6
   Ubuntu = 7
   Zorin = 8
+  MxLinux = 9
 class Subsys(Enum):
   Origin = 0
   Windows = 1
 
 def determine_os():
     output(f'System..................: <green>{platform.system()}<nc>')
-    # [0.3] cygwin                  [ ] Fedora
+    # [0.3] cygwin                  [0.A] Debian
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
@@ -154,6 +156,9 @@ def determine_os():
         if 'fedora' in linux:
             output('<green>Fedora<nc>')
             return (Systems.Fedora,subsys)
+        if 'mx' in linux:
+            output('<green>MXLinux<nc>')
+            return (Systems.MxLinux,subsys)
         if 'suse' in linux:
             output('<green>SuSE<nc>')
             return (Systems.SuSE,subsys)
@@ -179,6 +184,8 @@ def determine_installer(os):
         return ["sudo", "pkg", "install", "-y"]
     if os == Systems.Fedora:
         return ["sudo", "yum", "install", "-y"]
+    if os == Systems.MxLinux:
+        return ["sudo", "apt-get", "install", "-y"]
     if os == Systems.SuSE:
         return ["sudo", "zypper", "install", "-ly"]
     if os == Systems.Arch:
@@ -238,7 +245,7 @@ def install_core(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install core............: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -263,7 +270,7 @@ def install_zsh(targetsys, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install Zsh.............: ', False)
     if not flag_is_set(options, options.zsh, options.nozsh):
         output('<yellow>pass<nc>')
@@ -282,6 +289,8 @@ def install_zsh(targetsys, options):
             srcfile = 'zshrc.fedora'
         elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
             srcfile = 'zshrc.ubuntu'
+        else:
+            srcfile = 'zshrc.ubuntu'
         subprocess.check_call(['cp', Basepath + '/data/templ/' + srcfile, targetfile])
         output('zshrc installed.........: <green>Done<nc>')
     if targetsys != Systems.Cygwin:
@@ -299,7 +308,7 @@ def install_prezto(targetsys, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [ ] Ubuntu on Windows         [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install Prezto..........: ', False)
     if not flag_is_set(options, options.prezto, options.noprezto):
         output('<yellow>pass<nc>')
@@ -345,19 +354,19 @@ def install_login(targetsys, subsys, options):
     # [ ] macos                     [ ] SuSE
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install Login...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
         return
-    if not flag_is_set(options, options.zsh, options.nozsh):
+    if not flag_is_set(options, options.login, options.nologin):
         output('<yellow>pass<nc>')
         return
     targetdir = '/usr/share/backgrounds/'
     targetfile = 'StarTrekLogo1920x1080.jpg'
     if targetsys == Systems.SuSE:
         targetdir = '/usr/share/wallpapers/'
-    elif targetsys == Systems.Fedora:
+    elif targetsys == Systems.Fedora or targetsys == Systems.MxLinux:
         targetdir = '/usr/share/backgrounds/'
     elif targetsys == Systems.BSD:
         targetdir = '/usr/local/share/backgrounds/'
@@ -379,7 +388,7 @@ def install_links(targetsys, subsys, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install Links...........: ', False)
     if not flag_is_set(options, options.links, options.nolinks):
         output('<yellow>pass<nc>')
@@ -424,7 +433,7 @@ def install_owncube(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install nextcloud.......: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -432,8 +441,12 @@ def install_owncube(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.owncube, options.noowncube):
         output('<yellow>pass<nc>')
         return
-    packages = ['nextcloud-client']  if not targetsys == Systems.BSD else ['nextcloudclient']
-    output('<green>Ok<nc>')
+    if targetsys == Systems.MxLinux:
+        packages = ['nextcloud-desktop']
+    elif targetsys == Systems.BSD: 
+        packages = ['nextcloudclient']
+    else:
+        packages = ['nextcloud-client']
     install(installprog, packages)
     output('nextcloud installation..: <green>Done<nc>')
 
@@ -447,7 +460,7 @@ def install_basics(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install basics..........: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -458,6 +471,8 @@ def install_basics(targetsys, subsys, installprog, options):
     packages = ['zsh']
     if targetsys == Systems.BSD:
         packages += ['gitflow', 'fortune-mod-bofh', 'pstree', 'hexchat', 'synergy']
+    elif targetsys == Systems.MxLinux:
+        packages += ['git-flow', 'fortunes', 'fortunes-de']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['git-flow', 'fortunes', 'fortunes-de']
         if subsys==Subsys.Origin:
@@ -478,7 +493,7 @@ def install_programs(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install programs........: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -490,6 +505,8 @@ def install_programs(targetsys, subsys, installprog, options):
     if targetsys == Systems.BSD:
         # fehlt: xfce slim slim-themes
         packages += ['postgresql12-server', 'postgresql12-client', 'tmux', 'bacula9-client', 'xorg']
+    elif targetsys == Systems.MxLinux:
+        packages += ['postgresql-11','tmux','ranger','dos2unix','openssh-server','vim-addon-manager', 'vim-pathogen','bacula-client']
     else:
         packages += ['postgresql']
         if targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -513,7 +530,7 @@ def install_xprograms(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install X programs......: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -521,15 +538,19 @@ def install_xprograms(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xprograms, options.noxprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['xaos', 'guake', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
+    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
     if targetsys == Systems.BSD:
         packages += ['chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
-    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
-        if targetsys == Systems.Zorin:
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
+        if targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
             packages += ['hunspell-de-de']
         else:
             packages += ['hunspell-de']
-        packages += ['vim-gtk', 'retext', 'vlc', 'tuxcmd', 'chromium-browser', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
+        if targetsys == Systems.MxLinux:
+            packages += ['chromium']
+        else:
+            packages += ['chromium-browser']
+        packages += ['vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
     elif targetsys == Systems.SuSE:
         packages += ['chromium', 'gvim', 'vlc', 'tuxcmd', 'retext', 'unetbootin']
     elif targetsys == Systems.Arch:
@@ -549,7 +570,7 @@ def install_compiler(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install compiler........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -573,11 +594,19 @@ def install_compiler(targetsys, subsys, installprog, options):
         packages += ['qt5', 'mono', 'mono-tools', 'nodejs', 'yarn']
     elif targetsys == Systems.Fedora:
         packages += ['mono-complete', 'ncurses-devel', 'cmake-gui', 'nodejs'] #, 'yarn']
+    elif targetsys == Systems.MxLinux:
+        packages += ['python3-venv','mono-complete','cmake-qt-gui','yarnpkg','pyqt5-dev','pyqt5-examples','qt5-default','qtbase5-dev','libgl1-mesa-dev','libglu1-mesa-dev']
     output('<green>Ok<nc>')
     install(installprog, packages)
     output('Compiler installation...: <green>Done<nc>')
 
+
 def install_dotnet(targetsys, options, installprog):
+    # [0.3] cygwin                  [0.6] Fedora
+    # [ ] macos                     [ ] SuSE
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.2] Ubuntu on Windows       [0.5] Ubuntu
+    # [0.A] MX                      [0.7] Zorin
     output('install .NET Core......: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -592,7 +621,7 @@ def install_dotnet(targetsys, options, installprog):
     if targetsys == Systems.BSD:
         output('<red>unsupported<nc>')
         packages = ['linux-dotnet10-sdk', 'linux-dotnet10-runtime']
-    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
         os.popen('wget https://packages.microsoft.com/config/ubuntu/19.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb')
         os.popen('sudo dpkg -i packages-microsoft-prod.deb')
     elif targetsys == Systems.SuSE:
@@ -617,7 +646,7 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install XFCE programs...: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -632,7 +661,7 @@ def install_xfce_programs(targetsys, subsys, installprog, options):
     if targetsys == Systems.BSD or targetsys == Systems.Arch:
         packages = ['xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-screenshooter-plugin', 'xfce4-cpugraph-plugin',
                      'xfce4-battery-plugin', 'xfce4-mailwatch-plugin']
-    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.Fedora:
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.Fedora or targetsys == Systems.MxLinux:
         packages = ['xfce4-eyes-plugin']
     #elif targetsys == Systems.SuSE:
     #    packages += ['']
@@ -652,7 +681,7 @@ def install_tex(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install TeX.............: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -665,6 +694,8 @@ def install_tex(targetsys, subsys, installprog, options):
         # 'latexila',
         packages += ['texlive-full', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
                      'xorg-fonts-cyrillic']
+    elif targetsys == Systems.MxLinux:
+        packages += ['latexila', 'texlive-music', 'texlive-lang-cyrillic']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['latexila', 'texlive-music', 'xfonts-cyrillic', 'latex-cjk-japanese', 't1-cyrillic',
                      'texlive-lang-cyrillic', 'texlive-fonts-extra']
@@ -683,7 +714,7 @@ def install_games(targetsys, subsys, installprog, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install Games...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -694,6 +725,8 @@ def install_games(targetsys, subsys, installprog, options):
     packages = ['xboard']
     if targetsys == Systems.BSD:
         packages += ['crafty', 'brutalchess', 'chessx', 'pouetchess']
+    elif targetsys == Systems.MxLinux:
+        packages += ['phalanx','pychess','dosbox','xskat','crafty','glhack','slashem','quake','quake2']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['phalanx', 'pychess', 'dosbox']
     elif targetsys == Systems.SuSE:
@@ -711,7 +744,7 @@ def install_fonts(targetsys, subsys, options):
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
+    # [0.A] MX                      [0.7] Zorin
     output('Install Fonts...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -878,14 +911,12 @@ def install_rider(targetsys, options, downloads, bin):
         return
     path = os.getcwd()
     os.chdir(downloads)
-    riderzip = 'JetBrains.Rider-2019.2.3.tar.gz'
+    riderzip = 'JetBrains.Rider-2020.2.4.tar.gz'
     if not os.path.isfile(riderzip):
         subprocess.check_call(['wget', 'https://download.jetbrains.com/rider/'+riderzip])
     os.chdir(bin)
     os.mkdir(riderdir)
     subprocess.check_call(['tar', 'xvzf', downloads+'/'+riderzip, '-C', riderdir, '--strip-component=1'])
-    #subprocess.check_call(['mv', "'JetBrains Rider-2019.2.3'", riderdir])
-    #subprocess.check_call(['mv', 'JetBrains\ Rider*', riderdir])
 
     os.chdir(path)
     output('Rider installed ........: <green>Done<nc>')
@@ -905,7 +936,7 @@ def install_pycharm(targetsys, options, downloads, bin):
         return
     path = os.getcwd()
     os.chdir(downloads)
-    charmzip = 'pycharm-community-2019.2.4.tar.gz'
+    charmzip = 'pycharm-community-2020.2.3.tar.gz'
     if not os.path.isfile(charmzip):
         subprocess.check_call(['wget', 'https://download.jetbrains.com/python/'+charmzip])
     os.chdir(bin)
@@ -931,13 +962,12 @@ def install_clion(targetsys, options, downloads, bin):
         return
     path = os.getcwd()
     os.chdir(downloads)
-    clionzip = 'CLion-2019.3.3.tar.gz'
+    clionzip = 'CLion-2020.2.4.tar.gz'
     if not os.path.isfile(clionzip):
         subprocess.check_call(['wget', 'https://download.jetbrains.com/cpp/'+clionzip])
     os.chdir(bin)
     os.mkdir(cliondir)
     subprocess.check_call(['tar', 'xvzf', downloads+'/'+clionzip, '-C', cliondir, '--strip-component=1'])
-    #subprocess.check_call(['mv', "'JetBrains CLion-2019.3.3'", cliondir])
 
     os.chdir(path)
     output('CLion installed.........: <green>Done<nc>')
@@ -1023,7 +1053,7 @@ def install_externals(targetsys, subsys, options):
     install_rider(targetsys, options, downloads, bin)
     install_pycharm(targetsys, options, downloads, bin)
     install_clion(targetsys, options, downloads, bin)
-    install_webstorm(targetsys, options, downloads, bin)
+    #install_webstorm(targetsys, options, downloads, bin)
     install_code(targetsys, options, downloads, bin)
 
     output('Externals installed.....: <green>Done<nc>')
@@ -1048,7 +1078,7 @@ def install_all(targetsys, subsys, installprog, options):
     install_programs(targetsys, subsys, installprog, options)
     install_xprograms(targetsys, subsys, installprog, options)
     install_compiler(targetsys, subsys, installprog, options)
-    install_dotnet(targetsys, options, installprog)
+    #install_dotnet(targetsys, options, installprog)
     install_xfce_programs(targetsys, subsys, installprog, options)
     install_tex(targetsys, subsys, installprog, options)
     install_games(targetsys, subsys, installprog, options)

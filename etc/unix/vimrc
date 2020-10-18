@@ -38,32 +38,32 @@ set encoding=utf-8
 "
 "--- Vundle ----------------------------
 " Vim verhält sich nicht wie Vi
-set nocompatible
-filetype off
+" set nocompatible
+" filetype off
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" set rtp+=~/.vim/bundle/Vundle.vim
+" call vundle#begin()
 " vundle manages vundle
-Plugin 'VundleVim/Vundle.vim'
+" Plugin 'VundleVim/Vundle.vim'
 
 "Utility
-Plugin 'scrooloose/nerdtree'
-Plugin 'matjutsushi/tagbar'
-Plugin 'ervandew/supertab'
-Plugin 'benmills/vimux'
-Plugin 'gilsondev/searchtasks.vim'
-Plugin 'Shougo/neocomplete.vim'
+" Plugin 'scrooloose/nerdtree'
+" Plugin 'matjutsushi/tagbar'
+" Plugin 'ervandew/supertab'
+" Plugin 'benmills/vimux'
+" Plugin 'gilsondev/searchtasks.vim'
+" Plugin 'Shougo/neocomplete.vim'
 
 " Generic Programming Support
-Plugin 'tobyS/vmustache'
+" Plugin 'tobyS/vmustache'
 
 " Markdown
-Plugin 'tpope/vim-markdown'
-Plugin 'reedes/vim-pencil'
+" Plugin 'tpope/vim-markdown'
+" Plugin 'reedes/vim-pencil'
 
-call vundle#end()
+" call vundle#end()
 
-filetype plugin indent on
+" filetype plugin indent on
 "--- Vundle end ---------------------------
 
 
