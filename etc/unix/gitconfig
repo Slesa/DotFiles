@@ -3,7 +3,7 @@
 	email = joerg.preiss@slesa.de
 [core]
 	editor = vim
-	autocrlf = false
+	autocrlf = input
 [push]
 	default = current
 

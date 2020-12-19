@@ -1,0 +1,43 @@
+fortune
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+source ~/.zsh/options
+
+export EDITOR=vim
+export PAGER=less
+export BROWSER=`which firefox`
+
+
+# Qt5
+QTBASE=~/work/Qt
+QTDIR=$QTBASE/5.15.2/gcc_64
+PYQTDIR=$QTBASE/PyQt5-5.15.3
+PATH=$QTDIR/bin:$QTBASE/Tools/QtCreator/bin:$PATH  
+LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH
+export QTBASE QTDIR PYQTDIR PATH LD_LIBRARY_PATH
+
+
+# PyQt5 / Qml
+QT_PLUGIN_PATH=$QTDIR/plugins
+QML2_IMPORT_PATH=$QTDIR/qml
+export QT_PLUGIN_PATH QML_IMPORT_PATH
+
+
+# Antlr / Java
+#export CLASSPATH=".:/usr/local/lib/antlr-4.5.1-complete.jar:$CLASSPATH"
+
+
+source ~/.zsh/aliases
+source ~/.zsh/paths
+# source ~/bin/tools/git/git_prompt.zsh
+source ~/.zprezto/init.zsh
+
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

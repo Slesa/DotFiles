@@ -23,7 +23,7 @@ HISTFILE=~/.zsh_history
 SAVEHIST=100
 HISTSIZE=120
 
-setopt share_history
+# setopt share_history
 setopt append_history
 setopt hist_no_store
 setopt hist_reduce_blanks

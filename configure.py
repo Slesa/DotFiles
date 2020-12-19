@@ -412,6 +412,25 @@ def install_links(targetsys, subsys, options):
     if not os.path.islink(vimfile):
         os.symlink(Basepath + '/etc/unix/vimrc', vimfile)
 
+    zprofilefile = str(Path.home()) + '/.zprofile'
+    if not os.path.islink(zloginfile):
+        os.symlink(Basepath + '/etc/unix/zprezto/zprofile', zprofilefile)
+    zprofilefile = str(Path.home()) + '/.zprofile'
+    if not os.path.islink(zloginfile):
+        os.symlink(Basepath + '/etc/unix/zprezto/zlogin', zloginfile)
+    zlogoutfile = str(Path.home()) + '/.zlogout'
+    if not os.path.islink(zlogoutfile):
+        os.symlink(Basepath + '/etc/unix/zprezto/zlogout', zlogoutfile)
+    zpreztofile = str(Path.home()) + '/.zpreztorc'
+    if not os.path.islink(zpreztofile):
+        os.symlink(Basepath + '/etc/unix/zprezto/zpreztorc', zpreztofile)
+    zshenvfile = str(Path.home()) + '/.zshenv'
+    if not os.path.islink(zshenvfile):
+        os.symlink(Basepath + '/etc/unix/zprezto/zshenv', zshenvfile)
+    p10kfile = str(Path.home()) + '/.p10k.zsh'
+    if not os.path.islink(p10kfile):
+        os.symlink(Basepath + '/etc/unix/zprezto/p10k.zsh', p10kfile)
+
     if not targetsys==Systems.Cygwin and not subsys == Subsys.Windows:
         autosource = Basepath + '/etc/unix/autostart/'
         autostart = str(Path.home()) + '/.config/autostart/'
