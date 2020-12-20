@@ -152,7 +152,7 @@ def determine_os():
         output('<green>BSD derivate<nc>')
         return (Systems.BSD,subsys)
     if system == 'linux':
-        linux = platform.platform().lower()
+        linux = platform.platform().lower() + platform.version().lower()
         if 'fedora' in linux:
             output('<green>Fedora<nc>')
             return (Systems.Fedora,subsys)
@@ -176,7 +176,7 @@ def determine_os():
     output(f'Release.................: <yellow>{platform.release()}<nc>')
     output(f'Version.................: <yellow>{platform.version()}<nc>')
     #output(f'Uname...................: <yellow>{str(platform.uname())}<nc>')
-    output(f'Distribution............: <yellow>{platform.linux_distribution()[0]}<nc>')
+    #output(f'Distribution............: <yellow>{platform.linux_distribution()[0]}<nc>')
     return (None,subsys)
 
 def determine_installer(os):
@@ -413,9 +413,9 @@ def install_links(targetsys, subsys, options):
         os.symlink(Basepath + '/etc/unix/vimrc', vimfile)
 
     zprofilefile = str(Path.home()) + '/.zprofile'
-    if not os.path.islink(zloginfile):
+    if not os.path.islink(zprofilefile):
         os.symlink(Basepath + '/etc/unix/zprezto/zprofile', zprofilefile)
-    zprofilefile = str(Path.home()) + '/.zprofile'
+    zloginfile = str(Path.home()) + '/.zlogin'
     if not os.path.islink(zloginfile):
         os.symlink(Basepath + '/etc/unix/zprezto/zlogin', zloginfile)
     zlogoutfile = str(Path.home()) + '/.zlogout'
@@ -1107,6 +1107,8 @@ def install_all(targetsys, subsys, installprog, options):
 
 output("<head>=====[ Configuring system ]====<nc>")
 (system,subsys) = determine_os()
+if system is None:
+    quit()
 installer = determine_installer(system)
 args = create_parser()
 
