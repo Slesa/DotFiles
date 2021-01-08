@@ -1,15 +1,16 @@
-show_frame=true
+show_frame=false
 fg_set=false
-bg_set=false
+bg_set=true
 timezone=
 width_set=false
 height_set=false
 lines_vertically=true
 rotation=0
 data0=%H:%M
-font0=Noto Sans 8
-data1=%d.%m.%Y
-font1=Noto Sans 8
+font0=Sans 8
+data1=%d.%m
+font1=Sans 8
 tooltip=%A, %d. %B %Y (KW %V)
 hib_timing=false
+bg=46517R 33667G 23130B
 

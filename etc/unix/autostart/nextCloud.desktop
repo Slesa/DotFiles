@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=ownCloud
+Name=Nextcloud
 GenericName=File Synchronizer
-Exec=/usr/bin/owncloud
+Exec=/usr/bin/nextcloud
 Terminal=false
 Icon=owncloud
 Categories=Network
@@ -9,3 +9,5 @@ Type=Application
 StartupNotify=false
 X-GNOME-Autostart-enabled=true
 X-GNOME-Autostart-Delay=10
+Hidden=true
+

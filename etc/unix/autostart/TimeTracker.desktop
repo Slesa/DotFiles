@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=TimeTracker
-Exec= java -jar /home/jpreiss/bin/time-tracking-client-2.0.11.jar -startissue 25243 -Dswing.defaultlaf=java.swing.plaf.metal.MetalLookAndFeel
-
