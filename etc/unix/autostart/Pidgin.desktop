@@ -2,4 +2,6 @@
 Type=Application
 Name=Pidgin
 Exec=pidgin
+Terminal=false
+X-GNOME-Autostart-enabled=true
 
