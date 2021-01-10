@@ -383,32 +383,35 @@ def install_login(targetsys, subsys, options):
 
     output('<green>Ok<nc>')
 
-def link_file(source, target)
+def link_file(source, target):
     if not os.path.islink(target):
         os.symlink(source, target)
 
-def link_unix_file(filename, folder='')
+def link_unix_file(filename, folder=''):
     source = Basepath + '/etc/unix/'
     if folder:
         source = source + folder + '/'
-    target = filename if '/' in filename else '/.' + filename
+    target = '/.' + filename if not '/' in filename else '/.config/' + filename
     link_file(source + filename, str(Path.home()) + target)
 
-def link_autostart(filename)
-    source = Basepath + '/etc/unix/autostart/' + filename
+def link_autostart(filename):
     target = str(Path.home()) + '/.config/autostart/' + filename
-    os.symlink(source, target)
+    if not os.path.islink(target):
+        source = Basepath + '/etc/unix/autostart/' + filename
+        os.symlink(source, target)
 
-def link_xfce_file(filename, folder='')
-    source = Basepath + '/etc/xfce/' + filename
+def link_xfce_file(filename, folder=''):
+    source = Basepath + '/etc/unix/xfce4/' + filename
     target = str(Path.home()) + '/.config/xfce4/'
     if folder:
         target = target + folder + '/'
     target += filename
 
+    if os.path.islink(target):
+        return
     if os.path.isfile(target):
         os.rename(target, target + '.bak')
-        os.symlink(source, target)
+    os.symlink(source, target)
 
 
 def install_links(targetsys, subsys, options):
@@ -456,7 +459,7 @@ def install_links(targetsys, subsys, options):
     # Xfce
     xfceSource = Basepath + '/etc/unix/xfce4/'
     xfcePath = str(Path.home()) + '/.config/xfce4/'
-    xfcePanel = xfcePath + 'panel/'
+    xfcePanel = 'panel/'
     xfceChannel = 'xfconf/xfce-perchannel-xml/'
     if not targetsys==Systems.Cygwin and not subsys == Subsys.Windows:
         link_xfce_file('thunar.xml', xfceChannel)
@@ -580,7 +583,7 @@ def install_xprograms(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xprograms, options.noxprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki']
+    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki', 'devilspie2', 'cawbird']
     if targetsys == Systems.BSD:
         packages += ['chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
@@ -598,7 +601,7 @@ def install_xprograms(targetsys, subsys, installprog, options):
     elif targetsys == Systems.Arch:
         packages += ['retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git']
     elif targetsys == Systems.Fedora:
-        packages += ['cawbird', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
+        packages += [ 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
                      'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free',
                      'gstreamer1-plugins-bad-free-extras', 'unetbootin',
                      'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
