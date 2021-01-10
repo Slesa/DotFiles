@@ -583,7 +583,7 @@ def install_xprograms(targetsys, subsys, installprog, options):
     if not flag_is_set(options, options.xprograms, options.noxprograms):
         output('<yellow>pass<nc>')
         return
-    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki', 'devilspie2', 'cawbird']
+    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki', 'devilspie2', 'cawbird', 'pidgin']
     if targetsys == Systems.BSD:
         packages += ['chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
