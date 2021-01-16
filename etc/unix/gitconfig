@@ -69,3 +69,5 @@
 	helper = store --file ~/.git-credentials
 [branch]
 	autoSetupMerge = always
+[pull]
+	rebase = false
