@@ -227,8 +227,6 @@ def ensure_root(osys):
     #subprocess.Popen('sudo', shell=True)
     output('<green>Ok<nc>')
 
-#endregion
-
 def install(installprog, packages):
     print (installprog)
     print (packages)
@@ -240,6 +238,14 @@ def flag_is_set(options, on_flag, off_flag):
   if options.full and not off_flag:
     return True
   return False
+
+def get_downloads():
+    downloads = str(Path.home()) + '/Downloads'
+    if not os.path.isdir(downloads):
+        os.mkdir(downloads)
+    return downloads
+
+#endregion
 
 def install_dotfiles(options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -356,6 +362,35 @@ def install_login(targetsys, subsys, options):
  
     output('<green>Ok<nc>')
 
+def install_fonts(targetsys, subsys, options):
+    # [0.3] cygwin                  [0.B] Fedora
+    # [ ] macos                     [ ] SuSE
+    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.2] Ubuntu on Windows       [0.5] Ubuntu
+    # [0.A] MX                      [0.7] Zorin
+    output('Install Fonts...........: ', False)
+    if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.fonts, options.nofonts):
+        output('<yellow>pass<nc>')
+        return
+    targetdir = '/usr/share/fonts' if not targetsys == Systems.BSD else '/usr/local/share/fonts/TTF'
+    envyfonts = Path(targetdir).glob('Envy*.ttf')
+    if envyfonts:
+        output('<green>already installed<nc>')
+    else:
+        output('<tc>copying<nc>')
+        fonts = Path(Basepath + '/data/font').glob('*.ttf')
+        for font in fonts:
+            subprocess.check_call(['sudo', 'cp', str(font), targetdir])
+        #subprocess.check_call(['sudo', 'cp', '"' + Basepath + '/data/font/*"', targetdir])
+        devnull = open(os.devnull, 'w')
+        subprocess.check_call(['sudo', 'fc-cache', '-fv'], stdout=devnull)
+        output('Fonts installed.........: <green>Done<nc>')
+
+#region File links
+
 def link_file(source, target):
     if not os.path.islink(target):
         os.symlink(source, target)
@@ -443,8 +478,12 @@ def install_links(targetsys, subsys, options):
         
     output('<green>Ok<nc>')
 
+#endregion
+
+
 # todo:    subprocess.check_call(['git', 'clone', 'git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim', path])
 
+#region Collect packages
 
 def install_core(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -493,8 +532,6 @@ def install_owncube(targetsys, subsys, options):
     return packages
     #if not get_pid('owncloud'):
     #    subprocess.Popen('owncloud')
-
-#createSshKey
 
 def install_basics(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -637,29 +674,27 @@ def install_compiler(targetsys, subsys, options):
     output('<green>Ok<nc>')
     return packages
 
-
 def install_dotnet(targetsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
-    output('install .NET Core......: ', False)
+    output('Collect .NET Core ......: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
-        return
+        return []
     if not flag_is_set(options, options.dotnet, options.nodotnet):
         output('<yellow>pass<nc>')
-        return
+        return []
     path = os.getcwd()
     os.chdir('/tmp')
 
-    packages = ['dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
+    packages = ['dotnet-sdk-5.0', 'aspnetcore-runtime-5.0', 'dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
     if targetsys == Systems.BSD:
-        output('<red>unsupported<nc>')
         packages = ['linux-dotnet10-sdk', 'linux-dotnet10-runtime']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
-        os.popen('wget https://packages.microsoft.com/config/ubuntu/19.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb')
+        os.popen('wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb')
         os.popen('sudo dpkg -i packages-microsoft-prod.deb')
     elif targetsys == Systems.SuSE:
         os.popen('sudo zypper install libicu')
@@ -671,12 +706,11 @@ def install_dotnet(targetsys, options):
         output('<red>unsupported<nc>')
     elif targetsys == Systems.Fedora:
         os.popen('sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc')
-        os.popen('sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/31/prod.repo')
+        os.popen('sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/33/prod.repo')
 
     os.chdir(path)
     output('<green>Ok<nc>')
-    install(installprog, packages)
-    output('..NET Core installation.: <green>Done<nc>')
+    return packages
 
 def install_xfce_programs(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -770,43 +804,55 @@ def install_games(targetsys, subsys, options):
     output('<green>Ok<nc>')
     return packages
 
-def install_fonts(targetsys, subsys, options):
-    # [0.3] cygwin                  [0.B] Fedora
-    # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [0.A] MX                      [0.7] Zorin
-    output('Install Fonts...........: ', False)
-    if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
-        output('<tc>not necessary<nc>')
-        return
-    if not flag_is_set(options, options.fonts, options.nofonts):
-        output('<yellow>pass<nc>')
-        return
-    targetdir = '/usr/share/fonts' if not targetsys == Systems.BSD else '/usr/local/share/fonts/TTF'
-    envyfonts = Path(targetdir).glob('Envy*.ttf')
-    if envyfonts:
-        output('<green>already installed<nc>')
-    else:
-        output('<tc>copying<nc>')
-        fonts = Path(Basepath + '/data/font').glob('*.ttf')
-        for font in fonts:
-            subprocess.check_call(['sudo', 'cp', str(font), targetdir])
-        #subprocess.check_call(['sudo', 'cp', '"' + Basepath + '/data/font/*"', targetdir])
-        devnull = open(os.devnull, 'w')
-        subprocess.check_call(['sudo', 'fc-cache', '-fv'], stdout=devnull)
-        output('Fonts installed.........: <green>Done<nc>')
+#endregion
 
 #region Cloning
 
-def clone_from_github(src, project, flow):
+def install_gitflow():
+    output('Installing git flow ....: ', False)
+
+    flow = os.popen('which git-flow').read()[:-1]
+    if "/git-flow" in flow:
+        output('<yellow>Already installed<nc>')
+        return
+
+    path = os.getcwd()
+    os.chdir(get_downloads())
+
+    subprocess.check_call(['curl', '-OL', 'https://raw.github.com/nvie/gitflow/develop/contrib/gitflow-installer.sh'])
+    subprocess.check_call(['chmod', '+x', 'gitflow-installer.sh'])
+    subprocess.check_call(['sudo', './gitflow-installer.sh'])
+
+    os.chdir(path)
+    output('<green>Done<nc>')
+
+#region Github
+
+def clone_from_github(src, project, flow, base=''):
     if os.path.isdir(src + project):
         return
     header = 'git@' if '/' not in project else 'https://'
     target = ':slesa/'+project if '/' not in project else '/'+project
     subprocess.check_call(['git', 'clone', header + 'github.com' + target])
+    if base:
+        os.system('cd '+project+f" && git remote add upstream {base} && cd ..")
     if flow:
         os.system('cd '+project+" && git flow init -d && git checkout develop && cd ..")
+
+def clone_safe_from_github(root):
+    src = root + "/github/safe/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_from_github(src, 'Terminal.Gui.Elmish', True, 'https://github.com/DieselMeister/Terminal.Gui.Elmish.git')
+    clone_from_github(src, 'SAFE-Nightwatch', True, 'https://github.com/SAFE-Stack/SAFE-Nightwatch.git')
+    clone_from_github(src, 'SAFE-BookStore', True, 'https://github.com/SAFE-Stack/SAFE-BookStore.git')
+    clone_from_github(src, 'ConfPlanner', True, 'https://github.com/SAFE-Stack/SAFE-ConfPlanner.git')
+    clone_from_github(src, 'gui.cs', True, 'https://github.com/migueldeicaza/gui.cs.git')
+    clone_from_github(src, 'LibAAS', True, 'https://github.com/mastoj/LibAAS.git')
+    os.chdir('..')
+    os.chdir('..')
 
 def clone_github(root, options):
     output('Clone github ...........: ', False)
@@ -823,10 +869,41 @@ def clone_github(root, options):
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
     clone_from_github(src, 'Godot', False)
+    clone_from_github(src, 'FsReveal', False)
 #    clone_from_github(src, 'odoo/odoo', False)
-    os.chdir('..')
 
+    clone_from_github(src, 'FAKE', True, 'https://github.com/fsharp/FAKE.git')
+    clone_from_github(src, 'machine.specifications', True, 'https://github.com/machine/machine.specifications.git')
+    clone_from_github(src, 'EventStore', True, 'https://github.com/EventStore/EventStore.git')
+
+    os.chdir('..')
+    clone_safe_from_github(root)
     output('<green>Done<nc>')
+
+#endregion
+
+#region Gitlab
+
+def clone_from_xfce(src, ns, project):
+    if os.path.isdir(src + project):
+        return
+    link = "git@gitlab.xfce.org:"
+    subprocess.check_call(['git', 'clone', link + ns + '/' + project])
+
+def clone_xfce_from_gitlab(root):
+    src = root + "/xfce/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_from_xfce(src, 'xfce', 'xfce4-dev-tools')
+    clone_from_xfce(src, 'xfce', 'libxfce4ui')
+    clone_from_xfce(src, 'xfce', 'xfce4-panel')
+    clone_from_xfce(src, 'xfce', 'xfce4-settings')
+    clone_from_xfce(src, 'apps', 'xfce4-panel-profiles')
+    clone_from_xfce(src, 'panel-plugins', 'xfce4-sample-plugin')
+    clone_from_xfce(src, 'panel-plugins', 'xfce4-smartbookmark-plugin')
+    os.chdir('..')
 
 def clone_from_gitlab(src, project, flow):
     if os.path.isdir(src + project):
@@ -834,7 +911,7 @@ def clone_from_gitlab(src, project, flow):
     subprocess.check_call(['git', 'clone', 'git@gitlab.com:slesa/' + project])
     if flow:
         os.system('cd '+project+" && git flow init -d && git checkout develop && cd ..")
-
+    
 def clone_gitlab(root, options):
     output('Clone gitlab ...........: ', False)
     if not flag_is_set(options, options.gitlab, options.nogitlab):
@@ -850,8 +927,13 @@ def clone_gitlab(root, options):
     clone_from_gitlab(src, 'monty', False)
     clone_from_gitlab(src, 'ravebase', False)
     os.chdir('..')
+    clone_xfce_from_gitlab(root)
 
     output('<green>Done<nc>')
+
+#endregion
+
+#region 42 repos
 
 def clone_from_gf(src, sub, project, flow):
     
@@ -881,6 +963,8 @@ def clone_gf(root, options):
 
     output('<green>Done<nc>')
 
+#endregion
+
 def clone_all(options):
     output('Cloning sources.........: ', False)
     if not flag_is_set(options, options.clone, options.noclone):
@@ -899,8 +983,10 @@ def clone_all(options):
 
 #endregion Cloning
 
+#region External programs
+
 def install_qt(targetsys, options, downloads, work):
-    output('install Qt .............: ', False)
+    output('- install Qt ...........: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
@@ -923,13 +1009,13 @@ def install_qt(targetsys, options, downloads, work):
         subprocess.check_call(['wget', 'https://download.qt.io/official_releases/online_installers/'+qtinstaller])
         subprocess.check_call(['chmod', '+x', qtinstaller])
     #copy_text_to_clipboard(targetsys, work+'/qt')
-    subprocess.check_call(['./'+qtinstaller])
+    subprocess.Popen(['./'+qtinstaller])
 
     os.chdir(path)
-    output('Qt installed ...........: <green>Done<nc>')
+    output('- Qt installed .........: <green>Done<nc>')
 
 def install_rider(targetsys, options, downloads, bin):
-    output('install Rider...........: ', False)
+    output('- install Rider.........: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
@@ -951,10 +1037,10 @@ def install_rider(targetsys, options, downloads, bin):
     subprocess.check_call(['tar', 'xvzf', downloads+'/'+riderzip, '-C', riderdir, '--strip-component=1'])
 
     os.chdir(path)
-    output('Rider installed ........: <green>Done<nc>')
+    output('- Rider installed ......: <green>Done<nc>')
 
 def install_pycharm(targetsys, options, downloads, bin):
-    output('install PyCharm.........: ', False)
+    output('- install PyCharm.......: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
@@ -977,10 +1063,10 @@ def install_pycharm(targetsys, options, downloads, bin):
     #subprocess.check_call(['mv', 'pycharm-community*', charmdir])
 
     os.chdir(path)
-    output('PyCharm installed.......: <green>Done<nc>')
+    output('- PyCharm installed.....: <green>Done<nc>')
 
 def install_clion(targetsys, options, downloads, bin):
-    output('install CLion...........: ', False)
+    output('- install CLion.........: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
@@ -1002,10 +1088,10 @@ def install_clion(targetsys, options, downloads, bin):
     subprocess.check_call(['tar', 'xvzf', downloads+'/'+clionzip, '-C', cliondir, '--strip-component=1'])
 
     os.chdir(path)
-    output('CLion installed.........: <green>Done<nc>')
+    output('- CLion installed.......: <green>Done<nc>')
 
 def install_webstorm(targetsys, options, downloads, bin):
-    output('install WebStorm........: ', False)
+    output('- install WebStorm......: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
@@ -1015,7 +1101,7 @@ def install_webstorm(targetsys, options, downloads, bin):
 
     stormdir = bin + '/Jetbrains.WebStorm'
     if os.path.isdir(stormdir):
-        output('<yellow>lready installed<nc>')
+        output('<yellow>Already installed<nc>')
         return
     path = os.getcwd()
     os.chdir(downloads)
@@ -1027,12 +1113,10 @@ def install_webstorm(targetsys, options, downloads, bin):
     subprocess.check_call(['tar', 'xvzf', downloads+'/'+stormzip, '-C', stormdir, '--strip-component=1'])
 
     os.chdir(path)
-    output('WebStorm installed......: <green>Done<nc>')
-
+    output('- WebStorm installed....: <green>Done<nc>')
 
 def install_code(targetsys, options, downloads, bin):
-    return # Does not work
-    output('install VS Code........: ', False)
+    output('- install VS Code ......: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
         return
@@ -1040,25 +1124,58 @@ def install_code(targetsys, options, downloads, bin):
         output('<yellow>pass<nc>')
         return
 
+    code = os.popen('which code').read()[:-1]
+    if "/code" in code:
+        output('<yellow>Already installed<nc>')
+        return
 
-    #codedir = bin + '/Code'
-    #if os.path.isdir(codedir):
-    #    output('<yellow>already installed<nc>')
-    #    return
+    codezip = 'code_1.52.1-1608136922_amd64.deb'
+    link = '\"https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"'
+    if targetsys == Systems.SuSE or targetsys == targetsys == Systems.Fedora:
+      codezip = 'code-1.52.1-1608137084.el7.x86_64.rpm'
+      link = '\"https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64"'
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+      pass
+    else:
+      output('<red>unsupported<nc>')
+      return
+
     path = os.getcwd()
     os.chdir(downloads)
-    codezip = 'code_1.42.1-1581432938_amd64.deb'
     if not os.path.isfile(codezip):
-        os.popen('wget \"https://go.microsoft.com/fwlink/?LinkID=760868\"')
+        subprocess.check_call('wget '+link)
         #subprocess.check_call(['wget', '"https://go.microsoft.com/fwlink/?LinkID=760868"'])
-    #os.chdir(bin)
-    #os.mkdir(codedir)
     subprocess.check_call(['sudo', 'dpkg', '-i', codezip])
-    #subprocess.check_call(['tar', 'xvzf', downloads+'/'+codezip, '-C', codedir, '--strip-component=1'])
-    #subprocess.check_call(['mv', "'JetBrains CLion-2019.3.3'", cliondir])
 
     os.chdir(path)
-    output('VS Code installed.......: <green>Done<nc>')
+    output('- VS Code installed .....: <green>Done<nc>')
+
+def install_keybase(downloads):
+    output('- Installing keybase ...: ', False)
+
+    flow = os.popen('which keybase').read()[:-1]
+    if "/keybase" in flow:
+        output('<yellow>Already installed<nc>')
+        return
+
+    path = os.getcwd()
+    os.chdir(downloads)
+
+    if targetsys == Systems.SuSE or targetsys == targetsys == Systems.Fedora:
+        subprocess.check_call(['sudo', 'yum', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
+    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+        subprocess.check_call(['curl', '-remote-name', 'https://prerelease.keybase.io/keybase_amd64.de'])
+        subprocess.check_call(['sudo', 'apt', 'install', './keybase_amd64.deb'])
+    else:
+        os.chdir(path)
+        output('<red>unsupported<nc>')
+        return
+
+    subprocess.check_call(['run_keybase'])
+
+    os.chdir(path)
+    output('<green>Done<nc>')
+
 
 def install_externals(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -1075,12 +1192,11 @@ def install_externals(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return
     output('')
-    downloads = str(Path.home()) + '/Downloads'
-    if not os.path.isdir(downloads):
-        os.mkdir(downloads)
+    downloads = get_downloads()
     work = str(Path.home()) + '/work'
     bin = str(Path.home()) + '/bin'
 
+    install_keybase(downloads)
     install_qt(targetsys, options, downloads, work)
     install_rider(targetsys, options, downloads, bin)
     install_pycharm(targetsys, options, downloads, bin)
@@ -1090,6 +1206,7 @@ def install_externals(targetsys, subsys, options):
 
     output('Externals installed.....: <green>Done<nc>')
 
+#endregion
 
 def install_all(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -1103,7 +1220,7 @@ def install_all(targetsys, subsys, installprog, options):
     install_login(targetsys, subsys, options)
     install_links(targetsys, subsys, options)
     install_fonts(targetsys, subsys, options)
-    clone_all(options)
+
     # create_ssh_key
     packages = install_core(targetsys, subsys, options)
     packages += install_basics(targetsys, subsys, options)
@@ -1111,7 +1228,7 @@ def install_all(targetsys, subsys, installprog, options):
     packages += install_programs(targetsys, subsys, options)
     packages += install_xprograms(targetsys, subsys, options)
     packages += install_compiler(targetsys, subsys, options)
-    # packages += install_dotnet(targetsys, options)
+    packages += install_dotnet(targetsys, options)
     packages += install_xfce_programs(targetsys, subsys, options)
     packages += install_tex(targetsys, subsys, options)
     packages += install_games(targetsys, subsys, options)
@@ -1121,6 +1238,8 @@ def install_all(targetsys, subsys, installprog, options):
       output('<green>Done<nc>')
     
     install_externals(targetsys, subsys, options)
+    install_gitflow()
+    clone_all(options)
 
 output("<head>=====[ Configuring system ]====<nc>")
 (system,subsys) = determine_os()
@@ -1133,6 +1252,3 @@ args = create_parser()
 #copy_text_to_clipboard(system, 'This is a test clip')
 #ensure_root(system)
 install_all(system, subsys, installer, args)
-
-
-#installXfceLinks # no arg
