@@ -93,7 +93,7 @@ def create_parser():
     parser.add_argument('--nogitlab', action='store_true')
     parser.add_argument('--gf', action='store_true')
     parser.add_argument('--nogf', action='store_true')
-    #parser.add_argument('--externals', action='store_true')
+    parser.add_argument('--externals', action='store_true')
     parser.add_argument('--noexternals', action='store_true')
     parser.add_argument('--qt', action='store_true')
     parser.add_argument('--noqt', action='store_true')
@@ -471,15 +471,15 @@ def install_links(targetsys, subsys, options):
         link_autostart('devilspie.desktop')
 
     # Xfce
-    xfceSource = Basepath + '/etc/unix/xfce4/'
-    xfcePath = str(Path.home()) + '/.config/xfce4/'
-    xfcePanel = 'panel/'
-    xfceChannel = 'xfconf/xfce-perchannel-xml/'
-    if not targetsys==Systems.Cygwin and not subsys == Subsys.Windows:
-        link_xfce_file('thunar.xml', xfceChannel)
-        link_xfce_file('xfce4-keyboard-shortcuts.xml', xfceChannel)
-        link_xfce_file('xfce4-orageclock-plugin-7.rc', xfcePanel)
-        link_xfce_file('weather-24.rc', xfcePanel)
+    # xfceSource = Basepath + '/etc/unix/xfce4/'
+    # xfcePath = str(Path.home()) + '/.config/xfce4/'
+    # xfcePanel = 'panel/'
+    # xfceChannel = 'xfconf/xfce-perchannel-xml/'
+    # if not targetsys==Systems.Cygwin and not subsys == Subsys.Windows:
+    #     link_xfce_file('thunar.xml', xfceChannel)
+    #     link_xfce_file('xfce4-keyboard-shortcuts.xml', xfceChannel)
+    #     link_xfce_file('xfce4-orageclock-plugin-7.rc', xfcePanel)
+    #     link_xfce_file('weather-24.rc', xfcePanel)
 
         
     output('<green>Ok<nc>')
@@ -1138,25 +1138,25 @@ def install_code(targetsys, options, downloads, bin):
         output('<yellow>Already installed<nc>')
         return
 
-    codezip = 'code_1.52.1-1608136922_amd64.deb'
-    link = '\"https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"'
     if targetsys == Systems.SuSE or targetsys == targetsys == Systems.Fedora:
-      codezip = 'code-1.52.1-1608137084.el7.x86_64.rpm'
-      link = '\"https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64"'
+        subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
+        subprocess.check_call(['sudo', 'sh', '-c', 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'])
+        subprocess.check_call(['sudo', 'dnf', 'check-update'])
+        subprocess.check_call(['sudo', 'dnf', 'install', 'code'])
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
-      pass
+        path = os.getcwd()
+        os.chdir(downloads)
+        subprocess.check_call(['wget', '-q0-', 'https://packages.microsoft.com/keys/microsoft.asc', '|', 'gpg', '--dearmor', '>', 'packages.microsoft.gpg'])
+        subprocess.check_call(['sudo', 'install', '-o', 'root', '-g', 'root', '-m', '644', 'packages.microsoft.gpg', '/etc/apt/trusted.gpg.d/'])
+        subprocess.check_call(['sudo', 'sh', '-c', 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'])
+        subprocess.check_call(['sudo', 'apt', 'install', 'apt-transport-https'])
+        subprocess.check_call(['sudo', 'apt', 'update'])
+        subprocess.check_call(['sudo', 'apt', 'install', 'code'])
+        os.chdir(path)
     else:
       output('<red>unsupported<nc>')
       return
 
-    path = os.getcwd()
-    os.chdir(downloads)
-    if not os.path.isfile(codezip):
-        subprocess.check_call('wget '+link)
-        #subprocess.check_call(['wget', '"https://go.microsoft.com/fwlink/?LinkID=760868"'])
-    subprocess.check_call(['sudo', 'dpkg', '-i', codezip])
-
-    os.chdir(path)
     output('- VS Code installed .....: <green>Done<nc>')
 
 def install_keybase(targetsys, downloads):
@@ -1197,7 +1197,7 @@ def install_externals(targetsys, subsys, options):
     if subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
         return
-    if options.noexternals:
+    if not flag_is_set(options, options.externals, options.noexternals):
         output('<yellow>pass<nc>')
         return
     output('')
