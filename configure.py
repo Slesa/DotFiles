@@ -14,7 +14,7 @@ import subprocess
 from pathlib import Path
 from enum import Enum
 
-# Keybase, Renoise, mp3 (-verwaltung), GitKraken?, XMind
+# Renoise, mp3 (-verwaltung), GitKraken?, XMind
 
 Basepath = str(Path.home()) + '/.dotfiles'
 
@@ -65,8 +65,8 @@ def create_parser():
     parser.add_argument('--nolinks', action='store_true')
     parser.add_argument('--core', action='store_true')
     parser.add_argument('--nocore', action='store_true')
-    parser.add_argument('--owncube', action='store_true')
-    parser.add_argument('--noowncube', action='store_true')
+    parser.add_argument('--nextcloud', action='store_true')
+    parser.add_argument('--nonextcloud', action='store_true')
     parser.add_argument('--dotfiles', action='store_true')
     parser.add_argument('--nodotfiles', action='store_true')
     parser.add_argument('--basics', action='store_true')
@@ -184,7 +184,7 @@ def determine_installer(os):
     if os == Systems.BSD:
         return ["sudo", "pkg", "install", "-y"]
     if os == Systems.Fedora:
-        return ["sudo", "yum", "install", "-y"]
+        return ["sudo", "dnf", "install", "-y"]
     if os == Systems.MxLinux:
         return ["sudo", "apt-get", "install", "-y"]
     if os == Systems.SuSE:
@@ -400,7 +400,13 @@ def link_unix_file(filename, folder=''):
     if folder:
         source = source + folder + '/'
     target = '/.' + filename if not '/' in filename else '/.config/' + filename
-    link_file(source + filename, str(Path.home()) + target)
+    target = str(Path.home()) + target
+
+    targetdir = os.path.dirname(target)
+    if not os.path.isdir(targetdir):
+        os.mkdir(targetdir)
+
+    link_file(source + filename, target)
 
 def link_autostart(filename):
     target = str(Path.home()) + '/.config/autostart/' + filename
@@ -485,7 +491,7 @@ def install_links(targetsys, subsys, options):
 
 #region Collect packages
 
-def install_core(targetsys, subsys, options):
+def install_core(installprog, targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
@@ -494,10 +500,10 @@ def install_core(targetsys, subsys, options):
     output('Collect core............: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
-        return []
+        return
     if not flag_is_set(options, options.core, options.nocore):
         output('<yellow>pass<nc>')
-        return []
+        return
     packages = ['vim', 'zsh']
     if subsys == Subsys.Origin: # Not needed on Win Subsys
         packages += ['git', 'firefox']
@@ -505,10 +511,10 @@ def install_core(targetsys, subsys, options):
         packages += ['gitflow', 'pidof', 'links', 'wget', 'bsdstats', 'linux_base-c7', 'portmaster']
     else:
         packages += ['xsel']
+    install(installprog, packages)
     output('<green>Ok<nc>')
-    return packages
 
-def install_owncube(targetsys, subsys, options):
+def install_nextcloud(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
@@ -518,7 +524,7 @@ def install_owncube(targetsys, subsys, options):
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
         return []
-    if not flag_is_set(options, options.owncube, options.noowncube):
+    if not flag_is_set(options, options.nextcloud, options.nonextcloud):
         output('<yellow>pass<nc>')
         return []
     if targetsys == Systems.MxLinux:
@@ -530,8 +536,8 @@ def install_owncube(targetsys, subsys, options):
 
     output('<green>Ok<nc>')
     return packages
-    #if not get_pid('owncloud'):
-    #    subprocess.Popen('owncloud')
+    #if not get_pid('nextcloud'):
+    #    subprocess.Popen('nextcloud')
 
 def install_basics(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -674,23 +680,25 @@ def install_compiler(targetsys, subsys, options):
     output('<green>Ok<nc>')
     return packages
 
-def install_dotnet(targetsys, options):
+def install_dotnet(installprog, targetsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
     # [0.9] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
-    output('Collect .NET Core ......: ', False)
+    output('install .NET Core ......: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
-        return []
+        return
     if not flag_is_set(options, options.dotnet, options.nodotnet):
         output('<yellow>pass<nc>')
-        return []
+        return
     path = os.getcwd()
     os.chdir('/tmp')
 
     packages = ['dotnet-sdk-5.0', 'aspnetcore-runtime-5.0', 'dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
+    packages = ['dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
+
     if targetsys == Systems.BSD:
         packages = ['linux-dotnet10-sdk', 'linux-dotnet10-runtime']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
@@ -707,10 +715,11 @@ def install_dotnet(targetsys, options):
     elif targetsys == Systems.Fedora:
         os.popen('sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc')
         os.popen('sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/33/prod.repo')
-
+        os.popen('sudo dnf check-update')
     os.chdir(path)
+
+    install(installprog, packages)
     output('<green>Ok<nc>')
-    return packages
 
 def install_xfce_programs(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -1150,7 +1159,7 @@ def install_code(targetsys, options, downloads, bin):
     os.chdir(path)
     output('- VS Code installed .....: <green>Done<nc>')
 
-def install_keybase(downloads):
+def install_keybase(targetsys, downloads):
     output('- Installing keybase ...: ', False)
 
     flow = os.popen('which keybase').read()[:-1]
@@ -1161,8 +1170,8 @@ def install_keybase(downloads):
     path = os.getcwd()
     os.chdir(downloads)
 
-    if targetsys == Systems.SuSE or targetsys == targetsys == Systems.Fedora:
-        subprocess.check_call(['sudo', 'yum', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
+    if targetsys == Systems.SuSE or targetsys == Systems.Fedora:
+        subprocess.check_call(['sudo', 'dnf', 'install', 'y', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         subprocess.check_call(['curl', '-remote-name', 'https://prerelease.keybase.io/keybase_amd64.de'])
         subprocess.check_call(['sudo', 'apt', 'install', './keybase_amd64.deb'])
@@ -1196,7 +1205,7 @@ def install_externals(targetsys, subsys, options):
     work = str(Path.home()) + '/work'
     bin = str(Path.home()) + '/bin'
 
-    install_keybase(downloads)
+    install_keybase(targetsys, downloads)
     install_qt(targetsys, options, downloads, work)
     install_rider(targetsys, options, downloads, bin)
     install_pycharm(targetsys, options, downloads, bin)
@@ -1214,6 +1223,7 @@ def install_all(targetsys, subsys, installprog, options):
     # [ ] FreeBSD                   [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [ ] Fedora                    [0.7] Zorin
+    install_core(installprog, targetsys, subsys, options)
     install_dotfiles(options)
     install_zsh(targetsys, options)
     install_prezto(targetsys, options)
@@ -1222,13 +1232,11 @@ def install_all(targetsys, subsys, installprog, options):
     install_fonts(targetsys, subsys, options)
 
     # create_ssh_key
-    packages = install_core(targetsys, subsys, options)
-    packages += install_basics(targetsys, subsys, options)
-    packages += install_owncube(targetsys, subsys, options)
+    packages = install_basics(targetsys, subsys, options)
+    packages += install_nextcloud(targetsys, subsys, options)
     packages += install_programs(targetsys, subsys, options)
     packages += install_xprograms(targetsys, subsys, options)
     packages += install_compiler(targetsys, subsys, options)
-    packages += install_dotnet(targetsys, options)
     packages += install_xfce_programs(targetsys, subsys, options)
     packages += install_tex(targetsys, subsys, options)
     packages += install_games(targetsys, subsys, options)
@@ -1236,7 +1244,8 @@ def install_all(targetsys, subsys, installprog, options):
       output('Installing programs ....: ', False)
       install(installprog, packages)
       output('<green>Done<nc>')
-    
+    install_dotnet(installprog, targetsys, options)
+
     install_externals(targetsys, subsys, options)
     install_gitflow()
     clone_all(options)
