@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name[de]=GNOME Commander
+Name=GNOME Commander
+Comment[de]=Ein Dateiverwaltungsprogramm mit zweigeteilter Oberfläche
+Comment=A two paned file manager
+Keywords[de]=Datei;Verwaltung;Ordner;Verzeichnis;durchsuchen;Disk;Dateisystem;Datenträger;
+Keywords=file;manager;folder;explore;disk;filesystem;
+Exec=gnome-commander
+Icon=gnome-commander
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Utility;FileManager;
+StartupNotify=true
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=gnome-commander
+X-GNOME-Bugzilla-Component=application
+X-GNOME-Bugzilla-Version=1.10.3
+X-Desktop-File-Install-Version=0.26
+X-XFCE-Source=file:///usr/share/applications/gnome-commander.desktop

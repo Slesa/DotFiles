@@ -1,0 +1,30 @@
+[Desktop Entry]
+Version=1.0
+Name=Chromium Web Browser
+Name[de]=Chromium-Webbrowser
+Comment=Access the Internet
+Comment[de]=Internetzugriff
+GenericName=Web Browser
+GenericName[de]=Web-Browser
+Exec=/usr/bin/chromium-browser %U
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=chromium-browser
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
+StartupWMClass=Chromium-browser
+Keywords=web;browser;internet;
+Actions=new-window;new-private-window;
+X-Desktop-File-Install-Version=0.26
+X-XFCE-Source=file:///usr/share/applications/chromium-browser.desktop
+
+[Desktop Action new-window]
+Name=Open a New Window
+Name[de]=Neues Fenster
+Exec=chromium-browser %U
+
+[Desktop Action new-private-window]
+Name=Open a New Private Window
+Name[de]=Neues privates Fenster
+Exec=chromium-browser --incognito %U

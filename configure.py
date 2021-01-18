@@ -9,6 +9,8 @@
 # 0.3 - Cygwin
 # 0.2 - Ubuntu on Windows
 import os
+import shutil
+import glob
 import platform
 import subprocess
 from pathlib import Path
@@ -427,6 +429,22 @@ def link_xfce_file(filename, folder=''):
         os.rename(target, target + '.bak')
     os.symlink(source, target)
 
+def copy_xfce_launcher(filename, id):
+    source = Basepath + '/etc/unix/xfce4/' + filename
+    target = str(Path.home()) + '/.config/xfce4/panel/launcher-' + str(id)
+    if not os.path.isdir(target):
+        os.mkdir(target)
+    target += '/' + filename
+    if os.path.islink(target):
+        return
+    shutil.copy(source, target)
+
+def clear_xfce_launchers():
+    targets = str(Path.home()) + '/.config/xfce4/panel/launcher-*'
+    launchers = glob.glob(targets)
+    for launcher in launchers:
+        shutil.rmtree(launcher)
+
 
 def install_links(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
@@ -466,21 +484,28 @@ def install_links(targetsys, subsys, options):
             os.mkdir(autostart)
         link_autostart('nextCloud.desktop')
         link_autostart('Thunderbird.desktop')
-        link_autostart('Twitter.desktop')
+        # link_autostart('Twitter.desktop')
         link_autostart('Pidgin.desktop')
         link_autostart('devilspie.desktop')
 
     # Xfce
-    # xfceSource = Basepath + '/etc/unix/xfce4/'
-    # xfcePath = str(Path.home()) + '/.config/xfce4/'
-    # xfcePanel = 'panel/'
+    xfceSource = Basepath + '/etc/unix/xfce4/'
+    xfcePath = str(Path.home()) + '/.config/xfce4/'
+    xfcePanel = 'panel/'
     # xfceChannel = 'xfconf/xfce-perchannel-xml/'
-    # if not targetsys==Systems.Cygwin and not subsys == Subsys.Windows:
-    #     link_xfce_file('thunar.xml', xfceChannel)
-    #     link_xfce_file('xfce4-keyboard-shortcuts.xml', xfceChannel)
-    #     link_xfce_file('xfce4-orageclock-plugin-7.rc', xfcePanel)
-    #     link_xfce_file('weather-24.rc', xfcePanel)
-
+    if not targetsys==Systems.Cygwin and not subsys == Subsys.Windows:
+        link_xfce_file('xfce4-orageclock-plugin-17.rc', xfcePanel)
+        link_xfce_file('weather-8.rc', xfcePanel)
+        link_xfce_file('eyes-6.rc', xfcePanel)
+        link_xfce_file('cpugraph-11.rc', xfcePanel)
+        link_xfce_file('netload-12.rc', xfcePanel)
+        clear_xfce_launchers()
+        copy_xfce_launcher('exo-terminal-emulator.desktop', 19)
+        copy_xfce_launcher('exo-terminal-byobu.desktop', 20)
+        copy_xfce_launcher('exo-file-manager.desktop', 21)
+        copy_xfce_launcher('exo-file-commander.desktop', 22)
+        copy_xfce_launcher('exo-firefox.desktop', 23)
+        copy_xfce_launcher('exo-chromium.desktop', 24)
         
     output('<green>Ok<nc>')
 
