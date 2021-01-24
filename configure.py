@@ -1088,7 +1088,7 @@ def install_pycharm(targetsys, options, downloads, bin):
         return
     path = os.getcwd()
     os.chdir(downloads)
-    charmzip = 'pycharm-community-2020.3.2.tar.gz'
+    charmzip = 'pycharm-professional-2020.3.2.tar.gz'
     if not os.path.isfile(charmzip):
         subprocess.check_call(['wget', 'https://download.jetbrains.com/python/'+charmzip])
     os.chdir(bin)
