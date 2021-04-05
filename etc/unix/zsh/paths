@@ -17,5 +17,6 @@ hash -d bm=~/work/42/bonviewer
 hash -d mc=~/work/42/matrixclassic
 hash -d rb=~/work/gitlab/ravebase
 hash -d db=~/work/reservision
+hash -d mke=~/work/42/mke-fo
 
 
