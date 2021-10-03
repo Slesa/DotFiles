@@ -1,3 +1,5 @@
+fortune /usr/local/share/games/fortune/bofh
+
 source ~/.zsh/options
 
 export EDITOR=vim
@@ -18,6 +20,9 @@ QT_PLUGIN_PATH=$QTDIR/plugins
 QML2_IMPORT_PATH=$QTDIR/qml
 export QT_PLUGIN_PATH QML_IMPORT_PATH
 
+# DotNet
+PATH=~/bin/dotnetL$PATH
+export PATH
 
 # Antlr / Java
 #export CLASSPATH=".:/usr/local/lib/antlr-4.5.1-complete.jar:$CLASSPATH"
@@ -25,8 +30,11 @@ export QT_PLUGIN_PATH QML_IMPORT_PATH
 
 source ~/.zsh/aliases
 source ~/.zsh/paths
-source ~/bin/tools/git/git_prompt.zsh
+#source ~/bin/tools/git/git_prompt.zsh
 
-cd ~launchy
+source ~/.zprezto/init.zsh
 
-fortune /usr/local/share/games/fortune/ferengi_rules_of_acquisition
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+bindkey -v

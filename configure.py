@@ -1,3 +1,4 @@
+# 0.C - GhostBSD
 # 0.B - Fedora
 # 0.A - MX
 # 0.9 - FreeBSD
@@ -137,7 +138,7 @@ def determine_os():
     output(f'System..................: <green>{platform.system()}<nc>')
     # [0.3] cygwin                  [0.A] Debian
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [ ] Fedora                    [0.7] Zorin
     
@@ -270,7 +271,7 @@ def install_dotfiles(options):
 def install_zsh(targetsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Install Zsh.............: ', False)
@@ -308,7 +309,7 @@ def install_zsh(targetsys, options):
 def install_prezto(targetsys, options):
     # [ ] cygwin                    [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [ ] Ubuntu on Windows         [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Install Prezto..........: ', False)
@@ -367,7 +368,7 @@ def install_login(targetsys, subsys, options):
 def install_fonts(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Install Fonts...........: ', False)
@@ -378,8 +379,9 @@ def install_fonts(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return
     targetdir = '/usr/share/fonts' if not targetsys == Systems.BSD else '/usr/local/share/fonts/TTF'
-    envyfonts = Path(targetdir).glob('Envy*.ttf')
-    if envyfonts:
+    # envyfonts = Path(targetdir).glob('*.ttf')
+    targetfont = Path( Path(targetdir) / 'Envy Code R.ttf')
+    if os.path.isfile(targetfont):
         output('<green>already installed<nc>')
     else:
         output('<tc>copying<nc>')
@@ -449,7 +451,7 @@ def clear_xfce_launchers():
 def install_links(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Install Links...........: ', False)
@@ -485,8 +487,9 @@ def install_links(targetsys, subsys, options):
         link_autostart('nextCloud.desktop')
         link_autostart('Thunderbird.desktop')
         # link_autostart('Twitter.desktop')
-        link_autostart('Pidgin.desktop')
-        link_autostart('devilspie.desktop')
+        link_autostart('Hexchat.desktop')
+        #link_autostart('Pidgin.desktop')
+        #link_autostart('devilspie.desktop')
 
     # Xfce
     xfceSource = Basepath + '/etc/unix/xfce4/'
@@ -519,7 +522,7 @@ def install_links(targetsys, subsys, options):
 def install_core(installprog, targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Collect core............: ', False)
@@ -542,7 +545,7 @@ def install_core(installprog, targetsys, subsys, options):
 def install_nextcloud(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Collect nextcloud.......: ', False)
@@ -567,7 +570,7 @@ def install_nextcloud(targetsys, subsys, options):
 def install_basics(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Collect basics..........: ', False)
@@ -579,7 +582,8 @@ def install_basics(targetsys, subsys, options):
         return []
     packages = ['zsh']
     if targetsys == Systems.BSD:
-        packages += ['gitflow', 'fortune-mod-bofh', 'pstree', 'hexchat', 'synergy']
+        #packages += ['vscode']
+        packages += ['gitflow', 'fortune-mod-bofh', 'pstree', 'hexchat', 'synergy', 'keybase']
     elif targetsys == Systems.MxLinux:
         packages += ['git-flow', 'fortunes', 'fortunes-de']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -599,7 +603,7 @@ def install_basics(targetsys, subsys, options):
 def install_programs(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Collect programs........: ', False)
@@ -612,7 +616,7 @@ def install_programs(targetsys, subsys, options):
     packages = ['curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap', 'byobu']
     if targetsys == Systems.BSD:
         # fehlt: xfce slim slim-themes
-        packages += ['postgresql12-server', 'postgresql12-client', 'tmux', 'bacula9-client', 'xorg']
+        packages += ['postgresql12-server', 'postgresql12-client', 'tmux', 'bacula11-client', 'xorg']
     elif targetsys == Systems.MxLinux:
         packages += ['postgresql-11','tmux','ranger','dos2unix','openssh-server','vim-addon-manager', 'vim-pathogen','bacula-client']
     else:
@@ -635,7 +639,7 @@ def install_programs(targetsys, subsys, options):
 def install_xprograms(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Collect X programs......: ', False)
@@ -645,7 +649,8 @@ def install_xprograms(targetsys, subsys, options):
     if not flag_is_set(options, options.xprograms, options.noxprograms):
         output('<yellow>pass<nc>')
         return []
-    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki', 'devilspie2', 'cawbird', 'pidgin']
+    # 'devilspie2', 'cawbird', 
+    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki', 'hexchat']
     if targetsys == Systems.BSD:
         packages += ['chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
@@ -674,7 +679,7 @@ def install_xprograms(targetsys, subsys, options):
 def install_compiler(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Install compiler........: ', False)
@@ -686,12 +691,13 @@ def install_compiler(targetsys, subsys, options):
         return []
     packages = ['meld', 'cgdb', 'gdb', 'cmake', 'ccache']
     if targetsys == Systems.BSD:
-        packages += ['qt5','qt5-designer', 'qtcreator']
+        packages += ['qt5-designer', 'qtcreator']
+        #packages += ['qt5','qt5-designer', 'qtcreator']
         #packages += ['qt5-core', 'qt5-3d', 'qt5-gui', 'qt5-serialbus', 'qt5-widgets', 'qt5-xml', 'qt5-xmlpatterns', 'qt5-qtpaths', 'qt5-charts', 'qt5-connectivity']
         #packages += ['qt5-examples', 'qt5-sensors', 'qt5-serialport', 'qt5-speech', 'qt5-sql', 'qt5-sqldrivers-sqlite3', 'qt5-sqldrivers-pgsql', 'qt5-x11extras']
         #packages += ['qt5-style-qtcurve', 'qt5-svg', 'qt5-uiplugin', 'qt5-wayland', 'qt5-webchannel', 'qt5-webglplugin', 'qt5-webkit', 'qt5-websockets', 'qt5-testlib']
         #packages += ['qt5-webview', 'qt5-widgets', 'qt5-scxml', 'qt5-printsupport', 'qt5-qdoc', 'qt5-qdbus', 'qt5-network', 'qt5-opengl', 'qt5-imageformats', 'qt5-buildtools']
-        packages += ['fsharp', 'mono', 'node-14.4.0', 'npm', 'yarn', 'openjdk14']
+        packages += ['fsharp', 'mono', 'node14', 'npm', 'yarn', 'openjdk14']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['qt5-default', 'fsharp', 'mono-complete', 'nodejs', 'yarn']
     elif targetsys == Systems.SuSE:
@@ -749,7 +755,7 @@ def install_dotnet(installprog, targetsys, options):
 def install_xfce_programs(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Collect XFCE programs...: ', False)
@@ -780,7 +786,7 @@ def install_xfce_programs(targetsys, subsys, options):
 def install_tex(targetsys, subsys, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [0.9] FreeBSD                 [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [0.A] MX                      [0.7] Zorin
     output('Collect TeX.............: ', False)
@@ -824,7 +830,7 @@ def install_games(targetsys, subsys, options):
         return []
     packages = ['xboard']
     if targetsys == Systems.BSD:
-        packages += ['crafty', 'brutalchess', 'chessx', 'pouetchess']
+        packages += ['crafty', 'dreamchess', 'brutalchess', 'chessx', 'pouetchess']
     elif targetsys == Systems.MxLinux:
         packages += ['phalanx','pychess','dosbox','xskat','crafty','glhack','slashem','quake','quake2']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -842,7 +848,9 @@ def install_games(targetsys, subsys, options):
 
 #region Cloning
 
-def install_gitflow():
+def install_gitflow(targetsys):
+    if targetsys == Systems.BSD:
+        return
     output('Installing git flow ....: ', False)
 
     flow = os.popen('which git-flow').read()[:-1]
@@ -899,7 +907,6 @@ def clone_github(root, options):
 
     os.chdir(src)
     clone_from_github(src, 'Poseidon', True)
-    clone_from_github(src, 'gui.cs', True)
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
     clone_from_github(src, 'Godot', False)
@@ -970,7 +977,7 @@ def clone_gitlab(root, options):
 #region 42 repos
 
 def clone_from_gf(src, sub, project, flow):
-    
+
     if os.path.isdir(src + project):
         return
     subprocess.check_call(['git', 'clone', 'https://develop.42gmbh.com/bitbucket/scm/'+sub+'/'+project+'.git'])
@@ -989,9 +996,10 @@ def clone_gf(root, options):
     os.chdir(src)
     clone_from_gf(src, 'macl', 'matrixclassic', True)
     clone_from_gf(src, 'bv', 'bonviewer', True)
-    clone_from_gf(src, 'mat', 'matrixodooaddons', False)
-    clone_from_gf(src, 'mat', 'matrixbackoffice', False)
-    clone_from_gf(src, 'mat', 'tseconnector', False)
+    clone_from_gf(src, 'mke', 'mke-fo', True)
+    #clone_from_gf(src, 'mat', 'matrixodooaddons', False)
+    #clone_from_gf(src, 'mat', 'matrixbackoffice', False)
+    #clone_from_gf(src, 'mat', 'tseconnector', False)
     clone_from_gf(src, 'bv', 'playground', False)
     os.chdir('..')
 
@@ -1245,7 +1253,7 @@ def install_externals(targetsys, subsys, options):
 def install_all(targetsys, subsys, installprog, options):
     # [0.3] cygwin                  [0.B] Fedora
     # [ ] macos                     [ ] SuSE
-    # [ ] FreeBSD                   [ ] Arch / Manjaro
+    # [0.C] FreeBSD                 [ ] Arch / Manjaro
     # [0.2] Ubuntu on Windows       [0.5] Ubuntu
     # [ ] Fedora                    [0.7] Zorin
     install_core(installprog, targetsys, subsys, options)
@@ -1272,7 +1280,7 @@ def install_all(targetsys, subsys, installprog, options):
     install_dotnet(installprog, targetsys, options)
 
     install_externals(targetsys, subsys, options)
-    install_gitflow()
+    install_gitflow(targetsys)
     clone_all(options)
 
 output("<head>=====[ Configuring system ]====<nc>")
