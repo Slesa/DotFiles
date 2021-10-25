@@ -653,6 +653,7 @@ def install_xprograms(targetsys, subsys, options):
     packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki', 'hexchat']
     if targetsys == Systems.BSD:
         packages += ['chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
+        packages += ['ja-alias-fonts', 'ja-ibus-anthy', 'lollypop', 'easytag', 'asunder']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
         if targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
             packages += ['hunspell-de-de']
