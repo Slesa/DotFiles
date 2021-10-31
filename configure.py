@@ -532,13 +532,13 @@ def install_core(installprog, targetsys, subsys, options):
     if not flag_is_set(options, options.core, options.nocore):
         output('<yellow>pass<nc>')
         return
-    packages = ['vim', 'zsh']
+    packages = ['zsh']
     if subsys == Subsys.Origin: # Not needed on Win Subsys
-        packages += ['git', 'firefox']
+        packages += ['vim', 'git', 'firefox']
     if targetsys == Systems.BSD:
-        packages += ['gitflow', 'pidof', 'links', 'wget', 'bsdstats', 'linux_base-c7', 'portmaster']
+        packages += ['gitflow', 'pidof', 'links', 'wget', 'rsync', 'bsdstats', 'linux_base-c7', 'portmaster']
     else:
-        packages += ['xsel']
+        packages += ['vim', 'xsel']
     install(installprog, packages)
     output('<green>Ok<nc>')
 
@@ -652,8 +652,8 @@ def install_xprograms(targetsys, subsys, options):
     # 'devilspie2', 'cawbird', 
     packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki', 'hexchat']
     if targetsys == Systems.BSD:
-        packages += ['chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
-        packages += ['ja-alias-fonts', 'ja-ibus-anthy', 'lollypop', 'easytag', 'asunder']
+        packages += ['vim-gtk3', 'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
+        packages += ['ja-font-kochi', 'ja-ibus-anthy', 'lollypop', 'easytag', 'asunder', 'vscode']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
         if targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
             packages += ['hunspell-de-de']
@@ -832,6 +832,7 @@ def install_games(targetsys, subsys, options):
     packages = ['xboard']
     if targetsys == Systems.BSD:
         packages += ['crafty', 'dreamchess', 'brutalchess', 'chessx', 'pouetchess']
+        packages += ['foobillard']
     elif targetsys == Systems.MxLinux:
         packages += ['phalanx','pychess','dosbox','xskat','crafty','glhack','slashem','quake','quake2']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -968,8 +969,9 @@ def clone_gitlab(root, options):
     clone_from_gitlab(src, 'aikidoka', True)
     clone_from_gitlab(src, 'monty', False)
     clone_from_gitlab(src, 'ravebase', False)
+    clone_from_gitlab(src, 'Poseidon', False)
     os.chdir('..')
-    clone_xfce_from_gitlab(root)
+    # clone_xfce_from_gitlab(root)
 
     output('<green>Done<nc>')
 
