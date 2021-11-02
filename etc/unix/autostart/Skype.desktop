@@ -1,5 +1,0 @@
-#!/usr/bin/env xdg-open
-[Desktop Entry]                                                                 
-Type=Application
-Name=Skype
-Exec=skype
