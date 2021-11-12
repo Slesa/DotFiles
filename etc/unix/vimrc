@@ -1,7 +1,50 @@
-" Settings
-" ========================================
+	" --- vim-plug installation --------------------
+
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
 
+
+" --- vim-plug plugins -------------------------
+
+call plug#begin('~/.vim/plugged')
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'jmcantrell/vim-virtualenv'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'jreybert/vimagit'
+Plug 'kaicataldo/material.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'ervandew/supertab'
+Plug 'plasticboy/vim-markdown'
+
+call plug#end()
+
+
+
+" --- theming ----------------------------------
+set cursorline
+set background=dark
+let g:airline_theme='material'
+let g:material_theme_style = 'darker'
+colorscheme material
+hi Normal       ctermbg=NONE guibg=NONE
+hi SignColumn   ctermbg=235 guibg=#262626
+hi LineNr       ctermfg=grey guifg=grey ctermbg=NONE guibg=NONE
+hi CursorLineNr ctermbg=NONE guibg=NONE ctermfg=178 guifg=#d7af00
+
+
+
+"-- Airline ------------------------------------
+let g:airline#extensions#tabline#enabled = 1
+
+"-- NERDtree -----------------------------------
+let NERDTreeShowHidden=1
+
+" --- Settings ---------------------------------
 
 " zeigt statuszeile fr einen buffer
 set laststatus=2
@@ -35,6 +78,22 @@ set shiftwidth=4
 set autoindent
 set fileencoding=utf-8
 set encoding=utf-8
+
+" netrw
+let g:netrw_banner = 0
+"let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+"autogroup ProjectDrawer
+" autocmd!
+" autocmd VimEnter * :Vexplore
+"autogroup END
+"aug netrw_close
+" au!
+" au WinEnter * if winnr('$') == 1 && getbufvar(winbufnr(winnr()), "&filetype") == "netrw"|q|endif
+"aug END
+
 "
 "--- Vundle ----------------------------
 " Vim verhält sich nicht wie Vi

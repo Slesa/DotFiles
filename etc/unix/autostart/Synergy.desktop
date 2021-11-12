@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Synergy
+Exec=synergyc 192.168.1.10
