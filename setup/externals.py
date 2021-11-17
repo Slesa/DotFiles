@@ -18,7 +18,7 @@ def install_keybase(targetsys, downloads):
     os.chdir(downloads)
 
     if targetsys == Systems.SuSE or targetsys == Systems.Fedora:
-        subprocess.check_call(['sudo', 'dnf', 'install', 'y', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
+        subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         subprocess.check_call(['curl', '-remote-name', 'https://prerelease.keybase.io/keybase_amd64.de'])
         subprocess.check_call(['sudo', 'apt', 'install', './keybase_amd64.deb'])
@@ -31,6 +31,31 @@ def install_keybase(targetsys, downloads):
 
     os.chdir(path)
     output('<green>Done<nc>')
+
+
+def install_brave(targetsys, options):
+    output('- install Brave Browser : ', False)
+    if targetsys == Systems.Cygwin:
+        output('<tc>not necessary<nc>')
+        return
+    if not flag_is_set(options, options.brave, options.nobrave):
+         output('<yellow>pass<nc>')
+         return
+
+    code = os.popen('which brave-browser').read()[:-1]
+    if "/brave" in code:
+        output('<yellow>Already installed<nc>')
+        return
+    if targetsys == Systems.SuSE or targetsys == targetsys == Systems.Fedora:
+        subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/'])
+        subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
+        subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'brave-browser'])
+    # elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
+    else:
+        output('<red>unsupported<nc>')
+        return
+
+    output('- Brave Browser ........: <green>Done<nc>')
 
 
 def install_qt(targetsys, options, downloads, work):
@@ -156,11 +181,11 @@ def install_code(targetsys, options, downloads, bindir):
         output('<yellow>Already installed<nc>')
         return
 
-    if targetsys == Systems.SuSE or targetsys == targetsys == Systems.Fedora:
+    if targetsys == Systems.SuSE or targetsys == Systems.Fedora:
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
         subprocess.check_call(['sudo', 'sh', '-c', 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'])
         subprocess.check_call(['sudo', 'dnf', 'check-update'])
-        subprocess.check_call(['sudo', 'dnf', 'install', 'code'])
+        subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'code'])
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         path = os.getcwd()
         os.chdir(downloads)
@@ -199,7 +224,7 @@ def install_gitflow(targetsys):
     output('<green>Done<nc>')
 
 
-# [11] Fedora             [12] FreeBSD
+# [13] Fedora             [12] FreeBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin
 # [  ] SuSE               [  ] Arch / Manjaro
@@ -217,6 +242,7 @@ def install_externals(targetsys, subsys, options):
     bindir = str(Path.home()) + '/bin'
 
     install_keybase(targetsys, downloads)
+    install_brave(targetsys, options)
     install_qt(targetsys, options, downloads, work)
     install_rider(targetsys, options, downloads, bindir)
     install_pycharm(targetsys, options, downloads, bindir)

@@ -15,6 +15,8 @@ def create_parser():
     parser.add_argument('--nolinks', action='store_true')
     parser.add_argument('--core', action='store_true')
     parser.add_argument('--nocore', action='store_true')
+    parser.add_argument('--brave', action='store_true')
+    parser.add_argument('--nobrave', action='store_true')
     parser.add_argument('--nextcloud', action='store_true')
     parser.add_argument('--nonextcloud', action='store_true')
     parser.add_argument('--dotfiles', action='store_true')

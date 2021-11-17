@@ -230,9 +230,9 @@ def getpkgs_tex(targetsys, subsys, options):
     elif targetsys == Systems.SuSE:
         packages += ['latexila', 'texlive-collection-music', 'texlive-cyrillic']
     elif targetsys == Systems.Arch:
-        packages += ['texlive-music', 'texlive-langcyrillic', 'textlive-langjapanese']
-    # elif targetsys == Systems.Fedora:
-    #    packages += ['']
+        packages += ['texlive-music', 'texlive-langcyrillic', 'texlive-langjapanese']
+    elif targetsys == Systems.Fedora:
+        packages += ['texlive-ctex', 'texlive-xecjk', 'texlive-babel-japanese', 'texlive-babel-russian', 'texlive-collection-music' 'texlive-xetex', 'texlive-cyrillic', 'texlive-collection-music']
     output('<green>Ok<nc>')
     return packages
 

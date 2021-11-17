@@ -62,7 +62,7 @@ def call_xfconf(command, channel, prop, value):
         resultset = os.popen(execset).read()
         # execRead = f'xfconf-query -c {channel} -p {property}'
         # resultRead = os.popen(execRead).read()
-        # print (resultRead)
+        # print (resultset)
     elif command == 'clear':
         execclear = f'xfconf-query -c {channel} -p {prop} -r -R'
         resultclear = os.popen(execclear).read()
@@ -126,6 +126,8 @@ config_steps = [
         '"/xfwm4/custom/<Primary><Alt>KP_7"': None,
         '"/xfwm4/custom/<Primary><Alt>KP_8"': None,
         '"/xfwm4/custom/<Primary><Alt>KP_9"': None,
+        '"/xfwm4/custom/<Primary>F1"': None,
+        '"/xfwm4/custom/<Primary>F2"': None,
         '"/xfwm4/custom/<Primary>F3"': None,
         '"/xfwm4/custom/<Primary>F4"': None,
         '"/xfwm4/custom/<Primary>F5"': None,
@@ -163,7 +165,8 @@ config_steps = [
 # region Plugins
 
 def get_menu_plugin(current, plugins, targetsys):
-    icon = 'xfce4-panel-menu' if targetsys != Systems.BSD else 'org.xfce.panel.applicationsmenu'
+    # icon = 'xfce4-panel-menu' if targetsys != Systems.BSD else 'org.xfce.panel.applicationsmenu'
+    icon = 'org.xfce.panel.applicationsmenu'
     plugins.update({
         f'/plugins/plugin-{current}': 'applicationsmenu',
         f'/plugins/plugin-{current}/button-icon': icon,
@@ -501,7 +504,7 @@ def read_plugins():
 #  endregion Debug query
 
 
-# [11] Fedora             [12] FreeBSD
+# [13] Fedora             [12] FreeBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin
 # [  ] SuSE               [  ] Arch / Manjaro
@@ -514,7 +517,7 @@ def xfce_configure(root, targetsys, subsys, options):
     if not flag_is_set(options, options.xfcecfg, options.noxfcecfg):
         output('<yellow>pass<nc>')
         return
-    #configure_settings(config_steps)
+    configure_settings(config_steps)
 
     plugins = get_plugin_settings(targetsys)
     #json.dump(plugins, sys.stdout)

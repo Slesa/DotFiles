@@ -4,7 +4,7 @@ from setup.console import output
 from setup.helpers import flag_is_set, get_downloads, install
 
 
-# [11] Fedora             [12] FreeBSD
+# [13] Fedora             [12] FreeBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin
 # [  ] SuSE               [  ] Arch / Manjaro
@@ -19,8 +19,9 @@ def install_dotnet(installprog, targetsys, options):
     path = os.getcwd()
     os.chdir('/tmp')
 
-    packages = ['dotnet-sdk-5.0', 'aspnetcore-runtime-5.0', 'dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
-    packages = ['dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
+    packages = ['dotnet-sdk-5.0', 'aspnetcore-runtime-5.0', 'dotnet-runtime-5.0', 'dotnet-templates-5.0']
+    # packages = ['dotnet-sdk-5.0', 'aspnetcore-runtime-5.0', 'dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
+    # packages = ['dotnet-sdk-3.1', 'aspnetcore-runtime-3.1', 'dotnet-runtime-3.1']
 
     if targetsys == Systems.BSD:
         packages = ['linux-dotnet10-sdk', 'linux-dotnet10-runtime']
@@ -39,6 +40,7 @@ def install_dotnet(installprog, targetsys, options):
         os.popen('sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc')
         os.popen('sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/33/prod.repo')
         os.popen('sudo dnf check-update')
+        os.popen('sudo dnf update')
     os.chdir(path)
 
     install(installprog, packages)
