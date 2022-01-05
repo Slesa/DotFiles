@@ -1,4 +1,4 @@
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro

@@ -3,9 +3,9 @@ from setup.console import output
 from setup.helpers import flag_is_set, install
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def install_core(installprog, targetsys, subsys, options):
     output('Collect core............: ', False)
@@ -15,20 +15,22 @@ def install_core(installprog, targetsys, subsys, options):
     if not flag_is_set(options, options.core, options.nocore):
         output('<yellow>pass<nc>')
         return
-    packages = ['zsh']
+    packages = ['zsh', 'neofetch']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
-        packages += ['vim', 'git', 'firefox']
-    if targetsys == Systems.BSD:
-        packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats', 'linux_base-c7', 'portmaster']
+        packages += ['git', 'firefox']
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+        packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats']
+        if targetsys == Systems.BSD:
+            packages += ['linux_base-c7', 'portmaster', 'portshaker']
     else:
         packages += ['vim', 'xsel']
     install(installprog, packages)
     output('<green>Ok<nc>')
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_basics(targetsys, subsys, options):
     output('Collect basics..........: ', False)
@@ -39,9 +41,13 @@ def getpkgs_basics(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return []
     packages = ['zsh']
-    if targetsys == Systems.BSD:
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
         # packages += ['vscode']
-        packages += ['gitflow', 'fortune-mod-bofh', 'pstree', 'synergy', 'keybase']
+        packages += ['pstree', 'synergy']
+        if targetsys == Systems.BSD:
+            packages += ['gitflow', 'keybase', 'fortune-mod-bofh']
+        else:
+            packages += ['fortunes-de']
     elif targetsys == Systems.MxLinux:
         packages += ['git-flow', 'fortunes', 'fortunes-de']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -58,9 +64,9 @@ def getpkgs_basics(targetsys, subsys, options):
     return packages
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_programs(targetsys, subsys, options):
     # Ubuntu: tmuxinator, tmux-plugin-manager ranger
@@ -71,15 +77,19 @@ def getpkgs_programs(targetsys, subsys, options):
     if not flag_is_set(options, options.programs, options.noprograms):
         output('<yellow>pass<nc>')
         return []
-    packages = ['curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap', 'byobu']
-    if targetsys == Systems.BSD:
+    packages = ['curl', 'npm', 'mc', 'w3m', 'links', 'ncdu', 'htop', 'nmap']
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
         # fehlt: xfce slim slim-themes
-        packages += ['postgresql12-server', 'postgresql12-client', 'tmux', 'bacula11-client', 'hs-pandoc', ]
+        packages += ['postgresql12-server', 'postgresql12-client', 'tmux']
+        if targetsys == Systems.BSD:
+            packages += ['hs-pandoc', 'byobu', 'bacula11-client']
+        else:
+            packages += ['bacula-clientonly']
     elif targetsys == Systems.MxLinux:
         packages += ['postgresql-11', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
-                     'vim-pathogen', 'bacula-client']
+                     'vim-pathogen', 'bacula-client', 'byobu']
     else:
-        packages += ['postgresql']
+        packages += ['postgresql', 'byobu']
         if targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
             # 'tmuxp', 'tmuxinator', 'tmux-plugin-manager'
             packages += ['tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen']
@@ -96,9 +106,9 @@ def getpkgs_programs(targetsys, subsys, options):
     return packages
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_xprograms(targetsys, subsys, options):
     # Ubuntu: xaos, guake
@@ -110,14 +120,20 @@ def getpkgs_xprograms(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return []
     # 'devilspie2', 'cawbird',
-    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'anki',
+    packages = ['xaos', 'thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell',
                 'hexchat']
-    if targetsys == Systems.BSD:
-        packages += ['vim-gtk3', 'chromium', 'vlc', 'gnupg', 'unetbootin',
-                     'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
-                     'ja-font-kochi', 'ja-ibus-anthy', 'lollypop', 'easytag', 'asunder', 'vscode',
-                     'ghostwriter', 'xorg', 'slim', 'slim-themes']
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+        packages += ['vim-gtk3', 'vlc', 'gnupg',
+                     'easytag', 'asunder', 'slim', 'slim-themes']
+        if targetsys == Systems.BSD:
+            packages += ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki',
+                         'ja-font-kochi', 'ja-ibus-anthy', 'xorg', 
+                         'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
+        else:
+            packages += ['kochi-ttf', 'ibus-anthy',
+                         'hunspell-de', 'hunspell-ru_RU', 'hunspell-fr_FR', 'hunspell-es_ES']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
+        packages += ['vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki']
         if targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
             packages += ['hunspell-de-de']
         else:
@@ -126,24 +142,23 @@ def getpkgs_xprograms(targetsys, subsys, options):
             packages += ['chromium']
         else:
             packages += ['chromium-browser']
-        packages += ['vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
     elif targetsys == Systems.SuSE:
-        packages += ['chromium', 'gvim', 'vlc', 'tuxcmd', 'retext', 'unetbootin']
+        packages += ['chromium', 'gvim', 'vlc', 'tuxcmd', 'retext', 'unetbootin', 'anki']
     elif targetsys == Systems.Arch:
-        packages += ['retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git']
+        packages += ['retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git', 'anki']
     elif targetsys == Systems.Fedora:
         packages += ['gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
                      'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free',
-                     'gstreamer1-plugins-bad-free-extras', 'unetbootin',
+                     'gstreamer1-plugins-bad-free-extras', 'unetbootin', 'anki',
                      'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es']
         # ['streamer1-plugins-base', 'gstreamer1-plugins-ugly','gstreamer1-plugins-bad-freeworld','ffmpeg']
     output('<green>Ok<nc>')
     return packages
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_compiler(targetsys, subsys, options):
     output('Install compiler........: ', False)
@@ -173,9 +188,9 @@ def getpkgs_compiler(targetsys, subsys, options):
     return packages
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_xfce_programs(targetsys, subsys, options):
     output('Collect XFCE programs...: ', False)
@@ -189,10 +204,13 @@ def getpkgs_xfce_programs(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return []
     packages = ['xfce4-wm-themes']
-    if targetsys == Systems.BSD or targetsys == Systems.Arch:
-        packages = ['xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-screenshooter-plugin', 'xfce4-cpugraph-plugin',
-                    'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
-                    'xfce4-pulseaudio-plugin']
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD or targetsys == Systems.Arch:
+        packages = ['xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
+                    'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin']
+        if targetsys == Systems.BSD or targetsys == Systems.Arch:
+            packages = ['xfce4-screenshooter-plugin', 'xfce4-pulseaudio-plugin']
+        else:
+            packages = ['xfce4-screenshooter']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.Fedora or targetsys == Systems.MxLinux:
         packages = ['xfce4-eyes-plugin']
     # elif targetsys == Systems.SuSE:
@@ -205,9 +223,9 @@ def getpkgs_xfce_programs(targetsys, subsys, options):
     return packages
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_tex(targetsys, subsys, options):
     output('Collect TeX.............: ', False)
@@ -218,10 +236,13 @@ def getpkgs_tex(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return []
     packages = ['texmaker', 'lyx', 'latex2html', 'texstudio']
-    if targetsys == Systems.BSD:
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
         # 'latexila',
-        packages += ['texlive-full', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
-                     'xorg-fonts-cyrillic']
+        packages += ['font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic']
+        if targetsys == Systems.BSD:
+            packages += ['texlive-full', 'xorg-fonts-cyrillic']
+        else:
+            packages += ['texlive-collection-all', 'tcl']
     elif targetsys == Systems.MxLinux:
         packages += ['latexila', 'texlive-music', 'texlive-lang-cyrillic']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -237,9 +258,9 @@ def getpkgs_tex(targetsys, subsys, options):
     return packages
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_games(targetsys, subsys, options):
     output('Collect Games...........: ', False)
@@ -250,9 +271,12 @@ def getpkgs_games(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return []
     packages = ['xboard']
-    if targetsys == Systems.BSD:
-        packages += ['crafty', 'dreamchess', 'brutalchess', 'chessx', 'pouetchess']
-        packages += ['foobillard']
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+        packages += ['crafty']
+        if targetsys == Systems.BSD:
+            packages += ['foobillard', 'pouetchess', 'chessx', 'brutalchess', 'dreamchess']
+        else:
+            packages += ['knightcap']
     elif targetsys == Systems.MxLinux:
         packages += ['phalanx', 'pychess', 'dosbox', 'xskat', 'crafty', 'glhack', 'slashem', 'quake', 'quake2']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -267,9 +291,9 @@ def getpkgs_games(targetsys, subsys, options):
     return packages
 
 
-# [11] Fedora             [12] FreeBSD
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [02] Ubuntu on Windows  [03] Cygwin                  
 # [  ] SuSE               [  ] Arch / Manjaro
 def getpkgs_nextcloud(targetsys, subsys, options):
     output('Collect nextcloud.......: ', False)
@@ -279,12 +303,14 @@ def getpkgs_nextcloud(targetsys, subsys, options):
     if not flag_is_set(options, options.nextcloud, options.nonextcloud):
         output('<yellow>pass<nc>')
         return []
+    packages = []
     if targetsys == Systems.MxLinux:
-        packages = ['nextcloud-desktop']
-    elif targetsys == Systems.BSD:
-        packages = ['nextcloudclient']
+        packages += ['nextcloud-desktop']
+    elif targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+        if targetsys == Systems.BSD:
+            packages += ['nextcloudclient']
     else:
-        packages = ['nextcloud-client']
+        packages += ['nextcloud-client']
     output('<green>Ok<nc>')
     return packages
     # if not get_pid('nextcloud'):

@@ -1,3 +1,7 @@
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
+# [05] Xubuntu            [  ] MX
+# [02] Ubuntu on Windows  [03] Cygwin                  
+# [  ] SuSE               [  ] Arch / Manjaro
 import os
 import subprocess
 from pathlib import Path
@@ -6,10 +10,6 @@ from setup.console import output
 from setup.helpers import flag_is_set
 
 
-# [11] Fedora             [12] FreeBSD
-# [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
-# [  ] SuSE               [  ] Arch / Manjaro
 def install_zsh(root, targetsys, options):
     output('Install Zsh.............: ', False)
     if not flag_is_set(options, options.zsh, options.nozsh):

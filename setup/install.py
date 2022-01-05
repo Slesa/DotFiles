@@ -1,3 +1,7 @@
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
+# [05] Xubuntu            [  ] MX
+# [02] Ubuntu on Windows  [03] Cygwin                  
+# [  ] SuSE               [  ] Arch / Manjaro
 from setup.helpers import install
 from setup.console import output
 from setup.dotfiles import install_dotfiles
@@ -15,11 +19,6 @@ from setup.externals import install_externals
 
 
 def install_all(root, targetsys, subsys, installprog, options):
-    # [0.3] cygwin                  [0.B] Fedora
-    # [ ] macos                     [ ] SuSE
-    # [0.C] FreeBSD                 [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
     install_core(installprog, targetsys, subsys, options)
     install_dotfiles(root, options)
     install_zsh(root, targetsys, options)

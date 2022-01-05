@@ -1,3 +1,7 @@
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
+# [05] Xubuntu            [  ] MX
+# [02] Ubuntu on Windows  [03] Cygwin                  
+# [  ] SuSE               [  ] Arch / Manjaro
 import platform
 from enum import Enum
 from setup.console import output
@@ -12,13 +16,14 @@ class Systems(Enum):
     Unknown = 0
     Cygwin = 1
     MacOS = 2
-    BSD = 3
+    MxLinux = 3
     Fedora = 4
     SuSE = 5
     Arch = 6
     Ubuntu = 7
     Zorin = 8
-    MxLinux = 9
+    BSD = 11
+    NetBSD = 12
 
 
 class Subsys(Enum):
@@ -44,6 +49,9 @@ def determine_os():
     if system == 'darwin':
         output('<green>MacOS<nc>')
         return Systems.MacOs, subsys
+    if system == 'netbsd':
+        output('<green>NetBSD<nc>')
+        return Systems.NetBSD, subsys
     if 'bsd' in system:
         output('<green>BSD derivate<nc>')
         return Systems.BSD, subsys
@@ -79,6 +87,8 @@ def determine_os():
 def determine_installer(os):
     if os == Systems.BSD:
         return ["sudo", "pkg", "install", "-y"]
+    if os == Systems.NetBSD:
+        return ["sudo", "pkgin", "-y", "install"]
     if os == Systems.Fedora:
         return ["sudo", "dnf", "install", "-y"]
     if os == Systems.MxLinux:

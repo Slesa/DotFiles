@@ -1,3 +1,7 @@
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
+# [05] Xubuntu            [  ] MX
+# [02] Ubuntu on Windows  [03] Cygwin                  
+# [  ] SuSE               [  ] Arch / Manjaro
 import os
 import subprocess
 from setup.osplatform import Systems, Subsys
@@ -5,10 +9,6 @@ from setup.console import output
 from setup.helpers import flag_is_set
 
 
-# [11] Fedora             [12] FreeBSD
-# [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
-# [  ] SuSE               [  ] Arch / Manjaro
 def install_login(root, targetsys, subsys, options):
     output('Install Login...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -17,7 +17,7 @@ def install_login(root, targetsys, subsys, options):
     if not options.desktop == 'xfce':
         output('<yellow>XFCE not used<nc>')
         return
-    if targetsys == Systems.BSD:
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
         output('<yellow>uses SLIM<nc>')
         return
     if not flag_is_set(options, options.login, options.nologin):
