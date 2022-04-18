@@ -1,7 +1,8 @@
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
+import os
 import platform
 from enum import Enum
 from setup.console import output
@@ -33,12 +34,7 @@ class Subsys(Enum):
 
 def determine_os():
     output(f'System..................: <green>{platform.system()}<nc>')
-    # [0.3] cygwin                  [0.A] Debian
-    # [ ] macos                     [ ] SuSE
-    # [0.C] FreeBSD                 [ ] Arch / Manjaro
-    # [0.2] Ubuntu on Windows       [0.5] Ubuntu
-    # [ ] Fedora                    [0.7] Zorin
-    
+        
     release = platform.release().lower()
     subsys = Subsys.Windows if 'microsoft' in release else Subsys.Origin
     output('Found...................: ', False)
@@ -75,6 +71,12 @@ def determine_os():
         if 'zorin' in linux:
             output(f'<green>Zorin {subsys}<nc>')
             return Systems.Zorin, subsys
+
+    flow = os.popen('which zypper').read()[:-1]
+    if '/zypper' in flow:
+        output('<green>SuSE<nc>')
+        return Systems.SuSE, subsys
+    
     output('<red>Unknown<nc>')
     output(f'Platform................: <yellow>{platform.platform()}<nc>')
     output(f'Release.................: <yellow>{platform.release()}<nc>')

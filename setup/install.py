@@ -43,5 +43,5 @@ def install_all(root, targetsys, subsys, installprog, options):
 
     xfce_configure(root, targetsys, subsys, options)
     install_dotnet(installprog, targetsys, options)
-    install_externals(targetsys, subsys, options)
+    install_externals(installprog, targetsys, subsys, options)
     clone_all(targetsys, options)

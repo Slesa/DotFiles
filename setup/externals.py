@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 from setup.osplatform import Systems, Subsys
 from setup.console import output
-from setup.helpers import flag_is_set, get_downloads
+from setup.helpers import flag_is_set, get_downloads, install
 
 
 def install_keybase(targetsys, downloads):
@@ -33,7 +33,7 @@ def install_keybase(targetsys, downloads):
     output('<green>Done<nc>')
 
 
-def install_brave(targetsys, options):
+def install_brave(installprog, targetsys, options):
     output('- install Brave Browser : ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -46,10 +46,15 @@ def install_brave(targetsys, options):
     if "/brave" in code:
         output('<yellow>Already installed<nc>')
         return
-    if targetsys == Systems.SuSE or targetsys == targetsys == Systems.Fedora:
+    if targetsys == Systems.SuSE: 
+        subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/', 'brave-browser'])
+        subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
+        install(installprog, ['brave-browser'])
+    elif targetsys == targetsys == Systems.Fedora:
         subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/'])
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
-        subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'brave-browser'])
+        install(installprog, ['brave-browser'])
+        #subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'brave-browser'])
     # elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
     else:
         output('<red>unsupported<nc>')
@@ -117,7 +122,7 @@ def install_rider(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.rider, options.norider):
         output('<yellow>pass<nc>')
         return
-    riderzip = 'JetBrains.Rider-2020.3.2.tar.gz'
+    riderzip = 'JetBrains.Rider-2021.3.4.tar.gz'
     if install_jetbrain('Rider', riderzip, 'rider', downloads, bindir):
         return
     output('- Rider installed ......: <green>Done<nc>')
@@ -131,7 +136,7 @@ def install_pycharm(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.pycharm, options.nopycharm):
         output('<yellow>pass<nc>')
         return
-    charmzip = 'pycharm-professional-2020.3.2.tar.gz'
+    charmzip = 'pycharm-professional-2022.1.tar.gz'
     if install_jetbrain('PyCharm', charmzip, 'python', downloads, bindir):
         return
     output('- PyCharm installed.....: <green>Done<nc>')
@@ -145,7 +150,7 @@ def install_clion(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.clion, options.noclion):
         output('<yellow>pass<nc>')
         return
-    clionzip = 'CLion-2020.3.1.tar.gz'
+    clionzip = 'CLion-2022.1.tar.gz'
     if install_jetbrain('CLion', clionzip, 'cpp', downloads, bindir):
         return
     output('- CLion installed.......: <green>Done<nc>')
@@ -159,7 +164,7 @@ def install_webstorm(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.storm, options.nostorm):
         output('<yellow>pass<nc>')
         return
-    stormzip = 'WebStorm-2020.3.1.tar.gz'
+    stormzip = 'WebStorm-2022.1.tar.gz'
     if install_jetbrain('WebStorm', stormzip, 'webstorm', downloads, bindir):
         return
     output('- WebStorm installed....: <green>Done<nc>')
@@ -167,7 +172,7 @@ def install_webstorm(targetsys, options, downloads, bindir):
 # endregion JetBrains
 
 
-def install_code(targetsys, options, downloads, bindir):
+def install_code(installprog, targetsys, options, downloads, bindir):
     output('- install VS Code ......: ', False)
     if targetsys == Systems.Cygwin:
         output('<tc>not necessary<nc>')
@@ -181,11 +186,16 @@ def install_code(targetsys, options, downloads, bindir):
         output('<yellow>Already installed<nc>')
         return
 
-    if targetsys == Systems.SuSE or targetsys == Systems.Fedora:
+    if targetsys == Systems.SuSE:
+        subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
+        subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://packages.microsoft.com/yumrepos/vscode', 'vscode'])
+        subprocess.check_call(['sudo', 'zypper', 'refresh'])
+        install(installprog, ['code'])
+    elif targetsys == Systems.Fedora:
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
         subprocess.check_call(['sudo', 'sh', '-c', 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'])
         subprocess.check_call(['sudo', 'dnf', 'check-update'])
-        subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'code'])
+        install(installprog, ['code'])
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         path = os.getcwd()
         os.chdir(downloads)
@@ -227,8 +237,8 @@ def install_gitflow(targetsys):
 # [13] Fedora             [12] FreeBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin
-# [  ] SuSE               [  ] Arch / Manjaro
-def install_externals(targetsys, subsys, options):
+# [14] SuSE               [  ] Arch / Manjaro
+def install_externals(installprog, targetsys, subsys, options):
     output('Install externals.......: ', False)
     if subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
@@ -241,14 +251,14 @@ def install_externals(targetsys, subsys, options):
     work = str(Path.home()) + '/work'
     bindir = str(Path.home()) + '/bin'
 
-    install_keybase(targetsys, downloads)
-    install_brave(targetsys, options)
+    #install_keybase(targetsys, downloads)
+    install_brave(installprog, targetsys, options)
     install_qt(targetsys, options, downloads, work)
     install_rider(targetsys, options, downloads, bindir)
     install_pycharm(targetsys, options, downloads, bindir)
     install_clion(targetsys, options, downloads, bindir)
     install_webstorm(targetsys, options, downloads, bindir)
-    install_code(targetsys, options, downloads, bindir)
+    install_code(installprog, targetsys, options, downloads, bindir)
     install_gitflow(targetsys)
 
     output('Externals installed.....: <green>Done<nc>')

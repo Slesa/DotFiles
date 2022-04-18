@@ -6,7 +6,7 @@ from setup.helpers import flag_is_set, install
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def install_core(installprog, targetsys, subsys, options):
     output('Collect core............: ', False)
     if targetsys == Systems.Cygwin:
@@ -31,7 +31,7 @@ def install_core(installprog, targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_basics(targetsys, subsys, options):
     output('Collect basics..........: ', False)
     if targetsys == Systems.Cygwin:
@@ -55,7 +55,8 @@ def getpkgs_basics(targetsys, subsys, options):
         if subsys == Subsys.Origin:
             packages += ['hfsplus', 'hfsutils', 'synergy', 'rdesktop']
     elif targetsys == Systems.SuSE:
-        packages += ['git-flow', 'fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc']
+        # packages += ['git-flow'] 
+        packages += ['fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc']
     elif targetsys == Systems.Arch:
         packages += ['synergy', 'fortune-mod', 'zsh-lovers']
     elif targetsys == Systems.Fedora:
@@ -67,7 +68,7 @@ def getpkgs_basics(targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_programs(targetsys, subsys, options):
     # Ubuntu: tmuxinator, tmux-plugin-manager ranger
     output('Collect programs........: ', False)
@@ -109,7 +110,7 @@ def getpkgs_programs(targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_xprograms(targetsys, subsys, options):
     # Ubuntu: xaos, guake
     output('Collect X programs......: ', False)
@@ -143,7 +144,7 @@ def getpkgs_xprograms(targetsys, subsys, options):
         else:
             packages += ['chromium-browser']
     elif targetsys == Systems.SuSE:
-        packages += ['chromium', 'gvim', 'vlc', 'tuxcmd', 'retext', 'unetbootin', 'anki']
+        packages += ['chromium', 'gvim', 'vlc', 'gnome-commander', 'retext', 'unetbootin', 'rhythmbox'] #, 'anki']
     elif targetsys == Systems.Arch:
         packages += ['retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git', 'anki']
     elif targetsys == Systems.Fedora:
@@ -159,7 +160,7 @@ def getpkgs_xprograms(targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_compiler(targetsys, subsys, options):
     output('Install compiler........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -173,13 +174,16 @@ def getpkgs_compiler(targetsys, subsys, options):
         packages += ['qt5-designer', 'qtcreator'
                      'fsharp', 'mono', 'node14', 'npm', 'yarn', 'openjdk14']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
-        packages += ['qt5-default', 'fsharp', 'mono-complete', 'nodejs', 'yarn']
+        #packages += ['mono-complete', ]
+        packages += ['qt5-default', 'fsharp', 'nodejs', 'yarn']
     elif targetsys == Systems.SuSE:
-        packages += ['fsharp', 'mono-complete', 'cmake-gui', 'kdevelop5', 'kdevelop5-pg-qt']
+        #packages += ['mono-complete','fsharp',]
+        packages += [ 'nodejs17', 'yarn', 'cmake-gui'] #, 'kdevelop5', 'kdevelop5-pg-qt']
     elif targetsys == Systems.Arch:
         packages += ['qt5', 'mono', 'mono-tools', 'nodejs', 'yarn']
     elif targetsys == Systems.Fedora:
-        packages += ['mono-complete', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel']
+        #packages += ['mono-complete',]
+        packages += ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel']
         # , 'yarn']
     elif targetsys == Systems.MxLinux:
         packages += ['python3-venv', 'mono-complete', 'cmake-qt-gui', 'yarnpkg', 'pyqt5-dev', 'pyqt5-examples',
@@ -191,7 +195,7 @@ def getpkgs_compiler(targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_xfce_programs(targetsys, subsys, options):
     output('Collect XFCE programs...: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -213,8 +217,9 @@ def getpkgs_xfce_programs(targetsys, subsys, options):
             packages = ['xfce4-screenshooter']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.Fedora or targetsys == Systems.MxLinux:
         packages = ['xfce4-eyes-plugin']
-    # elif targetsys == Systems.SuSE:
-    #    packages += ['']
+    elif targetsys == Systems.SuSE:
+        packages = ['xfce4-weather-plugin', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin', 'xfce4-cpugraph-plugin',
+                    'xfce4-screenshooter-plugin']
     # elif targetsys == Systems.Arch:
     #    packages += ['']
     # elif targetsys == Systems.Fedora:
@@ -226,7 +231,7 @@ def getpkgs_xfce_programs(targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_tex(targetsys, subsys, options):
     output('Collect TeX.............: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -261,7 +266,7 @@ def getpkgs_tex(targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_games(targetsys, subsys, options):
     output('Collect Games...........: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
@@ -282,7 +287,7 @@ def getpkgs_games(targetsys, subsys, options):
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         packages += ['phalanx', 'pychess', 'dosbox']
     elif targetsys == Systems.SuSE:
-        packages += ['phalanx', 'gnome-chess', 'gnuchess', 'lskat kiten']
+        packages = ['phalanx', 'gnome-chess', 'gnuchess', 'lskat', 'kiten', 'steam']
     elif targetsys == Systems.Arch:
         packages += ['pychess', 'chromium-bsu', 'dosbox']
     elif targetsys == Systems.Fedora:
@@ -294,7 +299,7 @@ def getpkgs_games(targetsys, subsys, options):
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX
 # [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_nextcloud(targetsys, subsys, options):
     output('Collect nextcloud.......: ', False)
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
