@@ -1,5 +1,5 @@
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
-# [05] Xubuntu            [  ] MX
+# [05] Xubuntu            [  ] MX             [15] RHEL/Alma
 # [02] Ubuntu on Windows  [03] Cygwin                  
 # [14] SuSE               [  ] Arch / Manjaro
 import os
@@ -23,6 +23,7 @@ class Systems(Enum):
     Arch = 6
     Ubuntu = 7
     Zorin = 8
+    Redhat = 9
     BSD = 11
     NetBSD = 12
 
@@ -59,6 +60,9 @@ def determine_os():
         if 'mx' in linux:
             output('<green>MXLinux<nc>')
             return Systems.MxLinux, subsys
+        if 'alma' in linux:
+            output('<green>Redhat<nc>')
+            return Systems.Redhat, subsys
         if 'suse' in linux:
             output('<green>SuSE<nc>')
             return Systems.SuSE, subsys
@@ -92,6 +96,8 @@ def determine_installer(os):
     if os == Systems.NetBSD:
         return ["sudo", "pkgin", "-y", "install"]
     if os == Systems.Fedora:
+        return ["sudo", "dnf", "install", "-y"]
+    if os == Systems.Redhat:
         return ["sudo", "dnf", "install", "-y"]
     if os == Systems.MxLinux:
         return ["sudo", "apt-get", "install", "-y"]

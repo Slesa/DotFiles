@@ -17,7 +17,7 @@ def install_keybase(targetsys, downloads):
     path = os.getcwd()
     os.chdir(downloads)
 
-    if targetsys == Systems.SuSE or targetsys == Systems.Fedora:
+    if targetsys == Systems.SuSE or targetsys == Systems.Fedora or targetsys == Systems.Redhat:
         subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         subprocess.check_call(['curl', '-remote-name', 'https://prerelease.keybase.io/keybase_amd64.de'])
@@ -50,7 +50,7 @@ def install_brave(installprog, targetsys, options):
         subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/', 'brave-browser'])
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
         install(installprog, ['brave-browser'])
-    elif targetsys == targetsys == Systems.Fedora:
+    elif targetsys == Systems.Fedora or targetsys == Systems.Redhat:
         subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/'])
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
         install(installprog, ['brave-browser'])
@@ -122,7 +122,7 @@ def install_rider(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.rider, options.norider):
         output('<yellow>pass<nc>')
         return
-    riderzip = 'JetBrains.Rider-2021.3.4.tar.gz'
+    riderzip = 'JetBrains.Rider-2022.1.1.tar.gz'
     if install_jetbrain('Rider', riderzip, 'rider', downloads, bindir):
         return
     output('- Rider installed ......: <green>Done<nc>')
@@ -136,7 +136,7 @@ def install_pycharm(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.pycharm, options.nopycharm):
         output('<yellow>pass<nc>')
         return
-    charmzip = 'pycharm-professional-2022.1.tar.gz'
+    charmzip = 'pycharm-professional-2022.1.1.tar.gz'
     if install_jetbrain('PyCharm', charmzip, 'python', downloads, bindir):
         return
     output('- PyCharm installed.....: <green>Done<nc>')
@@ -150,7 +150,7 @@ def install_clion(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.clion, options.noclion):
         output('<yellow>pass<nc>')
         return
-    clionzip = 'CLion-2022.1.tar.gz'
+    clionzip = 'CLion-2022.1.1.tar.gz'
     if install_jetbrain('CLion', clionzip, 'cpp', downloads, bindir):
         return
     output('- CLion installed.......: <green>Done<nc>')
@@ -164,7 +164,7 @@ def install_webstorm(targetsys, options, downloads, bindir):
     if not flag_is_set(options, options.storm, options.nostorm):
         output('<yellow>pass<nc>')
         return
-    stormzip = 'WebStorm-2022.1.tar.gz'
+    stormzip = 'WebStorm-2022.1.1.tar.gz'
     if install_jetbrain('WebStorm', stormzip, 'webstorm', downloads, bindir):
         return
     output('- WebStorm installed....: <green>Done<nc>')
