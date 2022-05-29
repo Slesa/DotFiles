@@ -1,6 +1,6 @@
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 import os
 import platform
@@ -24,6 +24,7 @@ class Systems(Enum):
     Ubuntu = 7
     Zorin = 8
     Redhat = 9
+    Mageia = 10
     BSD = 11
     NetBSD = 12
 
@@ -57,6 +58,9 @@ def determine_os():
         if '.fc3' in linux:
             output('<green>Fedora<nc>')
             return Systems.Fedora, subsys
+        if '.mga' in linux:
+            output('<green>Mageia<nc>')
+            return Systems.Mageia, subsys
         if 'mx' in linux:
             output('<green>MXLinux<nc>')
             return Systems.MxLinux, subsys
@@ -95,6 +99,8 @@ def determine_installer(os):
         return ["sudo", "pkg", "install", "-y"]
     if os == Systems.NetBSD:
         return ["sudo", "pkgin", "-y", "install"]
+    if os == Systems.Mageia:
+        return ["sudo", "dnf", "install", "-y"]
     if os == Systems.Fedora:
         return ["sudo", "dnf", "install", "-y"]
     if os == Systems.Redhat:

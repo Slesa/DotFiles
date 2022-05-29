@@ -5,7 +5,7 @@ from setup.helpers import flag_is_set, install
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def install_core(installprog, targetsys, subsys, options):
     output('Collect core............: ', False)
@@ -30,7 +30,7 @@ def install_core(installprog, targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_basics(targetsys, subsys, options):
     output('Collect basics..........: ', False)
@@ -48,6 +48,8 @@ def getpkgs_basics(targetsys, subsys, options):
             packages += ['gitflow', 'keybase', 'fortune-mod-bofh']
         else:
             packages += ['fortunes-de']
+    elif targetsys == Systems.Mageia:
+        packages += ['synergy', 'gitflow', 'fortune-mod', 'fortune-murphy']
     elif targetsys == Systems.MxLinux:
         packages += ['git-flow', 'fortunes', 'fortunes-de']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -69,7 +71,7 @@ def getpkgs_basics(targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_programs(targetsys, subsys, options):
     # Ubuntu: tmuxinator, tmux-plugin-manager ranger
@@ -90,6 +92,8 @@ def getpkgs_programs(targetsys, subsys, options):
             packages += ['hs-pandoc', 'byobu', 'bacula11-client']
         else:
             packages += ['bacula-clientonly']
+    elif targetsys == Systems.Mageia:
+        packages += ['postgresql13', 'postgresql13-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu']
     elif targetsys == Systems.MxLinux:
         packages += ['postgresql-11', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
                      'vim-pathogen', 'bacula-client', 'byobu']
@@ -115,7 +119,7 @@ def getpkgs_programs(targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_xprograms(targetsys, subsys, options):
     # Ubuntu: xaos, guake
@@ -128,7 +132,7 @@ def getpkgs_xprograms(targetsys, subsys, options):
         return []
     # 'devilspie2', 'cawbird',
     packages = ['thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell',
-                'hexchat']
+                'hexchat', 'anthy', 'ibus-anthy'] # anthy from mageia
     if targetsys != Systems.Redhat:
         packages += ['xaos']
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
@@ -151,6 +155,10 @@ def getpkgs_xprograms(targetsys, subsys, options):
             packages += ['chromium']
         else:
             packages += ['chromium-browser']
+    elif targetsys == Systems.Mageia:
+        packages += ['chromium-browser', 'vim-X11', 'vlc', 'gnome-commander', 'unetbootin', 'rhythmbox', 'anki',
+                     'hunspell-de', 'hunspell-es', 'hunspell-ru', 'hunspell-fr'
+                    ]
     elif targetsys == Systems.SuSE:
         packages += ['chromium', 'gvim', 'vlc', 'gnome-commander', 'retext', 'unetbootin', 'rhythmbox'] #, 'anki']
     elif targetsys == Systems.Arch:
@@ -170,7 +178,7 @@ def getpkgs_xprograms(targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_compiler(targetsys, subsys, options):
     output('Install compiler........: ', False)
@@ -185,19 +193,18 @@ def getpkgs_compiler(targetsys, subsys, options):
         packages += ['qt5-designer', 'qtcreator'
                      'fsharp', 'mono', 'node14', 'npm', 'yarn', 'openjdk14']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
-        #packages += ['mono-complete', ]
         packages += ['qt5-default', 'fsharp', 'nodejs', 'yarn']
     elif targetsys == Systems.SuSE:
         #packages += ['mono-complete','fsharp',]
         packages += [ 'nodejs17', 'yarn', 'cmake-gui'] #, 'kdevelop5', 'kdevelop5-pg-qt']
+    elif targetsys == Systems.Mageia:
+        packages += ['cmake-qtgui', 'nodejs', 'lib64mesagl-devel']
     elif targetsys == Systems.Arch:
-        packages += ['qt5', 'mono', 'mono-tools', 'nodejs', 'yarn']
+        packages += ['qt5', 'nodejs', 'yarn']
     elif targetsys == Systems.Fedora:
-        #packages += ['mono-complete',]
         packages += ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel']
         # , 'yarn']
     elif targetsys == Systems.Redhat:
-        #packages += ['mono-complete',]
         packages += ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel'
                 , 'dotnet', 'dotnet-sdk-6.0', 'dotnet-templates-6.0']
     elif targetsys == Systems.MxLinux:
@@ -209,7 +216,7 @@ def getpkgs_compiler(targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_xfce_programs(targetsys, subsys, options):
     output('Collect XFCE programs...: ', False)
@@ -223,7 +230,7 @@ def getpkgs_xfce_programs(targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return []
     packages = []
-    if targetsys != Systems.Redhat:
+    if targetsys != Systems.Redhat and targetsys != Systems.Mageia:
         packages += ['xfce4-wm-themes']
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD or targetsys == Systems.Arch:
         packages = ['xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
@@ -234,6 +241,10 @@ def getpkgs_xfce_programs(targetsys, subsys, options):
             packages = ['xfce4-screenshooter']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.Fedora or targetsys == Systems.MxLinux:
         packages = ['xfce4-eyes-plugin']
+    elif targetsys == Systems.Mageia:
+        packages = ['greybird-xfce4-theme', 'xfce4-screenshooter', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin',
+                    'xfce4-weather-plugin', 'xfce4-cpugraph-plugin', 'xfce4-xkb-plugin', 'xfce4-netload-plugin'
+                   ]
     elif targetsys == Systems.SuSE:
         packages = ['xfce4-weather-plugin', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin', 'xfce4-cpugraph-plugin',
                     'xfce4-screenshooter-plugin']
@@ -247,7 +258,7 @@ def getpkgs_xfce_programs(targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_tex(targetsys, subsys, options):
     output('Collect TeX.............: ', False)
@@ -267,6 +278,11 @@ def getpkgs_tex(targetsys, subsys, options):
             packages += ['texlive-full', 'xorg-fonts-cyrillic']
         else:
             packages += ['texlive-collection-all', 'tcl']
+    elif targetsys == Systems.Mageia:
+        packages += ['texlive-fonts-asian', 'texlive-fontsextra', 'texlive-collection-basic', 'texlive-context', 'texlive-dist',
+                     'latex2html', 'texmaker', 'texstudio',
+                     'x11-font-cyrillic', 'x11-font-cronyx-cyrillic', 'x11-font-screen-cyrillic'
+                    ]
     elif targetsys == Systems.MxLinux:
         packages += ['latexila', 'texlive-music', 'texlive-lang-cyrillic']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -287,7 +303,7 @@ def getpkgs_tex(targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_games(targetsys, subsys, options):
     output('Collect Games...........: ', False)
@@ -306,6 +322,11 @@ def getpkgs_games(targetsys, subsys, options):
             packages += ['foobillard', 'pouetchess', 'chessx', 'brutalchess', 'dreamchess']
         else:
             packages += ['knightcap']
+    elif targetsys == Systems.Mageia:
+        packages += ['commandergenius', 'pychess', 'phalanx', 'dreamchess', 'gnuchess', 'xskat', 
+                     'yamagi-quake2', 'yamagi-quake2-xatrix', 'yamagi-quake2-rogue',
+                     'chromium-bsu', 'speed-dreams', 'kiten'
+                    ]
     elif targetsys == Systems.MxLinux:
         packages += ['phalanx', 'pychess', 'dosbox', 'xskat', 'crafty', 'glhack', 'slashem', 'quake', 'quake2']
     elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
@@ -324,7 +345,7 @@ def getpkgs_games(targetsys, subsys, options):
 
 # [11] Fedora             [12] FreeBSD        [13] NetBSD
 # [05] Xubuntu            [  ] MX             [15] RHEL/Alma
-# [02] Ubuntu on Windows  [03] Cygwin                  
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def getpkgs_nextcloud(targetsys, subsys, options):
     output('Collect nextcloud.......: ', False)

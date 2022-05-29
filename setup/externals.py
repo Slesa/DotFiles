@@ -6,6 +6,10 @@ from setup.console import output
 from setup.helpers import flag_is_set, get_downloads, install
 
 
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
+# [05] Xubuntu            [  ] MX             [15] RHEL/Alma
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
+# [14] SuSE               [  ] Arch / Manjaro
 def install_keybase(targetsys, downloads):
     output('- Installing keybase ...: ', False)
 
@@ -50,7 +54,7 @@ def install_brave(installprog, targetsys, options):
         subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/', 'brave-browser'])
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
         install(installprog, ['brave-browser'])
-    elif targetsys == Systems.Fedora or targetsys == Systems.Redhat:
+    elif targetsys == Systems.Mageia or targetsys == Systems.Fedora or targetsys == Systems.Redhat:
         subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/'])
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
         install(installprog, ['brave-browser'])
@@ -191,7 +195,7 @@ def install_code(installprog, targetsys, options, downloads, bindir):
         subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://packages.microsoft.com/yumrepos/vscode', 'vscode'])
         subprocess.check_call(['sudo', 'zypper', 'refresh'])
         install(installprog, ['code'])
-    elif targetsys == Systems.Fedora:
+    elif targetsys == Systems.Fedora or targetsys == Systems.Mageia:
         subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
         subprocess.check_call(['sudo', 'sh', '-c', 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'])
         subprocess.check_call(['sudo', 'dnf', 'check-update'])
@@ -234,9 +238,9 @@ def install_gitflow(targetsys):
     output('<green>Done<nc>')
 
 
-# [13] Fedora             [12] FreeBSD
-# [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
+# [11] Fedora             [12] FreeBSD        [13] NetBSD
+# [05] Xubuntu            [  ] MX             [15] RHEL/Alma
+# [02] Ubuntu on Windows  [03] Cygwin         [16] Mageia
 # [14] SuSE               [  ] Arch / Manjaro
 def install_externals(installprog, targetsys, subsys, options):
     output('Install externals.......: ', False)
