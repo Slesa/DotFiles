@@ -139,9 +139,13 @@ def getpkgs_xprograms(targetsys, subsys, options):
         packages += ['vim-gtk3', 'vlc', 'gnupg',
                      'easytag', 'asunder', 'slim', 'slim-themes']
         if targetsys == Systems.BSD:
-            packages += ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki',
-                         'ja-font-kochi', 'ja-ibus-anthy', 'xorg', 
-                         'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
+            packages += ['vim-gtk3', 'chromium', 'vlc', 'gnupg', 'unetbootin',
+                         'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
+                         'ja-font-kochi', 'ja-ibus-anthy', 'lollypop', 'easytag', 'asunder', 'vscode',
+                         'ghostwriter', 'xorg', 'slim', 'slim-themes', 'xpdf']
+            #packages += ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki',
+            #             'ja-font-kochi', 'ja-ibus-anthy', 'xorg', 
+            #             'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
         else:
             packages += ['kochi-ttf', 'ibus-anthy',
                          'hunspell-de', 'hunspell-ru_RU', 'hunspell-fr_FR', 'hunspell-es_ES']
