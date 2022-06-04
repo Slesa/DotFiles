@@ -1,7 +1,7 @@
-# [11] Fedora             [12] FreeBSD        [13] NetBSD
-# [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin                  
-# [  ] SuSE               [  ] Arch / Manjaro
+# [11] Fedora             [15] RHEL/Alma       [14] SuSE
+# [12] FreeBSD            [13] NetBSD
+# [05] Xubuntu            [  ] MX              [16] Mageia
+# [02] Ubuntu on Windows  [03] Cygwin          [  ] Arch / Manjaro
 from setup.helpers import install
 from setup.console import output
 from setup.dotfiles import install_dotfiles
@@ -11,8 +11,7 @@ from setup.login import install_login
 from setup.fonts import install_fonts
 from setup.links import install_links
 from setup.xfcecfg import xfce_configure
-from setup.packages import install_core, getpkgs_basics, getpkgs_programs, getpkgs_xprograms, getpkgs_compiler, \
-                           getpkgs_xfce_programs, getpkgs_tex, getpkgs_games, getpkgs_nextcloud
+from setup.packages import install_core, Installer
 from setup.cloning import clone_all
 from setup.dotnet import install_dotnet
 from setup.externals import install_externals
@@ -27,15 +26,16 @@ def install_all(root, targetsys, subsys, installprog, options):
     install_fonts(root, targetsys, subsys, options)
     install_links(root, targetsys, subsys, options)
 
+    installer = Installer(targetsys, subsys, options)
     # create_ssh_key
-    packages = getpkgs_basics(targetsys, subsys, options) \
-        + getpkgs_programs(targetsys, subsys, options) \
-        + getpkgs_xprograms(targetsys, subsys, options) \
-        + getpkgs_compiler(targetsys, subsys, options) \
-        + getpkgs_xfce_programs(targetsys, subsys, options) \
-        + getpkgs_tex(targetsys, subsys, options) \
-        + getpkgs_games(targetsys, subsys, options) \
-        + getpkgs_nextcloud(targetsys, subsys, options)
+    packages = installer.getpkgs_basics() \
+        + installer.getpkgs_programs() \
+        + installer.getpkgs_xprograms() \
+        + installer.getpkgs_compiler() \
+        + installer.getpkgs_xfce_programs() \
+        + installer.getpkgs_tex() \
+        + installer.getpkgs_games() \
+        + installer.getpkgs_nextcloud()
     if packages:
         output('Installing programs ....: ', False)
         install(installprog, packages)

@@ -1,3 +1,7 @@
+# [11] Fedora             [15] RHEL/Alma       [14] SuSE
+# [12] FreeBSD            [13] NetBSD
+# [05] Xubuntu            [  ] MX              [16] Mageia
+# [02] Ubuntu on Windows  [03] Cygwin          [  ] Arch / Manjaro
 import os
 import subprocess
 from pathlib import Path
@@ -169,10 +173,6 @@ def clone_gf(root, options):
 # endregion
 
 
-# [11] Fedora             [12] FreeBSD
-# [05] Xubuntu            [  ] MX
-# [02] Ubuntu on Windows  [03] Cygwin
-# [  ] SuSE               [  ] Arch / Manjaro
 def clone_all(targetsys, options):
     output('Cloning sources.........: ', False)
     if not flag_is_set(options, options.clone, options.noclone):
