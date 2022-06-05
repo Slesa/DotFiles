@@ -14,7 +14,7 @@ from setup.xfcecfg import xfce_configure
 from setup.packages import install_core, Installer
 from setup.cloning import clone_all
 from setup.dotnet import install_dotnet
-from setup.externals import install_externals
+from setup.externals import Externals
 
 
 def install_all(root, targetsys, subsys, installprog, options):
@@ -43,5 +43,7 @@ def install_all(root, targetsys, subsys, installprog, options):
 
     xfce_configure(root, targetsys, subsys, options)
     install_dotnet(installprog, targetsys, options)
-    install_externals(installprog, targetsys, subsys, options)
+
+    externals = Externals(installprog, targetsys, subsys, options)
+    externals.install()
     clone_all(targetsys, options)
