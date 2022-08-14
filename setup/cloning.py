@@ -125,11 +125,12 @@ def clone_gitlab(root, options):
         os.mkdir(src)
 
     os.chdir(src)
-    clone_from_gitlab(src, 'waiterwatch', True)
-    clone_from_gitlab(src, 'aikidoka', True)
+    #clone_from_gitlab(src, 'waiterwatch', True)
+    #clone_from_gitlab(src, 'aikidoka', True)
     clone_from_gitlab(src, 'monty', False)
     clone_from_gitlab(src, 'ravebase', False)
     clone_from_gitlab(src, 'Poseidon', False)
+    clone_from_gitlab(src, 'japanisch', False)
     os.chdir('..')
     # clone_xfce_from_gitlab(root)
 

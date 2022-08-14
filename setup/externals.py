@@ -31,7 +31,7 @@ class Externals:
         path = os.getcwd()
         os.chdir(self.downloads)
 
-        if self.targetsys == Systems.SuSE or self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat:
+        if self.targetsys == Systems.SuSE or self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat or self.targetsys == Systems.Mageia:
             subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
         elif self.targetsys == Systems.Ubuntu:
             subprocess.check_call(['curl', '-remote-name', 'https://prerelease.keybase.io/keybase_amd64.de'])
@@ -67,7 +67,7 @@ class Externals:
         elif self.targetsys == Systems.Mageia or self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat:
             subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/'])
             subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
-            install(installprog, ['brave-browser'])
+            install(self.installprog, ['brave-browser'])
             #subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'brave-browser'])
         # elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
         else:
@@ -93,12 +93,12 @@ class Externals:
             output('<yellow>already installed<nc>')
             return
         path = os.getcwd()
-        os.chdir(downloads)
+        os.chdir(self.downloads)
 
         qtinstaller = 'qt-unified-linux-x64-online.run'
-        if targetsys==Systems.Cygwin:
+        if self.targetsys==Systems.Cygwin:
             qtinstaller = 'qt-unified-windows-x86-online.exe'
-        elif targetsys==Systems.MacOS:
+        elif self.targetsys==Systems.MacOS:
             qtinstaller = 'qt-unified-mac-x64-online.dmg'
         if not os.path.isfile(qtinstaller):
             subprocess.check_call(['wget', 'https://download.qt.io/official_releases/online_installers/'+qtinstaller])
@@ -121,7 +121,7 @@ class Externals:
         os.chdir(self.downloads)
         if not os.path.isfile(zipfile):
             subprocess.check_call(['wget', 'https://download.jetbrains.com/'+target+'/'+zipfile])
-        os.chdir(bindir)
+        os.chdir(self.bindir)
         os.mkdir(tooldir)
         subprocess.check_call(['tar', 'xvzf', self.downloads+'/'+zipfile, '-C', tooldir, '--strip-component=1'])
         os.chdir(path)
@@ -209,7 +209,7 @@ class Externals:
             subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
             subprocess.check_call(['sudo', 'sh', '-c', 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'])
             subprocess.check_call(['sudo', 'dnf', 'check-update'])
-            install(installprog, ['code'])
+            install(self.installprog, ['code'])
         elif self.targetsys == Systems.Ubuntu:
             path = os.getcwd()
             os.chdir(downloads)
