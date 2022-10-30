@@ -112,7 +112,7 @@ class Externals:
 
 # region JetBrains
 
-    def install_jetbrain(self, tool, zipfile, target):
+    def install_jetbrain(self, tool, zipfile, target, cdn=False):
         tooldir = self.bindir + '/Jetbrains.'+tool
         if os.path.isdir(tooldir):
             output('<yellow>already installed<nc>')
@@ -120,12 +120,27 @@ class Externals:
         path = os.getcwd()
         os.chdir(self.downloads)
         if not os.path.isfile(zipfile):
+            url = 'https://download.jetbrains.com/' if cdn else 'https://download-cdn.jetbrains.com/'
             subprocess.check_call(['wget', 'https://download.jetbrains.com/'+target+'/'+zipfile])
         os.chdir(self.bindir)
         os.mkdir(tooldir)
         subprocess.check_call(['tar', 'xvzf', self.downloads+'/'+zipfile, '-C', tooldir, '--strip-component=1'])
         os.chdir(path)
         return True
+
+
+    def install_toolbox(self):
+        output('- install Toolbox.......: ', False)
+        if self.targetsys == Systems.Cygwin:
+            output('<tc>not necessary<nc>')
+            return
+        if not flag_is_set(self.options, self.options.toolbox, self.options.notoolbox):
+            output('<yellow>pass<nc>')
+            return
+        toolboxzip = 'jetbrains-toolbox-1.26.4.13374.tar.gz'
+        if self.install_jetbrain('Toolbox', toolboxzip, 'toolbox', True):
+            return
+        output('- Toolbox installed ....: <green>Done<nc>')
 
 
     def install_rider(self):
@@ -182,6 +197,21 @@ class Externals:
         if self.install_jetbrain('WebStorm', stormzip, 'webstorm'):
             return
         output('- WebStorm installed....: <green>Done<nc>')
+
+
+    def install_intellij(self):
+        output('- install IntelliJ.......: ', False)
+        if self.targetsys == Systems.Cygwin:
+            output('<tc>not necessary<nc>')
+            return
+        if not flag_is_set(self.options, self.options.intellij, self.options.nointellij):
+            output('<yellow>pass<nc>')
+            return
+        ideazip = 'ideaIU-2022.2.3.tar.gz'
+        if self.install_jetbrain('IntelliJ', ideazip, 'idea'):
+            return
+        output('- IntelliJ installed.....: <green>Done<nc>')
+
 
 # endregion JetBrains
 
@@ -262,10 +292,12 @@ class Externals:
         self.install_keybase()
         self.install_brave()
         self.install_qt()
+        self.install_toolbox()
         self.install_rider()
         self.install_pycharm()
         self.install_clion()
         self.install_webstorm()
+        self.install_intellij()
         self.install_code()
 
         output('Externals installed.....: <green>Done<nc>')

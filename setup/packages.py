@@ -18,6 +18,8 @@ def install_core(installprog, targetsys, subsys, options):
     packages = ['zsh', 'neofetch']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
         packages += ['git', 'firefox']
+    if targetsys == Systems.Fedora:
+        subprocess.check_call(['sudo', 'dnf', 'install', 'https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'])
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
         packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats']
         if targetsys == Systems.BSD:
@@ -142,7 +144,9 @@ class Installer:
                 #   'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
             Systems.Mageia:
                 ['anthy', 'ibus-anthy', 'xaos', 'chromium-browser', 'vim-X11', 'vlc', 'gnome-commander', 'unetbootin', 'rhythmbox', 'anki',
-                 'hunspell-de', 'hunspell-es', 'hunspell-ru', 'hunspell-fr'],
+                 'hunspell-de', 'hunspell-es', 'hunspell-ru', 'hunspell-fr',
+                 'fonts-ttf-japanese', 'fonts-ttf-japanese-extra', 'google-noto-sans-cjk-jp-fonts', 'google-noto-sans-jp-fonts', 'google-noto-serif-jp-fonts', 'google-noto-serif-cjk-jp-fonts'
+                 ],
             Systems.MxLinux:
                 ['anthy', 'ibus-anthy', 'xaos', 'vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki',
                  'hunspell-de-de', 'chromium'],
@@ -219,7 +223,7 @@ class Installer:
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
                  'xfce4-screenshooter-plugin', 'xfce4-pulseaudio-plugin'],
             Systems.Fedora:
-                ['xfce4-wm-themes', 'xfce4-eyes-plugin'],
+                ['xfwm4-themes', 'xfce4-eyes-plugin'],
             Systems.BSD:
                 ['xfce4-wm-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
