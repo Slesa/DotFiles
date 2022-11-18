@@ -1,22 +1,23 @@
-hash -d launchy=~/work/github/launchy
-hash -d grauchy=~/work/github/Trinity/src/grauchy
 hash -d df=~/.dotfiles
-hash -d play=~/work/github/Playground
-hash -d pos=~/work/gitlab/Poseidon
-hash -d morph=~/work/github/Morpheus
-hash -d godot=~/work/github/Godot
 hash -d gh=~/work/github
 hash -d gl=~/work/gitlab
-hash -d trinity=~/work/github/Trinity
-hash -d dwx=~/work/github/dwx2017
-hash -d qt=~/work/qt
-hash -d prolog=~/work/github/prolog
-hash -d safe=~/work/github/safe
+hash -d bb=~/work/bitbucket
 hash -d gf=~/work/42
+hash -d pos=~/work/bitbucket/poseidon
+hash -d ske=~/work/gitlab/sketches
+hash -d qt=~/work/qt
+hash -d safe=~/work/github/safe
 hash -d bm=~/work/42/bonviewer
 hash -d mc=~/work/42/matrixclassic
-hash -d rb=~/work/gitlab/ravebase
-hash -d db=~/work/reservision
-hash -d mke=~/work/42/mke-fo
+hash -d fsr=~/work/github/FsReveal
 
+hash -d prolog=~/work/github/prolog
+hash -d playground=~/work/github/Playground
+hash -d launchy=~/work/github/launchy
+hash -d grauchy=~/work/github/Trinity/src/grauchy
+hash -d godot=~/work/github/Godot
+hash -d morpheus=~/work/github/Morpheus
+hash -d trinity=~/work/github/Trinity
+hash -d mke=~/work/42/mke-fo
+hash -d ravebase=~/work/gitlab/ravebase
 
