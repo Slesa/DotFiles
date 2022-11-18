@@ -9,8 +9,39 @@ from setup.osplatform import Systems, Subsys
 from setup.console import output
 from setup.helpers import flag_is_set
 
+#region Bitbucket
 
-# region Github
+def clone_from_bitbucket(src, project, flow, base=''):
+    if os.path.isdir(src + project):
+        return
+    header = 'git@' if '/' not in project else 'https://'
+    target = ':slesa1/'+project if '/' not in project else '/'+project+'.git'
+    subprocess.check_call(['git', 'clone', header + 'bitbucket.org' + target])
+    if base:
+        os.system('cd '+project+f" && git remote add upstream {base} && cd ..")
+    if flow:
+        os.system('cd '+project+" && git flow init -d && git checkout develop && cd ..")
+
+def clone_bitbucket(root, targetsys, options):
+    output('Clone bitbucket ........: ', False)
+    if not flag_is_set(options, options.bitbucket, options.nobitbucket):
+        output('<yellow>pass<nc>')
+        return
+    src = root + "/bitbucket/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_from_bitbucket(src, 'poseidon', True)
+
+    os.chdir('..')
+
+    output('<green>Done<nc>')
+
+#endregion Bitbucket
+
+
+#region Github
 
 def clone_from_github(src, project, flow, base=''):
     if os.path.isdir(src + project):
@@ -79,10 +110,9 @@ def clone_github(root, targetsys, options):
 
     output('<green>Done<nc>')
 
-# endregion
+#endregion
 
-# region Gitlab
-
+#region Gitlab
 
 def clone_from_xfce(src, ns, project):
     if os.path.isdir(src + project):
@@ -127,8 +157,9 @@ def clone_gitlab(root, options):
     os.chdir(src)
     #clone_from_gitlab(src, 'waiterwatch', True)
     #clone_from_gitlab(src, 'aikidoka', True)
-    clone_from_gitlab(src, 'monty', False)
-    clone_from_gitlab(src, 'ravebase', False)
+    #clone_from_gitlab(src, 'monty', False)
+    #clone_from_gitlab(src, 'ravebase', False)
+    clone_from_gitlab(src, 'Sketches', False)
     clone_from_gitlab(src, 'Poseidon', False)
     clone_from_gitlab(src, 'japanisch', False)
     os.chdir('..')
@@ -136,10 +167,9 @@ def clone_gitlab(root, options):
 
     output('<green>Done<nc>')
 
-# endregion
+#endregion
 
-# region 42 repos
-
+#region 42 repos
 
 def clone_from_gf(src, sub, project, flow):
 
@@ -171,7 +201,7 @@ def clone_gf(root, options):
 
     output('<green>Done<nc>')
 
-# endregion
+#endregion
 
 
 def clone_all(targetsys, options):
@@ -183,6 +213,7 @@ def clone_all(targetsys, options):
     src = str(Path.home()) + '/work'
     if not os.path.isdir(src):
         os.mkdir(src)
+    clone_bitbucket(src, targetsys, options)
     clone_github(src, targetsys, options)
     clone_gitlab(src, options)
     clone_gf(src, options)

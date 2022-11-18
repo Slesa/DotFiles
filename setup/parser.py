@@ -45,6 +45,8 @@ def create_parser():
     parser.add_argument('-nofonts', action='store_true')
     parser.add_argument('-clone', action='store_true')
     parser.add_argument('-noclone', action='store_true')
+    parser.add_argument('-bitbucket', action='store_true')
+    parser.add_argument('-nobitbucket', action='store_true')
     parser.add_argument('-github', action='store_true')
     parser.add_argument('-nogithub', action='store_true')
     parser.add_argument('-gitlab', action='store_true')
