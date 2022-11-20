@@ -33,6 +33,7 @@ def clone_bitbucket(root, targetsys, options):
 
     os.chdir(src)
     clone_from_bitbucket(src, 'poseidon', True)
+    clone_from_bitbucket(src, 'apostel', True)
 
     os.chdir('..')
 
