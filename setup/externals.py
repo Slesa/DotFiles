@@ -21,6 +21,9 @@ class Externals:
         self.bindir = str(Path.home()) + '/bin'
 
     def install_keybase(self):
+        if not flag_is_set(self.options, self.options.keybase, self.options.nokeybase):
+            output('<yellow>pass<nc>')
+            return []
         output('- Installing keybase ...: ', False)
 
         flow = os.popen('which keybase').read()[:-1]
@@ -31,17 +34,19 @@ class Externals:
         path = os.getcwd()
         os.chdir(self.downloads)
 
-        if self.targetsys == Systems.SuSE or self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat or self.targetsys == Systems.Mageia:
-            subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
-        elif self.targetsys == Systems.Ubuntu:
-            subprocess.check_call(['curl', '-remote-name', 'https://prerelease.keybase.io/keybase_amd64.de'])
-            subprocess.check_call(['sudo', 'apt', 'install', './keybase_amd64.deb'])
+        if self.targetsys == Systems.SuSE:
+            install(self.installprog, ['keybase-client'])
         else:
-            os.chdir(path)
-            output('<red>unsupported<nc>')
-            return
-
-        subprocess.check_call(['run_keybase'])
+            if self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat or self.targetsys == Systems.Mageia:
+                subprocess.check_call(['sudo', 'dnf', 'install', '-y', 'https://prerelease.keybase.io/keybase_amd64.rpm'])
+            elif self.targetsys == Systems.Ubuntu:
+                subprocess.check_call(['curl', '-remote-name', 'https://prerelease.keybase.io/keybase_amd64.de'])
+                subprocess.check_call(['sudo', 'apt', 'install', './keybase_amd64.deb'])
+            else:
+                os.chdir(path)
+                output('<red>unsupported<nc>')
+                return
+            subprocess.check_call(['run_keybase'])
 
         os.chdir(path)
         output('<green>Done<nc>')
@@ -63,6 +68,7 @@ class Externals:
         if self.targetsys == Systems.SuSE: 
             subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/', 'brave-browser'])
             subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
+            subprocess.check_call(['sudo', 'zypper', 'refresh'])
             install(installprog, ['brave-browser'])
         elif self.targetsys == Systems.Mageia or self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat:
             subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/'])

@@ -198,7 +198,7 @@ class Installer:
                     , 'dotnet', 'dotnet-sdk-6.0', 'dotnet-templates-6.0'],
             Systems.SuSE:
                 # ['mono-complete','fsharp',]
-                ['nodejs17', 'yarn', 'cmake-gui'],
+                ['nodejs19', 'yarn', 'cmake-gui'],
         }
         return pkgs
 
@@ -238,7 +238,8 @@ class Installer:
             Systems.Redhat:
                 [],
             Systems.SuSE:
-                ['xfce4-wm-themes', 'xfce4-weather-plugin', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin', 'xfce4-cpugraph-plugin',
+                # 'xfce4-wm-themes'
+                ['xfce4-weather-plugin', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin', 'xfce4-cpugraph-plugin',
                     'xfce4-screenshooter-plugin'],
         }
         return pkgs

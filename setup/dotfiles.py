@@ -15,7 +15,7 @@ def install_dotfiles(rootpath, options):
         return
     if os.path.isdir(rootpath):
         output('<green>already installed, updating...')
-        subprocess.check_call(['git', 'pull', 'origin', 'master'])
+        subprocess.check_call(['git', 'pull', 'origin', 'main'])
         output('done<nc>')
         return
     output('<tc>cloning<nc>')
