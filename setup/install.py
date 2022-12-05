@@ -15,6 +15,7 @@ from setup.packages import install_core, Installer
 from setup.cloning import clone_all
 from setup.dotnet import install_dotnet
 from setup.externals import Externals
+from setup.osplatform import Systems
 
 
 def install_all(root, targetsys, subsys, installprog, options):
@@ -26,22 +27,24 @@ def install_all(root, targetsys, subsys, installprog, options):
     install_fonts(root, targetsys, subsys, options)
     install_links(root, targetsys, subsys, options)
 
-    installer = Installer(targetsys, subsys, options)
-    # create_ssh_key
-    packages = installer.getpkgs_basics() \
-        + installer.getpkgs_programs() \
-        + installer.getpkgs_xprograms() \
-        + installer.getpkgs_compiler() \
-        + installer.getpkgs_xfce_programs() \
-        + installer.getpkgs_tex() \
-        + installer.getpkgs_games() \
-        + installer.getpkgs_nextcloud()
-    if packages:
-        output('Installing programs ....: ', False)
-        install(installprog, packages)
-        output('<green>Done<nc>')
+    if targetsys!=Systems.MacOS:
+        installer = Installer(targetsys, subsys, options)
+        # create_ssh_key
+        packages = installer.getpkgs_basics() \
+            + installer.getpkgs_programs() \
+            + installer.getpkgs_xprograms() \
+            + installer.getpkgs_compiler() \
+            + installer.getpkgs_xfce_programs() \
+            + installer.getpkgs_tex() \
+            + installer.getpkgs_games() \
+            + installer.getpkgs_nextcloud()
+        if packages:
+            output('Installing programs ....: ', False)
+            install(installprog, packages)
+            output('<green>Done<nc>')
 
-    xfce_configure(root, targetsys, subsys, options)
+        xfce_configure(root, targetsys, subsys, options)
+        
     install_dotnet(installprog, targetsys, options)
 
     externals = Externals(installprog, targetsys, subsys, options)
