@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 from setup.osplatform import Systems, Subsys
 from setup.console import output
-from setup.helpers import flag_is_set, get_downloads, install
+from setup.helpers import flag_is_set, flag_is_set_def_false, get_downloads, install
 
 
 class Externals:
@@ -154,7 +154,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.rider, self.options.norider):
+        if not flag_is_set_def_false(self.options, self.options.rider, self.options.norider):
             output('<yellow>pass<nc>')
             return
         riderzip = 'JetBrains.Rider-2022.1.1.tar.gz'
@@ -168,7 +168,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.pycharm, self.options.nopycharm):
+        if not flag_is_set_def_false(self.options, self.options.pycharm, self.options.nopycharm):
             output('<yellow>pass<nc>')
             return
         charmzip = 'pycharm-professional-2022.1.1.tar.gz'
@@ -182,7 +182,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.clion, self.options.noclion):
+        if not flag_is_set_def_false(self.options, self.options.clion, self.options.noclion):
             output('<yellow>pass<nc>')
             return
         clionzip = 'CLion-2022.1.1.tar.gz'
@@ -196,7 +196,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.webstorm, self.options.nowebstorm):
+        if not flag_is_set_def_false(self.options, self.options.webstorm, self.options.nowebstorm):
             output('<yellow>pass<nc>')
             return
         stormzip = 'WebStorm-2022.1.1.tar.gz'
@@ -206,11 +206,11 @@ class Externals:
 
 
     def install_intellij(self):
-        output('- install IntelliJ.......: ', False)
+        output('- install IntelliJ......: ', False)
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.intellij, self.options.nointellij):
+        if not flag_is_set_def_false(self.options, self.options.intellij, self.options.nointellij):
             output('<yellow>pass<nc>')
             return
         ideazip = 'ideaIU-2022.2.3.tar.gz'
