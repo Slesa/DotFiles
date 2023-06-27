@@ -260,6 +260,9 @@ class Externals:
     def install_gitflow(self):
         if self.targetsys == Systems.BSD:
             return
+        if not flag_is_set(self.options, self.options.gitflow, self.options.nogitflow):
+            output('<yellow>pass<nc>')
+            return
         output('Installing git flow ....: ', False)
 
         flow = os.popen('which git-flow').read()[:-1]
@@ -271,8 +274,15 @@ class Externals:
         os.chdir(self.downloads)
 
         subprocess.check_call(['curl', '-OL', 'https://raw.github.com/nvie/gitflow/develop/contrib/gitflow-installer.sh'])
+        #subprocess.call(['mkdir', 'gitflow'])
+        #os.chdir('gitflow')
+        subprocess.call(['git', 'clone', 'https://github.com/nvie/shFlags.git'])
+        #os.chdir('..')
         subprocess.check_call(['chmod', '+x', 'gitflow-installer.sh'])
-        subprocess.check_call(['sudo', './gitflow-installer.sh'])
+        subprocess.call(['sudo', './gitflow-installer.sh'], stdout=subprocess.PIPE)
+        subprocess.call(['sudo', 'mv', 'shFlags', 'gitflow'])
+        subprocess.call(['sudo', './gitflow-installer.sh'], stdout=subprocess.PIPE)
+        #os.system('sudo ./gitflow-installer.sh')
 
         os.chdir(path)
         output('<green>Done<nc>')

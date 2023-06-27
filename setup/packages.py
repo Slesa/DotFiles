@@ -181,7 +181,7 @@ class Installer:
             Systems.Arch:
                 ['qt5', 'nodejs', 'yarn'],
             Systems.Fedora:
-                ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel'],
+                ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
                 ['qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk14'],
@@ -192,13 +192,13 @@ class Installer:
                  'qt5-default', 'qtbase5-dev', 'libgl1-mesa-dev', 'libglu1-mesa-dev'],
             Systems.Ubuntu:
                 # [ 'fsharp', ]
-                ['qt5-default', 'nodejs', 'yarn'],
+                ['qt5-default', 'nodejs', 'yarn', 'rust', 'rust-cargo-devel'],
             Systems.Redhat:
                 ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel'
                     , 'dotnet', 'dotnet-sdk-6.0', 'dotnet-templates-6.0'],
             Systems.SuSE:
                 # ['mono-complete','fsharp',]
-                ['nodejs17', 'yarn', 'cmake-gui'],
+                ['nodejs17', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel'],
         }
         return pkgs
 

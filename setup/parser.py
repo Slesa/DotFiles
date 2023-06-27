@@ -73,6 +73,8 @@ def create_parser():
     parser.add_argument('-nocode', action='store_true')
     parser.add_argument('-dotnet', action='store_true')
     parser.add_argument('-nodotnet', action='store_true')
+    parser.add_argument('-gitflow', action='store_true')
+    parser.add_argument('-nogitflow', action='store_true')
     result = parser.parse_args()
     return result
 
