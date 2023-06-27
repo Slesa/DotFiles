@@ -46,7 +46,7 @@ def determine_os():
         return Systems.Cygwin, subsys
     if system == 'darwin':
         output('<green>MacOS<nc>')
-        return Systems.MacOs, subsys
+        return Systems.MacOS, subsys
     if system == 'netbsd':
         output('<green>NetBSD<nc>')
         return Systems.NetBSD, subsys
@@ -113,4 +113,6 @@ def determine_installer(os):
         return ["sudo", "pacman", "--noconfirm", "-Syu"]
     if os == Systems.Ubuntu or os == Systems.Zorin:
         return ["sudo", "apt-get", "install", "-y"]
+    if os == Systems.MacOS:
+        return ["sudo", "brew", "install", "-y"]
     return None

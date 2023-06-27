@@ -5,7 +5,7 @@
 from setup.osplatform import Systems, Subsys
 from setup.console import output
 from setup.helpers import flag_is_set, install
-
+import subprocess
 
 def install_core(installprog, targetsys, subsys, options):
     output('Collect core............: ', False)
@@ -15,11 +15,16 @@ def install_core(installprog, targetsys, subsys, options):
     if not flag_is_set(options, options.core, options.nocore):
         output('<yellow>pass<nc>')
         return
+
+    if targetsys == Systems.Fedora or targetsys == Systems.Mageia:
+        import os
+        version = os.popen('rpm -E %fedora').read()[:-1]
+        output(f'Fedora {version}')
+        subprocess.check_call(['sudo', 'dnf', 'install', '-y', f'https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{version}.noarch.rpm'])
+
     packages = ['zsh', 'neofetch']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
         packages += ['git', 'firefox']
-    if targetsys == Systems.Fedora:
-        subprocess.check_call(['sudo', 'dnf', 'install', 'https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm'])
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
         packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats']
         if targetsys == Systems.BSD:
@@ -198,7 +203,7 @@ class Installer:
                     , 'dotnet', 'dotnet-sdk-6.0', 'dotnet-templates-6.0'],
             Systems.SuSE:
                 # ['mono-complete','fsharp',]
-                ['nodejs17', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel'],
+                ['nodejs19', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel'],
         }
         return pkgs
 
@@ -238,7 +243,8 @@ class Installer:
             Systems.Redhat:
                 [],
             Systems.SuSE:
-                ['xfce4-wm-themes', 'xfce4-weather-plugin', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin', 'xfce4-cpugraph-plugin',
+                # 'xfce4-wm-themes'
+                ['xfce4-weather-plugin', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin', 'xfce4-cpugraph-plugin',
                     'xfce4-screenshooter-plugin'],
         }
         return pkgs
