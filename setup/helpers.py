@@ -51,6 +51,8 @@ def install(installprog, packages):
 def flag_is_set_def_false(options, on_flag, off_flag):
     if off_flag:
         return False
+    if on_flag:
+        return True    
     if options.full and not on_flag:
         return False
     return True
@@ -59,6 +61,8 @@ def flag_is_set_def_false(options, on_flag, off_flag):
 def flag_is_set(options, on_flag, off_flag):
     if on_flag:
         return True
+    if on_flag:
+        return True    
     if options.full and not off_flag:
         return True
     return False

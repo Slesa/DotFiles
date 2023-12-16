@@ -132,37 +132,38 @@ class Installer:
     def create_xprogram_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['thunderbird', 'wmctrl', 'inkscape', 'audacity', 'gimp', 'bogofilter', 'hunspell', 'hexchat'],
+                ['thunderbird', 'wmctrl', 'inkscape', 'gimp', 'bogofilter', 'hunspell', 'hexchat'],
             Systems.Arch:
-                ['anthy', 'ibus-anthy', 'xaos', 'retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git', 'anki'],
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git', 'anki'],
             Systems.Fedora:
-                ['anthy', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
                  'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free-extras', 'unetbootin', 'anki',
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es'],
             Systems.BSD:
-                ['xaos','vim-gtk3', 'vlc', 'gnupg', 'easytag', 'asunder', 'slim', 'slim-themes',
+                ['ja-anthy', 'xaos','vim-gtk3', 'vlc', 'gnupg', 'easytag', 'asunder', 'slim', 'slim-themes',
                  'vim-gtk3', 'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
-                 'ja-font-kochi', 'ja-ibus-anthy', 'lollypop', 'easytag', 'asunder', 'vscode',
-                 'ghostwriter', 'xorg', 'slim', 'slim-themes', 'xpdf'
+                 'ja-font-kochi', 'ja-ibus-anthy', 'lollypop', 'deadbeef', 'exaile', 'easytag', 'asunder', 'vscode',
+                 'ghostwriter', 'xorg', 'slim', 'slim-themes', 'xpdf',
+                 'qemu', 'virt-manager', 'cpu-x'
                  ],
                 # ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki', 'ja-font-kochi', 'ja-ibus-anthy', 'xorg',
                 #   'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
             Systems.Mageia:
-                ['anthy', 'ibus-anthy', 'xaos', 'chromium-browser', 'vim-X11', 'vlc', 'gnome-commander', 'unetbootin', 'rhythmbox', 'anki',
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'chromium-browser', 'vim-X11', 'vlc', 'gnome-commander', 'unetbootin', 'rhythmbox', 'anki',
                  'hunspell-de', 'hunspell-es', 'hunspell-ru', 'hunspell-fr',
                  'fonts-ttf-japanese', 'fonts-ttf-japanese-extra', 'google-noto-sans-cjk-jp-fonts', 'google-noto-sans-jp-fonts', 'google-noto-serif-jp-fonts', 'google-noto-serif-cjk-jp-fonts'
                  ],
             Systems.MxLinux:
-                ['anthy', 'ibus-anthy', 'xaos', 'vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki',
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki',
                  'hunspell-de-de', 'chromium'],
             Systems.Ubuntu:
-                ['anthy', 'ibus-anthy', 'xaos', 'vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki',
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki',
                  'hunspell-de', 'chromium-browser'],
             Systems.Redhat:
-                ['anthy', 'ibus-anthy', 'chromium', 'vim-X11', 'gstreamer1-plugins-good', 'gstreamer1-plugins-bad-free',
+                ['anthy', 'audacity', 'ibus-anthy', 'chromium', 'vim-X11', 'gstreamer1-plugins-good', 'gstreamer1-plugins-bad-free',
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es'],
             Systems.SuSE:
-                ['anthy', 'ibus-anthy', 'xaos', 'chromium', 'gvim', 'vlc', 'gnome-commander', 'retext', 'unetbootin', 'rhythmbox'], #, 'anki']
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'chromium', 'gvim', 'vlc', 'gnome-commander', 'retext', 'unetbootin', 'rhythmbox'], #, 'anki']
         }
         return pkgs
 
@@ -189,7 +190,7 @@ class Installer:
                 ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
-                ['qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk14'],
+                ['qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
             Systems.Mageia:
                 ['cmake-qtgui', 'nodejs', 'lib64mesagl-devel'],
             Systems.MxLinux:
@@ -313,7 +314,7 @@ class Installer:
             Systems.Fedora:
                 ['xboard', 'clonekeen', 'dreamchess', 'gnuchess'],
             Systems.BSD:
-                ['xboard', 'crafty', 'foobillard', 'pouetchess', 'chessx', 'brutalchess', 'dreamchess'],
+                ['xboard', 'crafty', 'foobillard', 'chessx', 'brutalchess', 'dreamchess'],
             Systems.Mageia:
                 ['xboard', 'commandergenius', 'pychess', 'phalanx', 'dreamchess', 'gnuchess', 'xskat',
                  'yamagi-quake2', 'yamagi-quake2-xatrix', 'yamagi-quake2-rogue', 'chromium-bsu', 'speed-dreams', 'kiten'],

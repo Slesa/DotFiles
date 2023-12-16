@@ -63,6 +63,8 @@ def create_parser():
     parser.add_argument('-notoolbox', action='store_true')
     parser.add_argument('-rider', action='store_true')
     parser.add_argument('-norider', action='store_true')
+    parser.add_argument('-rover', action='store_true')
+    parser.add_argument('-norover', action='store_true')
     parser.add_argument('-pycharm', action='store_true')
     parser.add_argument('-nopycharm', action='store_true')
     parser.add_argument('-clion', action='store_true')

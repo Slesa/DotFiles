@@ -162,6 +162,19 @@ class Externals:
             return
         output('- Rider installed ......: <green>Done<nc>')
 
+    def install_rover(self):
+        output('- install Rus Rover.....: ', False)
+        #https://download.jetbrains.com/rustrover/RustRover-233.10527.39-aarch64.tar.gz
+        if self.targetsys == Systems.Cygwin:
+            output('<tc>not necessary<nc>')
+            return
+        if not flag_is_set_def_false(self.options, self.options.rover, self.options.norover):
+            output('<yellow>pass<nc>')
+            return
+        roverzip = 'RustRover-233.10527.39-aarch64.tar.gz'
+        if self.install_jetbrain('Rover', roverzip, 'rustrover'):
+            return
+        output('- Rust Rover installed .: <green>Done<nc>')
 
     def install_pycharm(self):
         output('- install PyCharm.......: ', False)
@@ -310,6 +323,7 @@ class Externals:
         self.install_qt()
         self.install_toolbox()
         self.install_rider()
+        self.install_rover()
         self.install_pycharm()
         self.install_clion()
         self.install_webstorm()
