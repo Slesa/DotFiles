@@ -30,7 +30,9 @@ def install_core(installprog, targetsys, subsys, options):
         if targetsys == Systems.BSD:
             packages += ['linux_base-c7', 'portmaster', 'portshaker']
     else:
-        packages += ['vim', 'xsel']
+        if targetsys != Systems.Arch:
+            packages += ['vim']
+        packages += ['xsel']
     install(installprog, packages)
     output('<green>Ok<nc>')
 
@@ -93,27 +95,26 @@ class Installer:
             Systems.Unknown:
                 ['curl', 'npm', 'mc', 'ncdu', 'htop', 'nmap'],
             Systems.Arch:
-                ['links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'lshw', 'bacula-client', 'vim-pathogen'],
+                ['links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'lshw'],
             Systems.Fedora:
-                ['links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux', 'bacula-client', 'bacula-console-bat',
-                         'bacula-traymonitor'],
+                ['links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.BSD:
                 # [xfce slim slim-themes]
-                ['links', 'w3m', 'postgresql12-server', 'postgresql12-client', 'tmux', 'hs-pandoc', 'byobu', 'bacula11-client'],
+                ['links', 'w3m', 'postgresql12-server', 'postgresql12-client', 'tmux', 'hs-pandoc', 'byobu'],
             Systems.Mageia:
                 ['links', 'w3m', 'postgresql13', 'postgresql13-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu'],
             Systems.MxLinux:
                 ['links', 'w3m', 'postgresql-11', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
-                 'vim-pathogen', 'bacula-client', 'byobu'],
+                 'vim-pathogen', 'byobu'],
             Systems.Ubuntu:
                 ['links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen'],
             Systems.Redhat:
-                ['links', 'w3m', 'postgresql-server', 'postgresql-contrib', 'tmux', 'bacula-client'],
+                ['links', 'w3m', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.SuSE:
                 ['links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'dosemu'],
         }
         if self.subsys== Subsys.Origin:
-            pkgs[Systems.Ubuntu] += ['synaptic', 'bacula-client', 'openssh-server', 'lshw']
+            pkgs[Systems.Ubuntu] += ['synaptic', 'openssh-server', 'lshw']
         return pkgs
 
     def getpkgs_programs(self):
@@ -132,18 +133,24 @@ class Installer:
     def create_xprogram_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['thunderbird', 'wmctrl', 'inkscape', 'gimp', 'bogofilter', 'hunspell', 'hexchat'],
+                ['thunderbird', 'wmctrl', 'inkscape', 'gimp', 'bogofilter', 'hunspell', 'hexchat',
+                 'asunder'],
             Systems.Arch:
-                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'retext', 'chromium', 'mc', 'gvim', 'gnome-commander-git', 'file-commander-git', 'anki'],
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'retext', 'chromium', 'mc', 'gvim', 'doublecmd-gtk2',
+                 'brave-browser', 'code', 'keybase', 'keybase-gui', 'xpdf',
+                 'lollypop', 'easytag', 'asunder', 'elisa', 'strawberry',
+                 'qemu', 'virt-manager'],
             Systems.Fedora:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
                  'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free-extras', 'unetbootin', 'anki',
-                 'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es'],
+                 'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
+                 'qemu', 'virt-manager'],
             Systems.BSD:
-                ['ja-anthy', 'xaos','vim-gtk3', 'vlc', 'gnupg', 'easytag', 'asunder', 'slim', 'slim-themes',
+                ['ja-anthy', 'xaos','vim-gtk3', 'vlc', 'gnupg',
                  'vim-gtk3', 'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
-                 'ja-font-kochi', 'ja-ibus-anthy', 'lollypop', 'deadbeef', 'exaile', 'easytag', 'asunder', 'vscode',
+                 'ja-font-kochi', 'ja-ibus-anthy', 'vscode',
                  'ghostwriter', 'xorg', 'slim', 'slim-themes', 'xpdf',
+                 'lollypop', 'deadbeef', 'exaile', 'easytag', 'asunder',
                  'qemu', 'virt-manager', 'cpu-x'
                  ],
                 # ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki', 'ja-font-kochi', 'ja-ibus-anthy', 'xorg',
@@ -185,7 +192,9 @@ class Installer:
             Systems.Unknown:
                 ['meld', 'cgdb', 'gdb', 'cmake', 'ccache'],
             Systems.Arch:
-                ['qt5', 'nodejs', 'yarn'],
+                ['qt5', 'nodejs', 'yarn',
+                 'dotnet-runtime', 'dotnet-sdk', 'dotnet-targeting-pack',
+                 'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0'],
             Systems.Fedora:
                 ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
             Systems.BSD:
@@ -225,9 +234,9 @@ class Installer:
             Systems.Unknown:
                 [],
             Systems.Arch:
-                ['xfce4-wm-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
+                ['xfwm4-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
-                 'xfce4-screenshooter-plugin', 'xfce4-pulseaudio-plugin'],
+                 'xfce4-pulseaudio-plugin'],
             Systems.Fedora:
                 ['xfwm4-themes', 'xfce4-eyes-plugin'],
             Systems.BSD:
@@ -266,9 +275,10 @@ class Installer:
         return result
 
     def create_tex_packages(self):
+        #    ['lyx'],
         pkgs = {
             Systems.Unknown:
-                ['lyx'],
+                [],
             Systems.Arch:
                 ['texmaker', 'latex2html', 'texstudio', 'texlive-music', 'texlive-langcyrillic', 'texlive-langjapanese'],
             Systems.Fedora:

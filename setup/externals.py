@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 from setup.osplatform import Systems, Subsys
 from setup.console import output
-from setup.helpers import flag_is_set, flag_is_set_def_false, get_downloads, install
+from setup.helpers import flag_is_set, flag_is_set_explicit, get_downloads, install
 
 
 class Externals:
@@ -21,7 +21,7 @@ class Externals:
         self.bindir = str(Path.home()) + '/bin'
 
     def install_keybase(self):
-        if not flag_is_set(self.options, self.options.keybase, self.options.nokeybase):
+        if not flag_is_set_explicit(self.options.keybase, self.options.nokeybase, True):
             output('<yellow>pass<nc>')
             return []
         output('- Installing keybase ...: ', False)
@@ -54,10 +54,10 @@ class Externals:
 
     def install_brave(self):
         output('- install Brave Browser : ', False)
-        if self.targetsys == Systems.Cygwin:
+        if self.targetsys == Systems.Cygwin or self.targetsys == Systems.Arch:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.brave, self.options.nobrave):
+        if not flag_is_set_explicit(self.options.brave, self.options.nobrave, True):
             output('<yellow>pass<nc>')
             return
 
@@ -69,7 +69,7 @@ class Externals:
             subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/', 'brave-browser'])
             subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
             subprocess.check_call(['sudo', 'zypper', 'refresh'])
-            install(installprog, ['brave-browser'])
+            install(self.installprog, ['brave-browser'])
         elif self.targetsys == Systems.Mageia or self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat:
             subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://brave-browser-rpm-release.s3.brave.com/x86_64/'])
             subprocess.check_call(['sudo', 'rpm', '--import', 'https://brave-browser-rpm-release.s3.brave.com/brave-core.asc'])
@@ -91,7 +91,7 @@ class Externals:
         if self.targetsys == Systems.BSD:
             output('<tc>not supported<nc>')
             return
-        if not flag_is_set(self.options, self.options.qt, self.options.noqt):
+        if not flag_is_set_explicit(self.options.qt, self.options.noqt, True):
             output('<yellow>pass<nc>')
             return
 
@@ -140,7 +140,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.toolbox, self.options.notoolbox):
+        if not flag_is_set_explicit(self.options.toolbox, self.options.notoolbox, True):
             output('<yellow>pass<nc>')
             return
         toolboxzip = 'jetbrains-toolbox-1.26.4.13374.tar.gz'
@@ -154,7 +154,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_def_false(self.options, self.options.rider, self.options.norider):
+        if not flag_is_set_explicit(self.options.rider, self.options.norider):
             output('<yellow>pass<nc>')
             return
         riderzip = 'JetBrains.Rider-2022.1.1.tar.gz'
@@ -163,12 +163,12 @@ class Externals:
         output('- Rider installed ......: <green>Done<nc>')
 
     def install_rover(self):
-        output('- install Rus Rover.....: ', False)
+        output('- install Rust Rover....: ', False)
         #https://download.jetbrains.com/rustrover/RustRover-233.10527.39-aarch64.tar.gz
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_def_false(self.options, self.options.rover, self.options.norover):
+        if not flag_is_set_explicit(self.options.rover, self.options.norover):
             output('<yellow>pass<nc>')
             return
         roverzip = 'RustRover-233.10527.39-aarch64.tar.gz'
@@ -181,7 +181,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_def_false(self.options, self.options.pycharm, self.options.nopycharm):
+        if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm):
             output('<yellow>pass<nc>')
             return
         charmzip = 'pycharm-professional-2022.1.1.tar.gz'
@@ -195,7 +195,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_def_false(self.options, self.options.clion, self.options.noclion):
+        if not flag_is_set_explicit(self.options.clion, self.options.noclion):
             output('<yellow>pass<nc>')
             return
         clionzip = 'CLion-2022.1.1.tar.gz'
@@ -209,7 +209,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_def_false(self.options, self.options.webstorm, self.options.nowebstorm):
+        if not flag_is_set_explicit(self.options.webstorm, self.options.nowebstorm):
             output('<yellow>pass<nc>')
             return
         stormzip = 'WebStorm-2022.1.1.tar.gz'
@@ -223,7 +223,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_def_false(self.options, self.options.intellij, self.options.nointellij):
+        if not flag_is_set_explicit(self.options.intellij, self.options.nointellij):
             output('<yellow>pass<nc>')
             return
         ideazip = 'ideaIU-2022.2.3.tar.gz'
@@ -237,10 +237,10 @@ class Externals:
 
     def install_code(self):
         output('- install VS Code ......: ', False)
-        if self.targetsys == Systems.Cygwin:
+        if self.targetsys == Systems.Cygwin or self.targetsys == Systems.Arch:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set(self.options, self.options.code, self.options.nocode):
+        if not flag_is_set_explicit(self.options.code, self.options.nocode, True):
             output('<yellow>pass<nc>')
             return
 
@@ -253,7 +253,7 @@ class Externals:
             subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
             subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://packages.microsoft.com/yumrepos/vscode', 'vscode'])
             subprocess.check_call(['sudo', 'zypper', 'refresh'])
-            install(installprog, ['code'])
+            install(self.installprog, ['code'])
         elif self.targetsys == Systems.Fedora or self.targetsys == Systems.Mageia:
             subprocess.check_call(['sudo', 'rpm', '--import', 'https://packages.microsoft.com/keys/microsoft.asc'])
             subprocess.check_call(['sudo', 'sh', '-c', 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'])
@@ -261,7 +261,7 @@ class Externals:
             install(self.installprog, ['code'])
         elif self.targetsys == Systems.Ubuntu:
             path = os.getcwd()
-            os.chdir(downloads)
+            os.chdir(self.downloads)
             subprocess.check_call(['wget', '-q0-', 'https://packages.microsoft.com/keys/microsoft.asc', '|', 'gpg', '--dearmor', '>', 'packages.microsoft.gpg'])
             subprocess.check_call(['sudo', 'install', '-o', 'root', '-g', 'root', '-m', '644', 'packages.microsoft.gpg', '/etc/apt/trusted.gpg.d/'])
             subprocess.check_call(['sudo', 'sh', '-c', 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'])
@@ -279,7 +279,7 @@ class Externals:
     def install_gitflow(self):
         if self.targetsys == Systems.BSD:
             return
-        if not flag_is_set(self.options, self.options.gitflow, self.options.nogitflow):
+        if not flag_is_set_explicit(self.options.gitflow, self.options.nogitflow, True):
             output('<yellow>pass<nc>')
             return
         output('Installing git flow ....: ', False)

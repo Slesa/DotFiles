@@ -8,6 +8,7 @@ alias vi=vim
 alias df='df -h'
 alias du='du -h'
 alias cls='echo -ne "\033c"'
+alias free='free -m'                                            # Show sizes in MB
 
 # git
 alias pull="git pull origin"

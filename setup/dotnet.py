@@ -10,7 +10,7 @@ from setup.helpers import flag_is_set, get_downloads, install
 # [  ] SuSE               [  ] Arch / Manjaro
 def install_dotnet(installprog, targetsys, options):
     output('install .NET Core ......: ', False)
-    if targetsys == Systems.Cygwin:
+    if targetsys == Systems.Cygwin or targetsys == Systems.Arch:
         output('<tc>not necessary<nc>')
         return
     if not flag_is_set(options, options.dotnet, options.nodotnet):

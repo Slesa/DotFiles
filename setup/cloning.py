@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 from setup.osplatform import Systems, Subsys
 from setup.console import output
-from setup.helpers import flag_is_set
+from setup.helpers import flag_is_set, flag_is_set_explicit
 
 #region Bitbucket
 
@@ -24,7 +24,7 @@ def clone_from_bitbucket(src, project, flow, base=''):
 
 def clone_bitbucket(root, targetsys, options):
     output('Clone bitbucket ........: ', False)
-    if not flag_is_set(options, options.bitbucket, options.nobitbucket):
+    if not flag_is_set_explicit(options.bitbucket, options.nobitbucket, True):
         output('<yellow>pass<nc>')
         return
     src = root + "/bitbucket/"
@@ -86,7 +86,7 @@ def clone_bsd_from_github(root):
 
 def clone_github(root, targetsys, options):
     output('Clone github ...........: ', False)
-    if not flag_is_set(options, options.github, options.nogithub):
+    if not flag_is_set_explicit(options.github, options.nogithub, True):
         output('<yellow>pass<nc>')
         return
     src = root + "/github/"
@@ -148,7 +148,7 @@ def clone_from_gitlab(src, project, flow):
 
 def clone_gitlab(root, options):
     output('Clone gitlab ...........: ', False)
-    if not flag_is_set(options, options.gitlab, options.nogitlab):
+    if not flag_is_set_explicit(options.gitlab, options.nogitlab, True):
         output('<yellow>pass<nc>')
         return
     src = root + "/gitlab/"
@@ -170,40 +170,6 @@ def clone_gitlab(root, options):
 
 #endregion
 
-#region 42 repos
-
-def clone_from_gf(src, sub, project, flow):
-
-    if os.path.isdir(src + project):
-        return
-    subprocess.check_call(['git', 'clone', 'https://develop.42gmbh.com/bitbucket/scm/'+sub+'/'+project+'.git'])
-    if flow:
-        os.system('cd '+project+" && git flow init -d && cd ..")
-
-
-def clone_gf(root, options):
-    output('Clone 42................: ', False)
-    if not flag_is_set(options, options.gf, options.nogf):
-        output('<yellow>pass<nc>')
-        return
-    src = root + "/42/"
-    if not os.path.isdir(src):
-        os.mkdir(src)
-
-    os.chdir(src)
-    clone_from_gf(src, 'macl', 'matrixclassic', True)
-    clone_from_gf(src, 'bv', 'bonviewer', True)
-    clone_from_gf(src, 'mke', 'mke-fo', True)
-    # clone_from_gf(src, 'mat', 'matrixodooaddons', False)
-    # clone_from_gf(src, 'mat', 'matrixbackoffice', False)
-    # clone_from_gf(src, 'mat', 'tseconnector', False)
-    clone_from_gf(src, 'bv', 'playground', False)
-    os.chdir('..')
-
-    output('<green>Done<nc>')
-
-#endregion
-
 
 def clone_all(targetsys, options):
     output('Cloning sources.........: ', False)
@@ -217,6 +183,5 @@ def clone_all(targetsys, options):
     clone_bitbucket(src, targetsys, options)
     clone_github(src, targetsys, options)
     clone_gitlab(src, options)
-    clone_gf(src, options)
 
     output('<green>Done<nc>')
