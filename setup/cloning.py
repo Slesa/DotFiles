@@ -44,12 +44,15 @@ def clone_bitbucket(root, targetsys, options):
 
 #region Github
 
-def clone_from_github(src, project, flow, base=''):
+def clone_from_github(src, project, flow, base='', rec=False):
     if os.path.isdir(src + project):
         return
     header = 'git@' if '/' not in project else 'https://'
     target = ':slesa/'+project if '/' not in project else '/'+project
-    subprocess.check_call(['git', 'clone', header + 'github.com' + target])
+    if not rec:
+        subprocess.check_call(['git', 'clone', header + 'github.com' + target])
+    else:
+        subprocess.check_call(['git', 'clone', '--recurse-submodules', header + 'github.com' + target])
     if base:
         os.system('cd '+project+f" && git remote add upstream {base} && cd ..")
     if flow:
@@ -73,16 +76,27 @@ def clone_safe_from_github(root):
 
 
 def clone_bsd_from_github(root):
-    src = root + "/bsd/"
+    src = root + "/os/"
     if not os.path.isdir(src):
         os.mkdir(src)
 
     os.chdir(src)
-    clone_from_github(src, 'freebsd-ports-dosbox-x', True)
-    clone_from_github(src, 'dosbox-x', True)
+    clone_from_github(src, 'freebsd-ports', True)
+    #clone_from_github(src, 'freebsd-ports-dosbox-x', True)
+    #clone_from_github(src, 'dosbox-x', True)
     os.chdir('..')
     os.chdir('..')
 
+
+def clone_oi_from_github(root):
+    src = root + "/os/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_from_github(src, 'oi-userland', True)
+    os.chdir('..')
+    os.chdir('..')
 
 def clone_github(root, targetsys, options):
     output('Clone github ...........: ', False)
@@ -94,6 +108,7 @@ def clone_github(root, targetsys, options):
         os.mkdir(src)
 
     os.chdir(src)
+    clone_from_github(src, 'Apostel', False, '', True)
     clone_from_github(src, 'Poseidon', True)
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
@@ -106,8 +121,10 @@ def clone_github(root, targetsys, options):
 
     os.chdir('..')
     clone_safe_from_github(root)
-    if targetsys == Systems.BSD:
+    if targetsys == Systems.BSD or targetsys == Systems.SunOS:
         clone_bsd_from_github(root)
+    if targetsys == Systems.SunOS:
+        clone_oi_from_github(root)
 
     output('<green>Done<nc>')
 
