@@ -27,6 +27,7 @@ class Systems(Enum):
     Mageia = 10
     BSD = 11
     NetBSD = 12
+    SunOS = 13
 
 
 class Subsys(Enum):
@@ -50,6 +51,9 @@ def determine_os():
     if system == 'netbsd':
         output('<green>NetBSD<nc>')
         return Systems.NetBSD, subsys
+    if system == 'sunos':
+        output('<green>Sun OS<nc>')
+        return Systems.SunOS, subsys
     if 'bsd' in system:
         output('<green>BSD derivate<nc>')
         return Systems.BSD, subsys
@@ -97,6 +101,8 @@ def determine_os():
 def determine_installer(os):
     if os == Systems.BSD:
         return ["sudo", "pkg", "install", "-y"]
+    if os == Systems.SunOS:
+        return ["sudo", "pkg", "install", "--accept"]
     if os == Systems.NetBSD:
         return ["sudo", "pkgin", "-y", "install"]
     if os == Systems.Mageia:

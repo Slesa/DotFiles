@@ -25,6 +25,8 @@ def install_core(installprog, targetsys, subsys, options):
     packages = ['zsh', 'neofetch']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
         packages += ['git', 'firefox']
+    if targetsys == Systems.SunOS:
+        packages += ['links', 'wget', 'rsync']
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
         packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats']
         if targetsys == Systems.BSD:
@@ -52,12 +54,15 @@ class Installer:
         self.pkg_games = self.create_games_packages()
         self.pkg_nextcloud = self.create_nextcloud_packages()
 
+    # ['git-flow']
     def create_basic_packages(self):
         pkgs = {
             Systems.Unknown:
                 ['zsh'],
             Systems.Arch:
                 ['synergy', 'fortune-mod', 'zsh-lovers'],
+            Systems.SunOS:
+                ['synergy', 'rdesktop'],
             Systems.Fedora:
                 ['fortune-mod', 'hfsutils', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy'],
             Systems.BSD:
@@ -71,10 +76,9 @@ class Installer:
             Systems.Redhat:
                 ['fortune-mod', 'rdesktop', 'gcc-c++', 'synergy'],
             Systems.SuSE:
-                # ['git-flow']
                 ['fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc']
         }
-        if self.subsys== Subsys.Origin:
+        if self.subsys == Subsys.Origin:
             pkgs[Systems.Ubuntu] += ['hfsplus', 'hfsutils', 'synergy', 'rdesktop']
         return pkgs
 
@@ -93,25 +97,27 @@ class Installer:
     def create_program_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['curl', 'npm', 'mc', 'ncdu', 'htop', 'nmap'],
+                ['curl', 'ncdu', 'htop', 'nmap'],
             Systems.Arch:
-                ['links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'lshw'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'lshw', 'vim-pathogen'],
+            Systems.SunOS:
+                ['links', 'w3m', 'postgresql', 'tmux'],
             Systems.Fedora:
-                ['links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.BSD:
                 # [xfce slim slim-themes]
-                ['links', 'w3m', 'postgresql12-server', 'postgresql12-client', 'tmux', 'hs-pandoc', 'byobu'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql12-server', 'postgresql12-client', 'tmux', 'hs-pandoc', 'byobu'],
             Systems.Mageia:
-                ['links', 'w3m', 'postgresql13', 'postgresql13-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql13', 'postgresql13-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu'],
             Systems.MxLinux:
-                ['links', 'w3m', 'postgresql-11', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
+                ['mc', 'npm', 'links', 'w3m', 'postgresql-11', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
                  'vim-pathogen', 'byobu'],
             Systems.Ubuntu:
-                ['links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen'],
             Systems.Redhat:
-                ['links', 'w3m', 'postgresql-server', 'postgresql-contrib', 'tmux'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.SuSE:
-                ['links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'dosemu'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'dosemu'],
         }
         if self.subsys== Subsys.Origin:
             pkgs[Systems.Ubuntu] += ['synaptic', 'openssh-server', 'lshw']
@@ -136,9 +142,14 @@ class Installer:
                 ['thunderbird', 'wmctrl', 'inkscape', 'gimp', 'bogofilter', 'hunspell', 'hexchat',
                  'asunder'],
             Systems.Arch:
-                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'retext', 'chromium', 'mc', 'gvim', 'doublecmd-gtk2',
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'retext', 'chromium', 'gvim', 'doublecmd-gtk2',
                  'brave-browser', 'code', 'keybase', 'keybase-gui', 'xpdf',
                  'lollypop', 'easytag', 'asunder', 'elisa', 'strawberry',
+                 'qemu', 'virt-manager'],
+            Systems.SunOS:
+                ['anthy', 'gvim', 'gnome-commander', 'hexchat',
+                 'rhythmbox', 'totem',
+                 'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
                  'qemu', 'virt-manager'],
             Systems.Fedora:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
@@ -184,36 +195,42 @@ class Installer:
             output('<yellow>pass<nc>')
             return []
         result = self.pkg_xprograms[Systems.Unknown] + self.pkg_xprograms[self.targetsys]
+        if self.targetsys == Systems.SunOS:
+            result.remove('bogofilter')
+            result.remove('wmctrl')
+            result.remove('asunder')
         output('<green>Ok<nc>')
         return result
 
     def create_compiler_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['meld', 'cgdb', 'gdb', 'cmake', 'ccache'],
+                ['meld', 'gdb', 'cmake', 'ccache'],
             Systems.Arch:
-                ['qt5', 'nodejs', 'yarn',
+                ['cgdb', 'qt5', 'nodejs', 'yarn',
                  'dotnet-runtime', 'dotnet-sdk', 'dotnet-targeting-pack',
                  'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0'],
+            Systems.SunOS:
+                ['build-essential', 'gcc-13', 'qt5', 'qt6', 'qtcreator', 'nodejs-20', 'rustc', 'cmake', 'codeblocks'],
             Systems.Fedora:
-                ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
+                ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
-                ['qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
+                ['cgdb', 'qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
             Systems.Mageia:
-                ['cmake-qtgui', 'nodejs', 'lib64mesagl-devel'],
+                ['cgdb', 'cmake-qtgui', 'nodejs', 'lib64mesagl-devel'],
             Systems.MxLinux:
-                ['python3-venv', 'mono-complete', 'cmake-qt-gui', 'yarnpkg', 'pyqt5-dev', 'pyqt5-examples',
+                ['cgdb', 'python3-venv', 'mono-complete', 'cmake-qt-gui', 'yarnpkg', 'pyqt5-dev', 'pyqt5-examples',
                  'qt5-default', 'qtbase5-dev', 'libgl1-mesa-dev', 'libglu1-mesa-dev'],
             Systems.Ubuntu:
                 # [ 'fsharp', ]
-                ['qt5-default', 'nodejs', 'yarn', 'rust', 'rust-cargo-devel'],
+                ['cgdb', 'qt5-default', 'nodejs', 'yarn', 'rust', 'rust-cargo-devel'],
             Systems.Redhat:
-                ['ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel'
+                ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel'
                     , 'dotnet', 'dotnet-sdk-6.0', 'dotnet-templates-6.0'],
             Systems.SuSE:
                 # ['mono-complete','fsharp',]
-                ['nodejs19', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel'],
+                ['cgdb', 'nodejs19', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel'],
         }
         return pkgs
 
@@ -237,6 +254,8 @@ class Installer:
                 ['xfwm4-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
                  'xfce4-pulseaudio-plugin'],
+            Systems.SunOS:
+                [],
             Systems.Fedora:
                 ['xfwm4-themes', 'xfce4-eyes-plugin'],
             Systems.BSD:
@@ -264,9 +283,9 @@ class Installer:
         if self.targetsys == Systems.Cygwin or self.subsys == Subsys.Windows:
             output('<tc>not necessary<nc>')
             return []
-        if not self.options.desktop == 'xfce':
+        if self.targetsys == Systems.SunOS or not self.options.desktop == 'xfce':
             output('<yellow>XFCE not used<nc>')
-            return
+            return []
         if not flag_is_set(self.options, self.options.xfce, self.options.noxfce):
             output('<yellow>pass<nc>')
             return []
@@ -281,6 +300,8 @@ class Installer:
                 [],
             Systems.Arch:
                 ['texmaker', 'latex2html', 'texstudio', 'texlive-music', 'texlive-langcyrillic', 'texlive-langjapanese'],
+            Systems.SunOS:
+                [],
             Systems.Fedora:
                 ['texmaker', 'latex2html', 'texstudio', 'texlive-ctex', 'texlive-xecjk', 'texlive-babel-japanese',
                  'texlive-babel-russian', 'texlive-collection-music', 'texlive-xetex', 'texlive-cyrillic'],
@@ -321,6 +342,8 @@ class Installer:
                 [],
             Systems.Arch:
                 ['xboard', 'pychess', 'chromium-bsu', 'dosbox'],
+            Systems.SunOS:
+                ['nethack', 'freeciv', 'chromium-bsu'],
             Systems.Fedora:
                 ['xboard', 'clonekeen', 'dreamchess', 'gnuchess'],
             Systems.BSD:

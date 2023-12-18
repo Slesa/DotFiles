@@ -25,6 +25,10 @@ def install_zsh(root, targetsys, options):
             srcfile = 'zshrc.cygwin'
         elif targetsys == Systems.BSD:
             srcfile = 'zshrc.freebsd'
+        elif targetsys == Systems.Arch:
+            srcfile = 'zshrc.manjaro'
+#        elif targetsys == Systems.SunOS:
+#            srcfile = 'zshrc.sunos'
         elif targetsys == Systems.Fedora or targetsys == Systems.Mageia:
             srcfile = 'zshrc.fedora'
         elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin:
