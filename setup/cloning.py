@@ -44,7 +44,7 @@ def clone_bitbucket(root, targetsys, options):
 
 #region Github
 
-def clone_from_github(src, project, flow, recursive, base=''):
+def clone_it_from_github(src, project, flow, recursive, base=''):
     if os.path.isdir(src + project):
         return
     header = 'git@' if '/' not in project else 'https://'
@@ -60,10 +60,10 @@ def clone_from_github(src, project, flow, recursive, base=''):
 
 
 def clone_recursive_github(src, project, flow, base=''):
-    clone_from_github(src, project, flow, True, base)
+    clone_it_from_github(src, project, flow, True, base)
 
 def clone_from_github(src, project, flow, base=''):
-    clone_from_github(src, project, flow, False, base)
+    clone_it_from_github(src, project, flow, False, base)
 
 
 def clone_apostel_from_github(root):
