@@ -22,6 +22,21 @@ def clone_from_bitbucket(src, project, flow, base=''):
     if flow:
         os.system('cd '+project+" && git flow init -d && git checkout develop && cd ..")
 
+
+def clone_apostel_from_bitbucket(root):
+    src = root + "/bitbucket/apostel/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_from_bitbucket(src, 'Apostel-net', False)
+    clone_from_bitbucket(src, 'Apostel-rust', False)
+    clone_from_bitbucket(src, 'Apostel-qt', False)
+    #clone_recursive_github(src, 'Apostel', False)
+    os.chdir('..')
+    os.chdir('..')
+
+
 def clone_bitbucket(root, targetsys, options):
     output('Clone bitbucket ........: ', False)
     if not flag_is_set_explicit(options.bitbucket, options.nobitbucket, True):
@@ -34,8 +49,8 @@ def clone_bitbucket(root, targetsys, options):
     os.chdir(src)
     clone_from_bitbucket(src, 'poseidon', True)
     clone_from_bitbucket(src, 'apostel', True)
-
     os.chdir('..')
+    clone_apostel_from_bitbucket(root)
 
     output('<green>Done<nc>')
 
@@ -74,7 +89,7 @@ def clone_apostel_from_github(root):
     os.chdir(src)
     clone_from_github(src, 'Apostel-net', False)
     clone_from_github(src, 'Apostel-rust', False)
-    clone_from_github(src, 'Apostle-qt', False)
+    clone_from_github(src, 'Apostel-qt', False)
     clone_recursive_github(src, 'Apostel', False)
     os.chdir('..')
     os.chdir('..')
@@ -103,8 +118,8 @@ def clone_bsd_from_github(root):
 
     os.chdir(src)
     clone_from_github(src, 'freebsd-ports', True)
-    #clone_from_github(src, 'freebsd-ports-dosbox-x', True)
-    #clone_from_github(src, 'dosbox-x', True)
+    clone_from_github(src, 'freebsd-ports-dosbox-x', True)
+    clone_from_github(src, 'dosbox-x', True)
     os.chdir('..')
     os.chdir('..')
 
@@ -129,7 +144,6 @@ def clone_github(root, targetsys, options):
         os.mkdir(src)
 
     os.chdir(src)
-    clone_from_github(src, 'Apostel', False, '', True)
     clone_from_github(src, 'Poseidon', True)
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
@@ -141,6 +155,7 @@ def clone_github(root, targetsys, options):
     clone_from_github(src, 'EventStore', True, 'https://github.com/EventStore/EventStore.git')
 
     os.chdir('..')
+    clone_apostel_from_github(root)
     clone_safe_from_github(root)
     if targetsys == Systems.BSD or targetsys == Systems.SunOS:
         clone_bsd_from_github(root)
