@@ -149,7 +149,6 @@ class Installer:
             Systems.SunOS:
                 ['anthy', 'gvim', 'gnome-commander', 'hexchat',
                  'rhythmbox', 'totem',
-                 'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
                  'qemu', 'virt-manager'],
             Systems.Fedora:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
