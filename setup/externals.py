@@ -83,6 +83,33 @@ class Externals:
         output('- Brave Browser ........: <green>Done<nc>')
 
 
+    def install_iridium(self):
+        output('- install Iridium.......: ', False)
+        if self.targetsys == Systems.Cygwin or self.targetsys == Systems.Arch:
+            output('<tc>not necessary<nc>')
+            return
+        if not flag_is_set_explicit(self.options.iridium, self.options.noiridium, True):
+            output('<yellow>pass<nc>')
+            return
+
+        code = os.popen('which iridium-browser').read()[:-1]
+        if "/iridium" in code:
+            output('<yellow>Already installed<nc>')
+            return
+        if self.targetsys == Systems.SuSE: 
+            subprocess.check_call(['sudo', 'zypper', 'addrepo', 'https://downloads.iridiumbrowser.de/openSUSE_Leap_15.5/', 'iridium'])
+            subprocess.check_call(['sudo', 'zypper', 'refresh'])
+            install(self.installprog, ['iridium-browser'])
+        elif self.targetsys == Systems.Mageia or self.targetsys == Systems.Fedora or self.targetsys == Systems.Redhat:
+            subprocess.check_call(['sudo', 'dnf', 'config-manager', '--add-repo', 'https://dl.iridiumbrowser.de/fedora_39/iridium-browser.repo'])
+            install(self.installprog, ['iridium-browser'])
+        else:
+            output('<red>unsupported<nc>')
+            return
+
+        output('- Iridium Browser ......: <green>Done<nc>')
+
+
     def install_qt(self):
         output('- install Qt ...........: ', False)
         if self.targetsys == Systems.Cygwin:
@@ -319,7 +346,8 @@ class Externals:
 
         self.install_gitflow()
         self.install_keybase()
-        self.install_brave()
+        self.install_iridium()
+        # self.install_brave()
         self.install_qt()
         self.install_toolbox()
         self.install_rider()

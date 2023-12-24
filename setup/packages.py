@@ -162,6 +162,7 @@ class Installer:
                  'ja-font-kochi', 'ja-ibus-anthy', 'vscode',
                  'ghostwriter', 'xorg', 'slim', 'slim-themes', 'xpdf',
                  'lollypop', 'deadbeef', 'exaile', 'easytag', 'asunder',
+                 'iridium-browser',
                  'qemu', 'virt-manager', 'cpu-x'
                  ],
                 # ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki', 'ja-font-kochi', 'ja-ibus-anthy', 'xorg',
@@ -216,7 +217,13 @@ class Installer:
                 ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
-                ['cgdb', 'qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
+                #['cgdb', 'qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
+                ['qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17', 'rust', 'docker', 'docker-machine',
+                 'qt6', 'qt6-base', 'qt6-charts', 'qt6-declarative', 'qt6-doc', 'qt6-examples', 'qt6-httpserver', 'qt6-imageformats',
+                 'qt6-languageserver', 'qt6-location', 'qt6-multimedia', 'qt6-networkauth', 'qt6-positioning', 'qt6-remoteobjects', 
+                 'qt6-scxml', 'qt6-serialbus', 'qt6-serialport', 'qt6-speech', 'qt6-svg', 'qt6-tools', 'qt6-translations', 
+                 'qt6-virtualkeyboard', 'qt6-webchannel', 'qt6-webengine', 'qt6-websockets', 'qt6-webview', 'qt6ct'
+                ],
             Systems.Mageia:
                 ['cgdb', 'cmake-qtgui', 'nodejs', 'lib64mesagl-devel'],
             Systems.MxLinux:

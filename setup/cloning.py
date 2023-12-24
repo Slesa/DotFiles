@@ -44,19 +44,40 @@ def clone_bitbucket(root, targetsys, options):
 
 #region Github
 
-def clone_from_github(src, project, flow, base='', rec=False):
+def clone_it_from_github(src, project, flow, recursive, base=''):
     if os.path.isdir(src + project):
         return
     header = 'git@' if '/' not in project else 'https://'
     target = ':slesa/'+project if '/' not in project else '/'+project
-    if not rec:
+    if recursive:
+        subprocess.check_call(['git', 'clone', '--recurse-modules', header + 'github.com' + target])
+    else:    
         subprocess.check_call(['git', 'clone', header + 'github.com' + target])
-    else:
-        subprocess.check_call(['git', 'clone', '--recurse-submodules', header + 'github.com' + target])
     if base:
         os.system('cd '+project+f" && git remote add upstream {base} && cd ..")
     if flow:
         os.system('cd '+project+" && git flow init -d && git checkout develop && cd ..")
+
+
+def clone_recursive_github(src, project, flow, base=''):
+    clone_it_from_github(src, project, flow, True, base)
+
+def clone_from_github(src, project, flow, base=''):
+    clone_it_from_github(src, project, flow, False, base)
+
+
+def clone_apostel_from_github(root):
+    src = root + "/github/apostel/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_from_github(src, 'Apostel-net', False)
+    clone_from_github(src, 'Apostel-rust', False)
+    clone_from_github(src, 'Apostle-qt', False)
+    clone_recursive_github(src, 'Apostel', False)
+    os.chdir('..')
+    os.chdir('..')
 
 
 def clone_safe_from_github(root):
