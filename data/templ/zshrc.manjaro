@@ -11,10 +11,15 @@ export EDITOR=vim
 export PAGER=less
 export BROWSER=`which firefox`
 
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export QT_IM_MODULE=ibus
+
 source ~/.zsh/options
 source ~/.zsh/aliases
 source ~/.zsh/paths
 source ~/.zprezto/init.zsh
+source ~/.cargo/env
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

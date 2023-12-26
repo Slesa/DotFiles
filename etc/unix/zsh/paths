@@ -11,9 +11,9 @@ hash -d safe=~/work/github/safe
 hash -d bm=~/work/42/bonviewer
 hash -d mc=~/work/42/matrixclassic
 hash -d fsr=~/work/github/FsReveal
-hash -d aponet=~/work/github/apostel/Apostel-net
-hash -d aporust=~/work/github/apostel/Apostel-rust
-hash -d apoqt=~/work/github/apostel/Apostel-qt
+hash -d aponet=~/work/bitbucket/apostel/Apostel-net
+hash -d aporust=~/work/bitbucket/apostel/Apostel-rust
+hash -d apoqt=~/work/bitbucket/apostel/Apostel-qt
 
 hash -d prolog=~/work/github/prolog
 hash -d playground=~/work/github/Playground

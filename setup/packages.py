@@ -99,7 +99,7 @@ class Installer:
             Systems.Unknown:
                 ['curl', 'ncdu', 'htop', 'nmap'],
             Systems.Arch:
-                ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'lshw', 'vim-pathogen'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'lshw'],
             Systems.SunOS:
                 ['links', 'w3m', 'postgresql', 'tmux'],
             Systems.Fedora:
@@ -205,19 +205,19 @@ class Installer:
     def create_compiler_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['meld', 'gdb', 'cmake', 'ccache'],
+                ['meld', 'gdb', 'cmake', 'ccache', 'docker'],
             Systems.Arch:
-                ['cgdb', 'qt5', 'nodejs', 'yarn',
+                ['cgdb', 'qt6', 'nodejs', 'yarn',
                  'dotnet-runtime', 'dotnet-sdk', 'dotnet-targeting-pack',
                  'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0'],
             Systems.SunOS:
-                ['build-essential', 'gcc-13', 'qt5', 'qt6', 'qtcreator', 'nodejs-20', 'rustc', 'cmake', 'codeblocks'],
+                ['build-essential', 'gcc-13', 'qt6', 'qtcreator', 'nodejs-20', 'rustc', 'cmake', 'codeblocks'],
             Systems.Fedora:
                 ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
-                #['cgdb', 'qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
-                ['qt5-designer', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17', 'rust', 'docker', 'docker-machine',
+                #['cgdb', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
+                ['qtcreator', 'node16', 'npm', 'yarn', 'openjdk17', 'rust', 'docker', 'docker-machine',
                  'qt6', 'qt6-base', 'qt6-charts', 'qt6-declarative', 'qt6-doc', 'qt6-examples', 'qt6-httpserver', 'qt6-imageformats',
                  'qt6-languageserver', 'qt6-location', 'qt6-multimedia', 'qt6-networkauth', 'qt6-positioning', 'qt6-remoteobjects', 
                  'qt6-scxml', 'qt6-serialbus', 'qt6-serialport', 'qt6-speech', 'qt6-svg', 'qt6-tools', 'qt6-translations', 
@@ -226,11 +226,11 @@ class Installer:
             Systems.Mageia:
                 ['cgdb', 'cmake-qtgui', 'nodejs', 'lib64mesagl-devel'],
             Systems.MxLinux:
-                ['cgdb', 'python3-venv', 'mono-complete', 'cmake-qt-gui', 'yarnpkg', 'pyqt5-dev', 'pyqt5-examples',
-                 'qt5-default', 'qtbase5-dev', 'libgl1-mesa-dev', 'libglu1-mesa-dev'],
+                ['cgdb', 'python3-venv', 'mono-complete', 'cmake-qt-gui', 'yarnpkg',
+                 'libgl1-mesa-dev', 'libglu1-mesa-dev'],
             Systems.Ubuntu:
                 # [ 'fsharp', ]
-                ['cgdb', 'qt5-default', 'nodejs', 'yarn', 'rust', 'rust-cargo-devel'],
+                ['cgdb', 'nodejs', 'yarn', 'rust', 'rust-cargo-devel'],
             Systems.Redhat:
                 ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel'
                     , 'dotnet', 'dotnet-sdk-6.0', 'dotnet-templates-6.0'],
@@ -347,7 +347,7 @@ class Installer:
             Systems.Unknown:
                 [],
             Systems.Arch:
-                ['xboard', 'pychess', 'chromium-bsu', 'dosbox'],
+                ['xboard', 'pychess', 'chromium-bsu', 'dosbox', 'steam'],
             Systems.SunOS:
                 ['nethack', 'freeciv', 'chromium-bsu'],
             Systems.Fedora:

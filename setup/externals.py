@@ -170,7 +170,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.toolbox, self.options.notoolbox, True):
             output('<yellow>pass<nc>')
             return
-        toolboxzip = 'jetbrains-toolbox-1.26.4.13374.tar.gz'
+        toolboxzip = 'jetbrains-toolbox-2.1.3.18901.tar.gz'
         if self.install_jetbrain('Toolbox', toolboxzip, 'toolbox', True):
             return
         output('- Toolbox installed ....: <green>Done<nc>')
@@ -184,7 +184,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.rider, self.options.norider):
             output('<yellow>pass<nc>')
             return
-        riderzip = 'JetBrains.Rider-2022.1.1.tar.gz'
+        riderzip = 'JetBrains.Rider-2023.3.2.tar.gz'
         if self.install_jetbrain('Rider', riderzip, 'rider'):
             return
         output('- Rider installed ......: <green>Done<nc>')
@@ -198,7 +198,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.rover, self.options.norover):
             output('<yellow>pass<nc>')
             return
-        roverzip = 'RustRover-233.10527.39-aarch64.tar.gz'
+        roverzip = 'RustRover-233.11799.306.tar.gz'
         if self.install_jetbrain('Rover', roverzip, 'rustrover'):
             return
         output('- Rust Rover installed .: <green>Done<nc>')
@@ -211,7 +211,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm):
             output('<yellow>pass<nc>')
             return
-        charmzip = 'pycharm-professional-2022.1.1.tar.gz'
+        charmzip = 'pycharm-professional-2023.3.2.tar.gz'
         if self.install_jetbrain('PyCharm', charmzip, 'python'):
             return
         output('- PyCharm installed.....: <green>Done<nc>')
@@ -225,7 +225,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.clion, self.options.noclion):
             output('<yellow>pass<nc>')
             return
-        clionzip = 'CLion-2022.1.1.tar.gz'
+        clionzip = 'CLion-2023.3.2.tar.gz'
         if self.install_jetbrain('CLion', clionzip, 'cpp'):
             return
         output('- CLion installed.......: <green>Done<nc>')
@@ -239,7 +239,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.webstorm, self.options.nowebstorm):
             output('<yellow>pass<nc>')
             return
-        stormzip = 'WebStorm-2022.1.1.tar.gz'
+        stormzip = 'WebStorm-2023.3.2.tar.gz'
         if self.install_jetbrain('WebStorm', stormzip, 'webstorm'):
             return
         output('- WebStorm installed....: <green>Done<nc>')

@@ -81,19 +81,6 @@ def clone_from_github(src, project, flow, base=''):
     clone_it_from_github(src, project, flow, False, base)
 
 
-def clone_apostel_from_github(root):
-    src = root + "/github/apostel/"
-    if not os.path.isdir(src):
-        os.mkdir(src)
-
-    os.chdir(src)
-    clone_from_github(src, 'Apostel-net', False)
-    clone_from_github(src, 'Apostel-rust', False)
-    clone_from_github(src, 'Apostel-qt', False)
-    clone_recursive_github(src, 'Apostel', False)
-    os.chdir('..')
-    os.chdir('..')
-
 
 def clone_safe_from_github(root):
     src = root + "/github/safe/"
@@ -155,7 +142,6 @@ def clone_github(root, targetsys, options):
     clone_from_github(src, 'EventStore', True, 'https://github.com/EventStore/EventStore.git')
 
     os.chdir('..')
-    clone_apostel_from_github(root)
     clone_safe_from_github(root)
     if targetsys == Systems.BSD or targetsys == Systems.SunOS:
         clone_bsd_from_github(root)
