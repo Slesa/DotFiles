@@ -17,17 +17,21 @@ def install_login(root, targetsys, subsys, options):
     if not options.desktop == 'xfce':
         output('<yellow>XFCE not used<nc>')
         return
-    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
-        output('<yellow>uses SLIM<nc>')
-        return
+    #if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+    #    output('<yellow>uses SLIM<nc>')
+    #    return
     if not flag_is_set(options, options.login, options.nologin):
         output('<yellow>pass<nc>')
         return
-    targetdir = '/usr/share/backgrounds/'
-    targetfile = 'StarTrekLogo1920x1080.jpg'
     configfile = '/etc/lightdm/lightdm-gtk-greeter.conf'
-    if targetsys == Systems.SuSE:
+    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+        targetdir = '/usr/local/share/pixmaps/'
+        configfile = '/usr/local/etc/lightdm/lightdm-gtk-greeter.conf'
+    elif targetsys == Systems.SuSE:
         targetdir = '/usr/share/wallpapers/'
+    else:
+        targetdir = '/usr/share/backgrounds/'
+    targetfile = 'StarTrekLogo1920x1080.jpg'
     # elif targetsys == Systems.Fedora or targetsys == Systems.MxLinux:
     #    targetdir = '/usr/share/backgrounds/'
     # elif targetsys == Systems.BSD:
@@ -38,7 +42,7 @@ def install_login(root, targetsys, subsys, options):
         subprocess.check_call(['sudo', 'chmod', '+r', targetdir + targetfile])
     if options.desktop == 'xfce':
         r1 = subprocess.run(
-            ['sudo', 'sed', '-i', '-e', f's#^background=.*#background={targetdir}{targetfile}#g', configfile])
+            ['sudo', 'sed', '-i', '-e', f's#[#^]background=.*#background={targetdir}{targetfile}#g', configfile])
         # print(r1)
         r2 = subprocess.run(['sudo', 'sed', '-i', '-e', 's/\#theme-name=/theme-name=Ambience/g', configfile])
         # print(r2)

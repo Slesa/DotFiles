@@ -164,6 +164,9 @@ class Externals:
 
     def install_toolbox(self):
         output('- install Toolbox.......: ', False)
+        if self.targetsys == Systems.BSD:
+            output('<tc>not supported<nc>')
+            return
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
@@ -181,7 +184,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.rider, self.options.norider):
+        if not flag_is_set_explicit(self.options.rider, self.options.norider, self.targetsys==Systems.BSD):
             output('<yellow>pass<nc>')
             return
         riderzip = 'JetBrains.Rider-2023.3.2.tar.gz'
@@ -195,7 +198,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.rover, self.options.norover):
+        if not flag_is_set_explicit(self.options.rover, self.options.norover, self.targetsys == Systems.BSD):
             output('<yellow>pass<nc>')
             return
         roverzip = 'RustRover-233.11799.306.tar.gz'
@@ -208,7 +211,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm):
+        if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm, self.targetsys == Systems.BSD):
             output('<yellow>pass<nc>')
             return
         charmzip = 'pycharm-professional-2023.3.2.tar.gz'

@@ -99,14 +99,13 @@ def clone_safe_from_github(root):
 
 
 def clone_bsd_from_github(root):
-    src = root + "/os/"
+    src = root + "/freebsd/"
     if not os.path.isdir(src):
         os.mkdir(src)
-
     os.chdir(src)
     clone_from_github(src, 'freebsd-ports', True)
-    clone_from_github(src, 'freebsd-ports-dosbox-x', True)
-    clone_from_github(src, 'dosbox-x', True)
+    #clone_from_github(src, 'freebsd-ports-dosbox-x', True)
+    # clone_from_github(src, 'dosbox-x', True)
     os.chdir('..')
     os.chdir('..')
 

@@ -28,9 +28,9 @@ def install_core(installprog, targetsys, subsys, options):
     if targetsys == Systems.SunOS:
         packages += ['links', 'wget', 'rsync']
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
-        packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats']
+        packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats', 'neovim']
         if targetsys == Systems.BSD:
-            packages += ['linux_base-c7', 'portmaster', 'portshaker']
+            packages += ['linux_base-c7', 'portmaster', 'portshaker', 'poudriere-devel']
     else:
         if targetsys != Systems.Arch:
             packages += ['vim']
@@ -106,7 +106,7 @@ class Installer:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.BSD:
                 # [xfce slim slim-themes]
-                ['mc', 'npm', 'links', 'w3m', 'postgresql12-server', 'postgresql12-client', 'tmux', 'hs-pandoc', 'byobu'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql16-server', 'postgresql16-client', 'tmux', 'hs-pandoc', 'byobu'],
             Systems.Mageia:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql13', 'postgresql13-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu'],
             Systems.MxLinux:
@@ -156,10 +156,10 @@ class Installer:
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
                  'qemu', 'virt-manager'],
             Systems.BSD:
-                ['ja-anthy', 'xaos','vim-gtk3', 'vlc', 'gnupg',
-                 'vim-gtk3', 'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
-                 'ja-font-kochi', 'ja-ibus-anthy', 'vscode',
-                 'ghostwriter', 'xorg', 'slim', 'slim-themes', 'xpdf',
+                ['ja-anthy', 'xaos','vlc', 'gnupg',
+                 'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
+                 'ja-font-kochi', 'ja-ibus-anthy', 
+                 'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'surf', 'neovim-gtk',
                  'lollypop', 'deadbeef', 'exaile', 'easytag', 'asunder',
                  'iridium-browser',
                  'qemu', 'virt-manager', 'cpu-x'
@@ -216,8 +216,8 @@ class Installer:
                 ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
-                #['cgdb', 'qtcreator', 'node16', 'npm', 'yarn', 'openjdk17'],
-                ['qtcreator', 'node16', 'npm', 'yarn', 'openjdk17', 'rust', 'docker', 'docker-machine',
+                #['cgdb', 'qtcreator', 'node20', 'npm', 'yarn', 'openjdk17'],
+                ['qtcreator', 'node20', 'npm', 'yarn', 'openjdk17', 'rust', 'docker', 'docker-machine',
                  'qt6', 'qt6-base', 'qt6-charts', 'qt6-declarative', 'qt6-doc', 'qt6-examples', 'qt6-httpserver', 'qt6-imageformats',
                  'qt6-languageserver', 'qt6-location', 'qt6-multimedia', 'qt6-networkauth', 'qt6-positioning', 'qt6-remoteobjects', 
                  'qt6-scxml', 'qt6-serialbus', 'qt6-serialport', 'qt6-speech', 'qt6-svg', 'qt6-tools', 'qt6-translations', 
