@@ -13,19 +13,31 @@ def link_file(source, target):
     if not os.path.islink(target):
         os.symlink(source, target)
 
-
-def link_unix_file(root, filename, folder=''):
-    source = root + '/etc/unix/'
-    if folder:
-        source = source + folder + '/'
-    target = '/.' + filename if not '/' in filename else '/.config/' + filename
-    target = str(Path.home()) + target
-
+def link_unix_target(source, target, filename):
     targetdir = os.path.dirname(target)
     if not os.path.isdir(targetdir):
         os.mkdir(targetdir)
 
     link_file(source + filename, target)
+
+
+def link_unix_config(root, filename, folder=''):
+    source = root + '/etc/unix/'
+    if folder:
+        source = source + folder + '/'
+    target = '/.config/' + filename
+    target = str(Path.home()) + target
+    link_unix_target(source, target, filename)
+
+
+def link_unix_file(root, filename, folder=''):
+    source = root + '/etc/unix/'
+    if folder:
+        source = source + folder + '/'
+    target = '/.' + filename
+    target = str(Path.home()) + target
+    link_unix_target(source, target, filename)
+
 
 
 def link_autostart(root, filename):
@@ -37,6 +49,8 @@ def link_autostart(root, filename):
 
 def link_unix_files(root):
     link_unix_file(root, 'zsh')
+    link_unix_config(root, 'nvim')
+    link_unix_config(root, 'i3')
     link_unix_file(root, 'tmux.conf')
     link_unix_file(root, 'gitconfig')
     link_unix_file(root, 'vimrc')

@@ -35,6 +35,7 @@ def install_all(root, targetsys, subsys, installprog, options):
             + installer.getpkgs_xprograms() \
             + installer.getpkgs_compiler() \
             + installer.getpkgs_xfce_programs() \
+            + installer.getpkgs_i3wm_programs() \
             + installer.getpkgs_tex() \
             + installer.getpkgs_games() \
             + installer.getpkgs_nextcloud()

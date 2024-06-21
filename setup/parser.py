@@ -7,7 +7,7 @@ import argparse
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-desktop', default='xfce', choices=['xfce', 'kde', 'gnome'])
+    parser.add_argument('-desktop', default='i3wm', choices=['xfce', 'kde', 'gnome', 'i3wm'])
     parser.add_argument('-full', action='store_true')
     parser.add_argument('-zsh', action='store_true')
     parser.add_argument('-nozsh', action='store_true')
@@ -31,6 +31,8 @@ def create_parser():
     parser.add_argument('--noxprograms', action='store_true')
     parser.add_argument('-compiler', action='store_true')
     parser.add_argument('-nocompiler', action='store_true')
+    parser.add_argument('-i3wm', action='store_true')
+    parser.add_argument('-noi3wm', action='store_true')
     parser.add_argument('-xfce', action='store_true')
     parser.add_argument('-noxfce', action='store_true')
     parser.add_argument('-xfcecfg', action='store_true')

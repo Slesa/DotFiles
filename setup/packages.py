@@ -50,6 +50,7 @@ class Installer:
         self.pkg_xprograms = self.create_xprogram_packages()
         self.pkg_compiler = self.create_compiler_packages()
         self.pkg_xfce = self.create_xfce_packages()
+        self.pkg_i3wm = self.create_i3wm_packages()
         self.pkg_tex = self.create_tex_packages()
         self.pkg_games = self.create_games_packages()
         self.pkg_nextcloud = self.create_nextcloud_packages()
@@ -296,6 +297,44 @@ class Installer:
             output('<yellow>pass<nc>')
             return []
         result = self.pkg_xfce[Systems.Unknown] + self.pkg_xfce[self.targetsys]
+        output('<green>Ok<nc>')
+        return result
+
+    def create_i3wm_packages(self):
+        pkgs = {
+            Systems.Unknown:
+                ['i3', 'i3status', 'dmenu', 'xbacklight', 'feh', 'conky'],
+            Systems.Arch:
+                [],
+            Systems.SunOS:
+                [],
+            Systems.Fedora:
+                [],
+            Systems.BSD:
+                [],
+            Systems.Mageia:
+                [],
+            Systems.MxLinux:
+                [],
+            Systems.Redhat:
+                [],
+            Systems.SuSE:
+                [],
+        }
+        return pkgs
+
+    def getpkgs_i3wm_programs(self):
+        output('Collect I3WM programs...: ', False)
+        if self.targetsys == Systems.Cygwin or self.subsys == Subsys.Windows:
+            output('<tc>not necessary<nc>')
+            return []
+        if self.targetsys == Systems.SunOS or not self.options.desktop == 'i3wm':
+            output('<yellow>I3WM not used<nc>')
+            return []
+        if not flag_is_set(self.options, self.options.i3wm, self.options.noi3wm):
+            output('<yellow>pass<nc>')
+            return []
+        result = self.pkg_i3wm[Systems.Unknown] + self.pkg_i3wm[self.targetsys]
         output('<green>Ok<nc>')
         return result
 
