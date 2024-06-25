@@ -162,6 +162,16 @@ class Externals:
         return True
 
 
+    def link_jetbrain(self, tool, sh):
+        linksh = '/usr/local/bin/'+sh
+        if not os.path.exists(linksh):
+            toolsh = self.bindir + '/Jetbrains.'+tool+'/bin/'+sh+'.sh'
+            subprocess.check_call(['sudo', 'ln', '-s', toolsh, linksh])
+        else:
+            output('<yellow>symlink '+tool+' already exists<nc>')
+
+
+
     def install_toolbox(self):
         output('- install Toolbox.......: ', False)
         if self.targetsys == Systems.BSD:
@@ -173,7 +183,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.toolbox, self.options.notoolbox, True):
             output('<yellow>pass<nc>')
             return
-        toolboxzip = 'jetbrains-toolbox-2.1.3.18901.tar.gz'
+        toolboxzip = 'jetbrains-toolbox-2.3.2.31487.tar.gz'
         if self.install_jetbrain('Toolbox', toolboxzip, 'toolbox', True):
             return
         output('- Toolbox installed ....: <green>Done<nc>')
@@ -187,9 +197,10 @@ class Externals:
         if not flag_is_set_explicit(self.options.rider, self.options.norider, self.targetsys==Systems.BSD):
             output('<yellow>pass<nc>')
             return
-        riderzip = 'JetBrains.Rider-2023.3.2.tar.gz'
+        riderzip = 'JetBrains.Rider-2024.1.4.tar.gz'
         if self.install_jetbrain('Rider', riderzip, 'rider'):
             return
+        self.link_jetbrain('Rider', 'rider')
         output('- Rider installed ......: <green>Done<nc>')
 
     def install_rover(self):
@@ -201,9 +212,10 @@ class Externals:
         if not flag_is_set_explicit(self.options.rover, self.options.norover, self.targetsys == Systems.BSD):
             output('<yellow>pass<nc>')
             return
-        roverzip = 'RustRover-233.11799.306.tar.gz'
+        roverzip = 'RustRover-2024.1.3.tar.gz'
         if self.install_jetbrain('Rover', roverzip, 'rustrover'):
             return
+        self.link_jetbrain('Rover', 'rustrover')
         output('- Rust Rover installed .: <green>Done<nc>')
 
     def install_pycharm(self):
@@ -214,9 +226,10 @@ class Externals:
         if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm, self.targetsys == Systems.BSD):
             output('<yellow>pass<nc>')
             return
-        charmzip = 'pycharm-professional-2023.3.2.tar.gz'
+        charmzip = 'pycharm-professional-2024.1.4.tar.gz'
         if self.install_jetbrain('PyCharm', charmzip, 'python'):
             return
+        self.link_jetbrain('PyCharm', 'pycharm')
         output('- PyCharm installed.....: <green>Done<nc>')
 
 
@@ -228,9 +241,10 @@ class Externals:
         if not flag_is_set_explicit(self.options.clion, self.options.noclion):
             output('<yellow>pass<nc>')
             return
-        clionzip = 'CLion-2023.3.2.tar.gz'
+        clionzip = 'CLion-2024.1.4.tar.gz'
         if self.install_jetbrain('CLion', clionzip, 'cpp'):
             return
+        self.link_jetbrain('CLion', 'clion')
         output('- CLion installed.......: <green>Done<nc>')
 
 
@@ -239,12 +253,13 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.webstorm, self.options.nowebstorm):
+        if not flag_is_set_explicit(self.options.webstorm, self.options.nowebstorm, self.targetsys == Systems.BSD):
             output('<yellow>pass<nc>')
             return
-        stormzip = 'WebStorm-2023.3.2.tar.gz'
+        stormzip = 'WebStorm-2024.1.5.tar.gz'
         if self.install_jetbrain('WebStorm', stormzip, 'webstorm'):
             return
+        self.link_jetbrain('WebStorm', 'webstorm')
         output('- WebStorm installed....: <green>Done<nc>')
 
 
@@ -256,7 +271,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.intellij, self.options.nointellij):
             output('<yellow>pass<nc>')
             return
-        ideazip = 'ideaIU-2022.2.3.tar.gz'
+        ideazip = 'ideaIU-2024.1.4.tar.gz'
         if self.install_jetbrain('IntelliJ', ideazip, 'idea'):
             return
         output('- IntelliJ installed.....: <green>Done<nc>')

@@ -14,9 +14,12 @@ def install_login(root, targetsys, subsys, options):
     if targetsys == Systems.Cygwin or subsys == Subsys.Windows:
         output('<tc>not necessary<nc>')
         return
-    if not options.desktop == 'xfce':
-        output('<yellow>XFCE not used<nc>')
+    if subsys == Subsys.Windows:
+        output('<yellow>not necessary<nc>')
         return
+    #if not options.desktop == 'xfce':
+    #    output('<yellow>XFCE not used<nc>')
+    #    return
     #if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
     #    output('<yellow>uses SLIM<nc>')
     #    return
