@@ -1,7 +1,5 @@
-# [11] Fedora             [15] RHEL/Alma       [14] SuSE
-# [12] FreeBSD            [13] NetBSD
-# [05] Xubuntu            [  ] MX              [16] Mageia
-# [02] Ubuntu on Windows  [03] Cygwin          [  ] Arch / Manjaro
+# [01] Fedora       [01] FreeBSD     [01] Arch/Manjaro   [01] SuSE Tumbleweed
+# [02] Ubuntu WSL   [01] Cygwin      [01] MX             [01] Mageia
 from setup.osplatform import Systems, Subsys
 from setup.console import output
 from setup.helpers import flag_is_set, install
@@ -16,13 +14,18 @@ def install_core(installprog, targetsys, subsys, options):
         output('<yellow>pass<nc>')
         return
 
+    if subsys == Subsys.Windows:
+        if targetsys == Systems.Ubuntu:
+            subprocess.check_call(['sudo', 'add-apt-repository', 'ppa:neovim-ppa/unstable'])
+            subprocess.check_call(['sudo', 'apt-get', 'update'])
+
     if targetsys == Systems.Fedora or targetsys == Systems.Mageia:
         import os
         version = os.popen('rpm -E %fedora').read()[:-1]
         output(f'Fedora {version}')
         subprocess.check_call(['sudo', 'dnf', 'install', '-y', f'https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{version}.noarch.rpm'])
 
-    packages = ['zsh', 'neofetch']
+    packages = ['zsh', 'neofetch', 'neovim']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
         packages += ['git', 'firefox']
     if targetsys == Systems.SunOS:

@@ -1,7 +1,5 @@
-# [11] Fedora             [15] RHEL/Alma       [14] SuSE
-# [12] FreeBSD            [13] NetBSD
-# [05] Xubuntu            [  ] MX              [16] Mageia
-# [02] Ubuntu on Windows  [03] Cygwin          [  ] Arch / Manjaro
+# [11] Fedora       [12] FreeBSD     [  ] Arch/Manjaro   [14] SuSE Tumbleweed
+# [02] Ubuntu WSL   [03] Cygwin      [  ] MX             [16] Mageia
 import os
 import platform
 from enum import Enum
@@ -20,7 +18,7 @@ class Systems(Enum):
     MxLinux = 3
     Fedora = 4
     SuSE = 5
-    Arch = 6
+    Arch = 6 # Manjaro
     Ubuntu = 7
     Zorin = 8
     Redhat = 9
@@ -39,7 +37,13 @@ def determine_os():
     output(f'System..................: <green>{platform.system()}<nc>')
         
     release = platform.release().lower()
-    subsys = Subsys.Windows if 'microsoft' in release else Subsys.Origin
+    subsys = Subsys.Windows if 'wsl2' in release else Subsys.Origin
+    if subsys == Subsys.Windows:
+        #output('<yellow>Detected WSL<nc>') 
+        distro = os.environ['WSL_DISTRO_NAME'].lower()
+        if distro == 'ubuntu':
+            output(f'<green>WSL Ubuntu {subsys}<nc>')
+            return Systems.Ubuntu, subsys
     output('Found...................: ', False)
     system = platform.system().lower()
     if system.startswith('cygwin'):
