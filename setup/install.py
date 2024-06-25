@@ -44,7 +44,8 @@ def install_all(root, targetsys, subsys, installprog, options):
             install(installprog, packages)
             output('<green>Done<nc>')
 
-        xfce_configure(root, targetsys, subsys, options)
+        if options.desktop == 'xfce':    
+            xfce_configure(root, targetsys, subsys, options)
         
     install_dotnet(installprog, targetsys, options)
 

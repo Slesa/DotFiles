@@ -157,10 +157,10 @@ class Installer:
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
                  'qemu', 'virt-manager'],
             Systems.BSD:
-                ['ja-anthy', 'xaos','vlc', 'gnupg',
+                ['ja-anthy', 'xaos','vlc', 'gnupg', 'anki',
                  'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
                  'ja-font-kochi', 'ja-ibus-anthy', 
-                 'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'surf', 'neovim-gtk',
+                 'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'surf-browser', 'neovim-gtk',
                  'lollypop', 'deadbeef', 'exaile', 'easytag', 'asunder',
                  'iridium-browser',
                  'qemu', 'virt-manager', 'cpu-x'
