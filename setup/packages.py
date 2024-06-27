@@ -211,9 +211,9 @@ class Installer:
             Systems.Unknown:
                 ['meld', 'gdb', 'cmake', 'ccache', 'docker'],
             Systems.Arch:
-                ['cgdb', 'qt6', 'nodejs', 'yarn',
-                 'dotnet-runtime', 'dotnet-sdk', 'dotnet-targeting-pack',
-                 'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0'],
+                ['cgdb', 'jdk-openjdk', 'nodejs', 'yarn', 'docker-compose',
+                 'dotnet-runtime', 'dotnet-sdk', 'dotnet-targeting-pack', 'aspnet-runtime', 'aspnet-targeting-pack',
+                 'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0', 'aspnet-runtime-7.0', 'aspnet-targeting-pack-7.0'],
             Systems.SunOS:
                 ['build-essential', 'gcc-13', 'qt6', 'qtcreator', 'nodejs-20', 'rustc', 'cmake', 'codeblocks'],
             Systems.Fedora:
@@ -230,7 +230,7 @@ class Installer:
             Systems.Mageia:
                 ['cgdb', 'cmake-qtgui', 'nodejs', 'lib64mesagl-devel'],
             Systems.MxLinux:
-                ['cgdb', 'python3-venv', 'mono-complete', 'cmake-qt-gui', 'yarnpkg',
+                ['cgdb', 'python3-venv', 'cmake-qt-gui', 'yarnpkg',
                  'libgl1-mesa-dev', 'libglu1-mesa-dev'],
             Systems.Ubuntu:
                 # [ 'fsharp', ]

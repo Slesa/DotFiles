@@ -80,7 +80,26 @@ def clone_recursive_github(src, project, flow, base=''):
 def clone_from_github(src, project, flow, base=''):
     clone_it_from_github(src, project, flow, False, base)
 
+def clone_foreign_github(src, project, base):
+    if os.path.isdir(src + project):
+        return
+    subprocess.check_call(['git', 'clone', base])
 
+
+def clone_avalonia_from_github(root):
+    src = root + "/github/avalonia/"
+    if not os.path.isdir(src):
+        os.mkdir(src)
+
+    os.chdir(src)
+    clone_foreign_github(src, 'Avalonia', 'https://github.com/AvaloniaUI/Avalonia.git')
+    clone_foreign_github(src, 'Avalonia.FuncUI', 'https://github.com/fsprojects/Avalonia.FuncUI.git')
+    clone_foreign_github(src, 'Avalonia.Xaml.Behaviors', 'https://github.com/AvaloniaUI/Avalonia.Xaml.Behaviors.git')
+    clone_foreign_github(src, 'Prism.Avalonia', 'https://github.com/AvaloniaCommunity/Prism.Avalonia.git')
+    clone_foreign_github(src, 'awesome-avalonia', 'https://github.com/AvaloniaCommunity/awesome-avalonia.git')
+    clone_foreign_github(src, 'xune', 'https://github.com/VitalElement/Xune.git')
+    os.chdir('..')
+    os.chdir('..')
 
 def clone_safe_from_github(root):
     src = root + "/github/safe/"
@@ -88,7 +107,7 @@ def clone_safe_from_github(root):
         os.mkdir(src)
 
     os.chdir(src)
-    clone_from_github(src, 'Terminal.Gui.Elmish', True, 'https://github.com/DieselMeister/Terminal.Gui.Elmish.git')
+    #clone_from_github(src, 'Terminal.Gui.Elmish', True, 'https://github.com/DieselMeister/Terminal.Gui.Elmish.git')
     clone_from_github(src, 'SAFE-Nightwatch', True, 'https://github.com/SAFE-Stack/SAFE-Nightwatch.git')
     clone_from_github(src, 'SAFE-BookStore', True, 'https://github.com/SAFE-Stack/SAFE-BookStore.git')
     clone_from_github(src, 'ConfPlanner', True, 'https://github.com/SAFE-Stack/SAFE-ConfPlanner.git')
@@ -130,6 +149,10 @@ def clone_github(root, targetsys, options):
         os.mkdir(src)
 
     os.chdir(src)
+    clone_from_github(src, 'ngettext-avalonia', True)
+    clone_from_github(src, 'ngettext-wpf', True)
+    clone_from_github(src, 'Terminal.Gui', True)
+    clone_from_github(src, 'Terminal.Gui.Elmish', True)
     clone_from_github(src, 'Poseidon', True)
     clone_from_github(src, 'sqlitestudio', True)
     clone_from_github(src, 'Trinity', True)
@@ -142,6 +165,7 @@ def clone_github(root, targetsys, options):
 
     os.chdir('..')
     clone_safe_from_github(root)
+    clone_avalonia_from_github(root)
     if targetsys == Systems.BSD or targetsys == Systems.SunOS:
         clone_bsd_from_github(root)
     if targetsys == Systems.SunOS:
