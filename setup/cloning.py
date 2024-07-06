@@ -111,7 +111,7 @@ def clone_safe_from_github(root):
     clone_from_github(src, 'SAFE-Nightwatch', True, 'https://github.com/SAFE-Stack/SAFE-Nightwatch.git')
     clone_from_github(src, 'SAFE-BookStore', True, 'https://github.com/SAFE-Stack/SAFE-BookStore.git')
     clone_from_github(src, 'ConfPlanner', True, 'https://github.com/SAFE-Stack/SAFE-ConfPlanner.git')
-    clone_from_github(src, 'gui.cs', True, 'https://github.com/migueldeicaza/gui.cs.git')
+    #clone_from_github(src, 'gui.cs', True, 'https://github.com/migueldeicaza/gui.cs.git')
     clone_from_github(src, 'LibAAS', True, 'https://github.com/mastoj/LibAAS.git')
     os.chdir('..')
     os.chdir('..')
