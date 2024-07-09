@@ -62,13 +62,13 @@ class Installer:
     def create_basic_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['zsh', 'taskwarrior'],
+                ['zsh'],
             Systems.Arch:
-                ['synergy', 'fortune-mod', 'zsh-lovers'],
+                ['synergy', 'fortune-mod', 'zsh-lovers', 'taskwarrior'],
             Systems.SunOS:
                 ['synergy', 'rdesktop'],
             Systems.Fedora:
-                ['fortune-mod', 'hfsutils', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy'],
+                ['fortune-mod', 'hfsutils', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy', 'task', 'fastfetch', 'cheat'],
             Systems.BSD:
                 ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh'],
             Systems.Mageia:
@@ -76,7 +76,7 @@ class Installer:
             Systems.MxLinux:
                 ['git-flow', 'fortunes', 'fortunes-de'],
             Systems.Ubuntu:
-                ['git-flow', 'fortunes', 'fortunes-de'],
+                ['git-flow', 'fortunes', 'fortunes-de', 'taskwarrior'],
             Systems.Redhat:
                 ['fortune-mod', 'rdesktop', 'gcc-c++', 'synergy'],
             Systems.SuSE:
@@ -156,8 +156,9 @@ class Installer:
                  'qemu', 'virt-manager'],
             Systems.Fedora:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
-                 'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free-extras', 'unetbootin', 'anki',
+                 'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free-extras', 'unetbootin', #'anki',
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
+                 'kitty',
                  'qemu', 'virt-manager'],
             Systems.BSD:
                 ['ja-anthy', 'xaos','vlc', 'gnupg', 'anki',
@@ -217,7 +218,11 @@ class Installer:
             Systems.SunOS:
                 ['build-essential', 'gcc-13', 'qt6', 'qtcreator', 'nodejs-20', 'rustc', 'cmake', 'codeblocks'],
             Systems.Fedora:
-                ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 'rust', 'rust-cargo-devel'],
+                ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 
+                 'rust-cargo-devel', 'dotnet', 
+                 'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0', 'dotnet-apphost-pack-7.0', 'dotnet-templates-7.0',
+                 'dotnet-runtime-8.0', 'dotnet-sdk-8.0', 'dotnet-targeting-pack-8.0', 'dotnet-apphost-pack-8.0', 'dotnet-templates-8.0',
+                 ],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
                 #['cgdb', 'qtcreator', 'node20', 'npm', 'yarn', 'openjdk17'],

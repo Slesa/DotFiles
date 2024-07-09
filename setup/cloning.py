@@ -149,8 +149,9 @@ def clone_github(root, targetsys, options):
         os.mkdir(src)
 
     os.chdir(src)
-    clone_from_github(src, 'ngettext-avalonia', True)
+    clone_from_github(src, 'NgetText', True)
     clone_from_github(src, 'ngettext-wpf', True)
+    clone_from_github(src, 'ngettext-avalonia', True)
     clone_from_github(src, 'Terminal.Gui', True)
     clone_from_github(src, 'Terminal.Gui.Elmish', True)
     clone_from_github(src, 'Poseidon', True)

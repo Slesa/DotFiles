@@ -34,26 +34,29 @@ class Subsys(Enum):
     Windows = 1
 
 
-def os_from_line(line, subsys):
+def os_from_line(line):
+    if 'fedora' in line:
+        output('<green>Fedora<nc>')
+        return Systems.Fedora
     if 'ubuntu' in line:
-        output(f'<green>Ubuntu {subsys}<nc>')
+        output('<green>Ubuntu<nc>')
         return Systems.Ubuntu
     if 'arch' in linux or 'manjaro' in linux:
-        output(f'<green>Arch / Manjaro {subsys}<nc>')
-        return Systems.Arch, subsys
+        output('<green>Arch / Manjaro<nc>')
+        return Systems.Arch
     if 'raspbian' in line:
-        output(f'<green>Raspbian {subsys}<nc>')
+        output('<green>Raspbian<nc>')
         return Systems.Raspbian
     return None
 
 
-def read_osinfo(subsys):
+def read_osinfo():
     with open('/etc/os-release') as fh:
         lines = fh.readlines()
         for line in lines:
             content = line.lower()
             if 'pretty_name' in content:
-                return os_from_line(content, subsys)
+                return os_from_line(content)
     return None
 
 
@@ -64,7 +67,7 @@ def determine_os():
     subsys = Subsys.Windows if 'wsl2' in release else Subsys.Origin
 
     output('Found...................: ', False)
-    osinfo = read_osinfo(subsys)
+    osinfo = read_osinfo()
     #output(f'Pretty name.............: <green>{osinfo}<nc>')
         
     if subsys == Subsys.Windows:
