@@ -62,7 +62,7 @@ class Installer:
     def create_basic_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['zsh'],
+                ['zsh', 'taskwarrior'],
             Systems.Arch:
                 ['synergy', 'fortune-mod', 'zsh-lovers'],
             Systems.SunOS:

@@ -26,6 +26,7 @@ class Systems(Enum):
     BSD = 11
     NetBSD = 12
     SunOS = 13
+    Raspbian = 14
 
 
 class Subsys(Enum):
@@ -33,18 +34,48 @@ class Subsys(Enum):
     Windows = 1
 
 
+def os_from_line(line, subsys):
+    if 'ubuntu' in line:
+        output(f'<green>Ubuntu {subsys}<nc>')
+        return Systems.Ubuntu
+    if 'arch' in linux or 'manjaro' in linux:
+        output(f'<green>Arch / Manjaro {subsys}<nc>')
+        return Systems.Arch, subsys
+    if 'raspbian' in line:
+        output(f'<green>Raspbian {subsys}<nc>')
+        return Systems.Raspbian
+    return None
+
+
+def read_osinfo(subsys):
+    with open('/etc/os-release') as fh:
+        lines = fh.readlines()
+        for line in lines:
+            content = line.lower()
+            if 'pretty_name' in content:
+                return os_from_line(content, subsys)
+    return None
+
+
 def determine_os():
     output(f'System..................: <green>{platform.system()}<nc>')
-        
+
     release = platform.release().lower()
     subsys = Subsys.Windows if 'wsl2' in release else Subsys.Origin
-    if subsys == Subsys.Windows:
-        #output('<yellow>Detected WSL<nc>') 
-        distro = os.environ['WSL_DISTRO_NAME'].lower()
-        if distro == 'ubuntu':
-            output(f'<green>WSL Ubuntu {subsys}<nc>')
-            return Systems.Ubuntu, subsys
+
     output('Found...................: ', False)
+    osinfo = read_osinfo(subsys)
+    #output(f'Pretty name.............: <green>{osinfo}<nc>')
+        
+    if subsys == Subsys.Windows:
+        output('<yellow>Detected WSL<nc>') 
+    #    distro = os.environ['WSL_DISTRO_NAME'].lower()
+    #    if distro == 'ubuntu':
+    #        output(f'<green>WSL Ubuntu {subsys}<nc>')
+    #        return Systems.Ubuntu, subsys
+    if osinfo!=None:
+        return osinfo, subsys
+
     system = platform.system().lower()
     if system.startswith('cygwin'):
         output('<green>CygWin<nc>')
@@ -86,7 +117,7 @@ def determine_os():
             return Systems.Ubuntu, subsys
         if 'zorin' in linux:
             output(f'<green>Zorin {subsys}<nc>')
-            return Systems.Zorin, subsys
+    return Systems.Zorin, subsys
 
     flow = os.popen('which zypper').read()[:-1]
     if '/zypper' in flow:
