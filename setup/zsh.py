@@ -27,6 +27,8 @@ def install_zsh(root, targetsys, options):
             srcfile = 'zshrc.freebsd'
         elif targetsys == Systems.Arch:
             srcfile = 'zshrc.manjaro'
+        elif targetsys == Systems.Raspbian:
+            srcfile = 'zshrc.raspbian'
 #        elif targetsys == Systems.SunOS:
 #            srcfile = 'zshrc.sunos'
         elif targetsys == Systems.Fedora or targetsys == Systems.Mageia:

@@ -27,7 +27,9 @@ def install_core(installprog, targetsys, subsys, options):
 
     packages = ['zsh', 'neofetch', 'neovim']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
-        packages += ['git', 'firefox']
+        packages += ['git']
+        if targetsys != Systems.Raspbian:
+            packages += ['firefox']
     if targetsys == Systems.SunOS:
         packages += ['links', 'wget', 'rsync']
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
@@ -37,7 +39,8 @@ def install_core(installprog, targetsys, subsys, options):
     else:
         if targetsys != Systems.Arch:
             packages += ['vim']
-        packages += ['xsel']
+        if targetsys != Systems.Raspbian:
+            packages += ['xsel']
     install(installprog, packages)
     output('<green>Ok<nc>')
 
@@ -80,7 +83,9 @@ class Installer:
             Systems.Redhat:
                 ['fortune-mod', 'rdesktop', 'gcc-c++', 'synergy'],
             Systems.SuSE:
-                ['fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc']
+                ['fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc'],
+            Systems.Raspbian:
+                ['fortune-mod']
         }
         if self.subsys == Subsys.Origin:
             pkgs[Systems.Ubuntu] += ['hfsplus', 'hfsutils', 'synergy', 'rdesktop']
@@ -122,8 +127,10 @@ class Installer:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.SuSE:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'dosemu'],
+            Systems.Raspbian:
+                []
         }
-        if self.subsys== Subsys.Origin:
+        if self.subsys == Subsys.Origin:
             pkgs[Systems.Ubuntu] += ['synaptic', 'openssh-server', 'lshw']
         return pkgs
 
