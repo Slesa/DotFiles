@@ -27,6 +27,7 @@ class Systems(Enum):
     NetBSD = 12
     SunOS = 13
     Raspbian = 14
+    Debian = 15
 
 
 class Subsys(Enum):
@@ -35,6 +36,13 @@ class Subsys(Enum):
 
 
 def os_from_line(line):
+    if 'debian' in line:
+        if os.path.isfile('/etc/mx-version'):
+            output('<green>MX Linux<nc>')
+            return Systems.MxLinux;
+        else:
+            output('<green>Fedora<nc>')
+            return Systems.Debian;
     if 'fedora' in line:
         output('<green>Fedora<nc>')
         return Systems.Fedora
