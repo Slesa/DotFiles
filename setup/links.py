@@ -54,6 +54,7 @@ def link_unix_files(root):
     link_unix_file(root, 'tmux.conf')
     link_unix_file(root, 'gitconfig')
     link_unix_file(root, 'vimrc')
+    link_unix_file(root, 'taskrc')
     link_unix_file(root, 'zprofile', 'zprezto')
     link_unix_file(root, 'zlogin', 'zprezto')
     link_unix_file(root, 'zlogout', 'zprezto')
