@@ -27,6 +27,7 @@ class Systems(Enum):
     NetBSD = 12
     SunOS = 13
     Raspbian = 14
+    Debian = 15
 
 
 class Subsys(Enum):
@@ -35,13 +36,20 @@ class Subsys(Enum):
 
 
 def os_from_line(line):
+    if 'debian' in line:
+        if os.path.isfile('/etc/mx-version'):
+            output('<green>MX Linux<nc>')
+            return Systems.MxLinux;
+        else:
+            output('<green>Fedora<nc>')
+            return Systems.Debian;
     if 'fedora' in line:
         output('<green>Fedora<nc>')
         return Systems.Fedora
     if 'ubuntu' in line:
         output('<green>Ubuntu<nc>')
         return Systems.Ubuntu
-    if 'arch' in linux or 'manjaro' in linux:
+    if 'arch' in line or 'manjaro' in line:
         output('<green>Arch / Manjaro<nc>')
         return Systems.Arch
     if 'raspbian' in line:
@@ -155,7 +163,7 @@ def determine_installer(os):
         return ["sudo", "zypper", "install", "-ly"]
     if os == Systems.Arch:
         return ["sudo", "pacman", "--noconfirm", "-Syu"]
-    if os == Systems.Ubuntu or os == Systems.Zorin:
+    if os == Systems.Ubuntu or os == Systems.Zorin or os == Systems.Raspbian:
         return ["sudo", "apt-get", "install", "-y"]
     if os == Systems.MacOS:
         return ["sudo", "brew", "install", "-y"]

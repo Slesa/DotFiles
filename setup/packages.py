@@ -27,7 +27,9 @@ def install_core(installprog, targetsys, subsys, options):
 
     packages = ['zsh', 'neofetch', 'neovim']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
-        packages += ['git', 'firefox']
+        packages += ['git']
+        if targetsys != Systems.Raspbian:
+            packages += ['firefox']
     if targetsys == Systems.SunOS:
         packages += ['links', 'wget', 'rsync']
     if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
@@ -37,7 +39,8 @@ def install_core(installprog, targetsys, subsys, options):
     else:
         if targetsys != Systems.Arch:
             packages += ['vim']
-        packages += ['xsel']
+        if targetsys != Systems.Raspbian:
+            packages += ['xsel']
     install(installprog, packages)
     output('<green>Ok<nc>')
 
@@ -80,7 +83,9 @@ class Installer:
             Systems.Redhat:
                 ['fortune-mod', 'rdesktop', 'gcc-c++', 'synergy'],
             Systems.SuSE:
-                ['fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc']
+                ['fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc'],
+            Systems.Raspbian:
+                ['fortune-mod']
         }
         if self.subsys == Subsys.Origin:
             pkgs[Systems.Ubuntu] += ['hfsplus', 'hfsutils', 'synergy', 'rdesktop']
@@ -114,7 +119,7 @@ class Installer:
             Systems.Mageia:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql13', 'postgresql13-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu'],
             Systems.MxLinux:
-                ['mc', 'npm', 'links', 'w3m', 'postgresql-11', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
+                ['mc', 'npm', 'links', 'w3m', 'postgresql-15', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
                  'vim-pathogen', 'byobu'],
             Systems.Ubuntu:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'vim-addon-manager', 'vim-pathogen'],
@@ -122,8 +127,10 @@ class Installer:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.SuSE:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'dosemu'],
+            Systems.Raspbian:
+                []
         }
-        if self.subsys== Subsys.Origin:
+        if self.subsys == Subsys.Origin:
             pkgs[Systems.Ubuntu] += ['synaptic', 'openssh-server', 'lshw']
         return pkgs
 
@@ -177,7 +184,7 @@ class Installer:
                  'fonts-ttf-japanese', 'fonts-ttf-japanese-extra', 'google-noto-sans-cjk-jp-fonts', 'google-noto-sans-jp-fonts', 'google-noto-serif-jp-fonts', 'google-noto-serif-cjk-jp-fonts'
                  ],
             Systems.MxLinux:
-                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki',
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
                  'hunspell-de-de', 'chromium'],
             Systems.Ubuntu:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'vim-gtk', 'retext', 'vlc', 'tuxcmd', 'gpgv2', 'hunspell-ru', 'hunspell-fr', 'hunspell-es', 'anki',
@@ -281,7 +288,7 @@ class Installer:
                 ['greybird-xfce4-theme', 'xfce4-screenshooter', 'xfce4-eyes-plugin', 'xfce4-clipman-plugin',
                  'xfce4-weather-plugin', 'xfce4-cpugraph-plugin', 'xfce4-xkb-plugin', 'xfce4-netload-plugin'],
             Systems.MxLinux:
-                ['xfce4-wm-themes', 'xfce4-eyes-plugin'],
+                ['xfwm4-theme-breeze', 'xfce4-eyes-plugin'],
             Systems.Ubuntu:
                 ['xfce4-wm-themes', 'xfce4-eyes-plugin'],
             Systems.Redhat:

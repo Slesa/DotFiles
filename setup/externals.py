@@ -314,6 +314,16 @@ class Externals:
             subprocess.check_call(['sudo', 'apt', 'update'])
             subprocess.check_call(['sudo', 'apt', 'install', 'code'])
             os.chdir(path)
+        elif self.targetsys == Systems.MxLinux:
+            subprocess.check_call(['sudo', 'apt', 'update'])
+            subprocess.check_call(['sudo', 'apt', 'install', 'software-properties-common', 'apt-transport-https', 'curl'])
+            curl = subprocess.Popen(('curl', '-sSL', 'https://packages.microsoft.com/keys/microsoft.asc'), stdout=subprocess.PIPE) 
+            outp = subprocess.check_output(('sudo', 'apt-key', 'add', '-'), stdin=curl.stdout) 
+            curl.wait()
+            # Does not work
+            #subprocess.check_call(['sudo', 'add-apt-repository', '-y', '\"deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main\"'])
+            #subprocess.check_call(['sudo', 'apt', 'update'])
+            #subprocess.check_call(['sudo', 'apt', 'install', 'code'])
         else:
             output('<red>unsupported<nc>')
             return

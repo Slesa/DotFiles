@@ -97,7 +97,7 @@ def clone_avalonia_from_github(root):
     clone_foreign_github(src, 'Avalonia.Xaml.Behaviors', 'https://github.com/AvaloniaUI/Avalonia.Xaml.Behaviors.git')
     clone_foreign_github(src, 'Prism.Avalonia', 'https://github.com/AvaloniaCommunity/Prism.Avalonia.git')
     clone_foreign_github(src, 'awesome-avalonia', 'https://github.com/AvaloniaCommunity/awesome-avalonia.git')
-    clone_foreign_github(src, 'xune', 'https://github.com/VitalElement/Xune.git')
+    clone_foreign_github(src, 'Xune', 'https://github.com/VitalElement/Xune.git')
     os.chdir('..')
     os.chdir('..')
 

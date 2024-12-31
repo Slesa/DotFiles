@@ -84,7 +84,7 @@ def install_links(root, targetsys, subsys, options):
         output('<green>Ok<nc>')
         return
 
-    link_file('data/avatar.png', str(Path.home()) + '/.face')
+    link_file('data/img/avatar.png', str(Path.home()) + '/.face')
     # Autostart
     autosource = root + '/etc/unix/autostart/'
     autostart = str(Path.home()) + '/.config/autostart/'
