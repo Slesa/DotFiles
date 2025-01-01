@@ -72,6 +72,8 @@ class Installer:
                 ['synergy', 'rdesktop'],
             Systems.Fedora:
                 ['fortune-mod', 'hfsutils', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy', 'task', 'fastfetch', 'cheat'],
+            Systems.NetBSD:
+                ['pstree', 'synergy', 'fortunes-de', 'taskwarrior'],
             Systems.BSD:
                 ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh'],
             Systems.Mageia:
@@ -113,11 +115,13 @@ class Installer:
                 ['links', 'w3m', 'postgresql', 'tmux'],
             Systems.Fedora:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux'],
+            Systems.NetBSD:
+                ['mc', 'postgresql16-server', 'postgresql16-client', 'tmux', 'hs-pandoc', 'byobu'],
             Systems.BSD:
                 # [xfce slim slim-themes]
                 ['mc', 'npm', 'links', 'w3m', 'postgresql16-server', 'postgresql16-client', 'tmux', 'hs-pandoc', 'byobu'],
             Systems.Mageia:
-                ['mc', 'npm', 'links', 'w3m', 'postgresql13', 'postgresql13-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu'],
+                ['mc', 'npm', 'links', 'w3m', 'postgresql16', 'postgresql16-server', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'byobu'],
             Systems.MxLinux:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql-15', 'tmux', 'ranger', 'dos2unix', 'openssh-server', 'vim-addon-manager',
                  'vim-pathogen', 'byobu'],
@@ -165,8 +169,15 @@ class Installer:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
                  'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free-extras', 'unetbootin', #'anki',
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
-                 'kitty',
+                 'kitty', 'worker'
                  'qemu', 'virt-manager'],
+            Systems.NetBSD:
+                ['anthy', 'ibus-anthy', 'xaos','vlc', 'gnupg', 
+                 'vlc', 'gnupg', 'hunspell-de', 'hunspell-ru_RU', 'hunspell-fr_FR', 'hunspell-es_ES',
+                 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts',  
+                 'exaile', 'easytag', 'asunder', 'strawberry', 'worker',
+                 'qemu'
+                 ],
             Systems.BSD:
                 ['ja-anthy', 'xaos','vlc', 'gnupg', 'anki',
                  'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
@@ -230,6 +241,14 @@ class Installer:
                  'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0', 'dotnet-apphost-pack-7.0', 'dotnet-templates-7.0',
                  'dotnet-runtime-8.0', 'dotnet-sdk-8.0', 'dotnet-targeting-pack-8.0', 'dotnet-apphost-pack-8.0', 'dotnet-templates-8.0',
                  ],
+            Systems.NetBSD:
+                ['qtcreator', 'nodejs', 'yarn', 'openjdk17', 'rust', 'docker', 
+                 'elixir', 'erlang'
+                 #'qt6', 'qt6-qtbase', 'qt6-qtcharts', 'qt6-qtdeclarative', 'qt6-qthttpserver', 'qt6-qtimageformats',
+                 #'qt6-qtlanguageserver', 'qt6-qtlocation', 'qt6-qtmultimedia', 'qt6-qtnetworkauth', 'qt6-qtpositioning', 'qt6-qtremoteobjects', 
+                 #'qt6-qtscxml', 'qt6-qtserialport', 'qt6-qtspeech', 'qt6-qtsvg', 'qt6-qttools', 'qt6-qttranslations', 
+                 #'qt6-qtvirtualkeyboard', 'qt6-qtwebchannel', 'qt6-qtwebsockets', 'qt6ct'
+                ],
             Systems.BSD:
                 # ['fsharp', 'mono', ]
                 #['cgdb', 'qtcreator', 'node20', 'npm', 'yarn', 'openjdk17'],
@@ -280,6 +299,10 @@ class Installer:
                 [],
             Systems.Fedora:
                 ['xfwm4-themes', 'xfce4-eyes-plugin'],
+            Systems.NetBSD:
+                ['xfce4-wm-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
+                 'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
+                 'xfce4-screenshooter'],
             Systems.BSD:
                 ['xfce4-wm-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
@@ -325,6 +348,7 @@ class Installer:
                 [],
             Systems.Fedora:
                 [],
+            Systems.NetBSD or
             Systems.BSD:
                 [],
             Systems.Mageia:
@@ -365,6 +389,9 @@ class Installer:
             Systems.Fedora:
                 ['texmaker', 'latex2html', 'texstudio', 'texlive-ctex', 'texlive-xecjk', 'texlive-babel-japanese',
                  'texlive-babel-russian', 'texlive-collection-music', 'texlive-xetex', 'texlive-cyrillic'],
+            Systems.NetBSD:
+                ['texmaker', 'latex2html', 'texstudio', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
+                 'texlive-collection-all', 'font-screen-cyrillic', 'cyr-rfx-koi8-ru'],
             Systems.BSD:
                 ['texmaker', 'latex2html', 'texstudio', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
                  'texlive-full', 'xorg-fonts-cyrillic'],
@@ -406,6 +433,8 @@ class Installer:
                 ['nethack', 'freeciv', 'chromium-bsu'],
             Systems.Fedora:
                 ['xboard', 'clonekeen', 'dreamchess', 'gnuchess'],
+            Systems.NetBSD:
+                ['nethack-all', 'xboard', 'jin', 'eboard', 'gnuchess'],
             Systems.BSD:
                 ['xboard', 'crafty', 'foobillard', 'chessx', 'brutalchess', 'dreamchess'],
             Systems.Mageia:
@@ -442,6 +471,8 @@ class Installer:
             Systems.Arch:
                 ['nextcloud-client'],
             Systems.Fedora:
+                ['nextcloud-client'],
+            Systems.NetBSD:
                 ['nextcloud-client'],
             Systems.BSD:
                 ['nextcloudclient'],

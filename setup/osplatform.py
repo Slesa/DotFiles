@@ -59,6 +59,8 @@ def os_from_line(line):
 
 
 def read_osinfo():
+    if not os.path.exists('/etc/os-release'):
+        return None
     with open('/etc/os-release') as fh:
         lines = fh.readlines()
         for line in lines:
