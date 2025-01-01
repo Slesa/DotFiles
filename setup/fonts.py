@@ -18,7 +18,7 @@ def install_fonts(root, targetsys, subsys, options):
     if not flag_is_set(options, options.fonts, options.nofonts):
         output('<yellow>pass<nc>')
         return
-    targetdir = '/usr/share/fonts' if not targetsys == Systems.BSD else '/usr/local/share/fonts/TTF'
+    targetdir = '/usr/share/fonts' if not targetsys == Systems.FreeBSD else '/usr/local/share/fonts/TTF'
     # envyfonts = Path(targetdir).glob('*.ttf')
     targetfont = Path(Path(targetdir) / 'Envy Code R.ttf')
     if os.path.isfile(targetfont):

@@ -168,7 +168,7 @@ def clone_github(root, targetsys, options):
     os.chdir('..')
     clone_safe_from_github(root)
     clone_avalonia_from_github(root)
-    if targetsys == Systems.BSD or targetsys == Systems.SunOS:
+    if targetsys == Systems.FreeBSD or targetsys == Systems.SunOS:
         clone_bsd_from_github(root)
     if targetsys == Systems.SunOS:
         clone_oi_from_github(root)

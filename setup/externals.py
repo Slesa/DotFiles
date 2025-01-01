@@ -115,7 +115,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if self.targetsys == Systems.BSD:
+        if self.targetsys == Systems.FreeBSD:
             output('<tc>not supported<nc>')
             return
         if not flag_is_set_explicit(self.options.qt, self.options.noqt, True):
@@ -174,7 +174,7 @@ class Externals:
 
     def install_toolbox(self):
         output('- install Toolbox.......: ', False)
-        if self.targetsys == Systems.BSD:
+        if self.targetsys == Systems.FreeBSD or self.targetsys == Systems.NetBSD:
             output('<tc>not supported<nc>')
             return
         if self.targetsys == Systems.Cygwin:
@@ -194,10 +194,11 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.rider, self.options.norider, self.targetsys==Systems.BSD):
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        if not flag_is_set_explicit(self.options.rider, self.options.norider, bsd):
             output('<yellow>pass<nc>')
             return
-        riderzip = 'JetBrains.Rider-2024.1.4.tar.gz'
+        riderzip = 'JetBrains.Rider-2024.3.3.tar.gz'
         if self.install_jetbrain('Rider', riderzip, 'rider'):
             return
         self.link_jetbrain('Rider', 'rider')
@@ -209,10 +210,11 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.rover, self.options.norover, self.targetsys == Systems.BSD):
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        if not flag_is_set_explicit(self.options.rover, self.options.norover, bsd):
             output('<yellow>pass<nc>')
             return
-        roverzip = 'RustRover-2024.1.3.tar.gz'
+        roverzip = 'RustRover-2024.3.2.tar.gz'
         if self.install_jetbrain('Rover', roverzip, 'rustrover'):
             return
         self.link_jetbrain('Rover', 'rustrover')
@@ -223,10 +225,11 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm, self.targetsys == Systems.BSD):
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm, bsd):
             output('<yellow>pass<nc>')
             return
-        charmzip = 'pycharm-professional-2024.1.4.tar.gz'
+        charmzip = 'pycharm-professional-2024.3.1.1.tar.gz'
         if self.install_jetbrain('PyCharm', charmzip, 'python'):
             return
         self.link_jetbrain('PyCharm', 'pycharm')
@@ -238,10 +241,11 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.clion, self.options.noclion):
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        if not flag_is_set_explicit(self.options.clion, self.options.noclion, bsd):
             output('<yellow>pass<nc>')
             return
-        clionzip = 'CLion-2024.1.4.tar.gz'
+        clionzip = 'CLion-2024.3.1.1.tar.gz'
         if self.install_jetbrain('CLion', clionzip, 'cpp'):
             return
         self.link_jetbrain('CLion', 'clion')
@@ -253,10 +257,11 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if not flag_is_set_explicit(self.options.webstorm, self.options.nowebstorm, self.targetsys == Systems.BSD):
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        if not flag_is_set_explicit(self.options.webstorm, self.options.nowebstorm, bsd):
             output('<yellow>pass<nc>')
             return
-        stormzip = 'WebStorm-2024.1.5.tar.gz'
+        stormzip = 'WebStorm-2024.3.1.1.tar.gz'
         if self.install_jetbrain('WebStorm', stormzip, 'webstorm'):
             return
         self.link_jetbrain('WebStorm', 'webstorm')
@@ -271,7 +276,7 @@ class Externals:
         if not flag_is_set_explicit(self.options.intellij, self.options.nointellij):
             output('<yellow>pass<nc>')
             return
-        ideazip = 'ideaIU-2024.1.4.tar.gz'
+        ideazip = 'ideaIU-2024.3.1.1.tar.gz'
         if self.install_jetbrain('IntelliJ', ideazip, 'idea'):
             return
         output('- IntelliJ installed.....: <green>Done<nc>')
@@ -332,7 +337,7 @@ class Externals:
 
 
     def install_gitflow(self):
-        if self.targetsys == Systems.BSD:
+        if self.targetsys == Systems.FreeBSD:
             return
         if not flag_is_set_explicit(self.options.gitflow, self.options.nogitflow, True):
             output('<yellow>pass<nc>')

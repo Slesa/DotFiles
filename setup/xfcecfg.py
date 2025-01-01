@@ -165,7 +165,7 @@ config_steps = [
 # region Plugins
 
 def get_menu_plugin(current, plugins, targetsys):
-    # icon = 'xfce4-panel-menu' if targetsys != Systems.BSD else 'org.xfce.panel.applicationsmenu'
+    # icon = 'xfce4-panel-menu' if targetsys != Systems.FreeBSD else 'org.xfce.panel.applicationsmenu'
     icon = 'org.xfce.panel.applicationsmenu'
     plugins.update({
         f'/plugins/plugin-{current}': 'applicationsmenu',
@@ -212,7 +212,7 @@ def get_pager_plugin(current, plugins):
 
 def add_eyes_plugin(current, plugins, targetsys):
     eyes_id = current
-    if targetsys != Systems.BSD:
+    if targetsys != Systems.FreeBSD:
         plugins.update({f'/plugins/plugin-{current}': 'eyes'})
         return current + 1
     return current
@@ -311,7 +311,7 @@ def add_fileman_launcher(current, plugins):
     })
     return True
 def add_commander_launcher(current, plugins, targetsys):
-    if targetsys != Systems.BSD:
+    if targetsys != Systems.FreeBSD:
         plugins.update({
             f'/plugins/plugin-{current}': 'launcher',
             f'/plugins/plugin-{current}/items': ['exo-file-commander.desktop'],

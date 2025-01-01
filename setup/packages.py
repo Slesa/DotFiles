@@ -28,13 +28,15 @@ def install_core(installprog, targetsys, subsys, options):
     packages = ['zsh', 'neofetch', 'neovim']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
         packages += ['git']
-        if targetsys != Systems.Raspbian:
+        if targetsys == Systems.FreeBSD:
+            packages += ['firefox-esr']
+        elif targetsys != Systems.Raspbian:
             packages += ['firefox']
     if targetsys == Systems.SunOS:
         packages += ['links', 'wget', 'rsync']
-    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+    if targetsys == Systems.FreeBSD or targetsys == Systems.NetBSD:
         packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats', 'neovim']
-        if targetsys == Systems.BSD:
+        if targetsys == Systems.FreeBSD:
             packages += ['linux_base-c7', 'portmaster', 'portshaker', 'poudriere-devel']
     else:
         if targetsys != Systems.Arch:
@@ -74,8 +76,8 @@ class Installer:
                 ['fortune-mod', 'hfsutils', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy', 'task', 'fastfetch', 'cheat'],
             Systems.NetBSD:
                 ['pstree', 'synergy', 'fortunes-de', 'taskwarrior'],
-            Systems.BSD:
-                ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh'],
+            Systems.FreeBSD:
+                ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh', 'taskwarrior'],
             Systems.Mageia:
                 ['synergy', 'gitflow', 'fortune-mod', 'fortune-murphy'],
             Systems.MxLinux:
@@ -117,7 +119,7 @@ class Installer:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux'],
             Systems.NetBSD:
                 ['mc', 'postgresql16-server', 'postgresql16-client', 'tmux', 'hs-pandoc', 'byobu'],
-            Systems.BSD:
+            Systems.FreeBSD:
                 # [xfce slim slim-themes]
                 ['mc', 'npm', 'links', 'w3m', 'postgresql16-server', 'postgresql16-client', 'tmux', 'hs-pandoc', 'byobu'],
             Systems.Mageia:
@@ -154,8 +156,7 @@ class Installer:
     def create_xprogram_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['thunderbird', 'wmctrl', 'inkscape', 'gimp', 'bogofilter', 'hunspell', 'hexchat',
-                 'asunder'],
+                ['thunderbird', 'inkscape', 'gimp', 'bogofilter', 'hunspell', 'hexchat'],
             Systems.Arch:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'retext', 'chromium', 'gvim', 'doublecmd-gtk2',
                  'brave-browser', 'code', 'keybase', 'keybase-gui', 'xpdf',
@@ -166,7 +167,7 @@ class Installer:
                  'rhythmbox', 'totem',
                  'qemu', 'virt-manager'],
             Systems.Fedora:
-                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'retext', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
+                ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
                  'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free-extras', 'unetbootin', #'anki',
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
                  'kitty', 'worker'
@@ -178,13 +179,13 @@ class Installer:
                  'exaile', 'easytag', 'asunder', 'strawberry', 'worker',
                  'qemu'
                  ],
-            Systems.BSD:
+            Systems.FreeBSD:
                 ['ja-anthy', 'xaos','vlc', 'gnupg', 'anki',
                  'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
                  'ja-font-kochi', 'ja-ibus-anthy', 
                  'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'surf-browser', 'neovim-gtk',
-                 'lollypop', 'deadbeef', 'exaile', 'easytag', 'asunder',
-                 'iridium-browser',
+                 'lollypop', 'exaile', 'easytag', 
+                 'iridium-browser', 'strawberry', 'rhythmbox', 'worker',
                  'qemu', 'virt-manager', 'cpu-x'
                  ],
                 # ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki', 'ja-font-kochi', 'ja-ibus-anthy', 'xorg',
@@ -249,7 +250,7 @@ class Installer:
                  #'qt6-qtscxml', 'qt6-qtserialport', 'qt6-qtspeech', 'qt6-qtsvg', 'qt6-qttools', 'qt6-qttranslations', 
                  #'qt6-qtvirtualkeyboard', 'qt6-qtwebchannel', 'qt6-qtwebsockets', 'qt6ct'
                 ],
-            Systems.BSD:
+            Systems.FreeBSD:
                 # ['fsharp', 'mono', ]
                 #['cgdb', 'qtcreator', 'node20', 'npm', 'yarn', 'openjdk17'],
                 ['qtcreator', 'node20', 'npm', 'yarn', 'openjdk17', 'rust', 'docker', 'docker-machine',
@@ -303,7 +304,7 @@ class Installer:
                 ['xfce4-wm-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
                  'xfce4-screenshooter'],
-            Systems.BSD:
+            Systems.FreeBSD:
                 ['xfce4-wm-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
                  'xfce4-screenshooter-plugin', 'xfce4-pulseaudio-plugin'],
@@ -349,7 +350,7 @@ class Installer:
             Systems.Fedora:
                 [],
             Systems.NetBSD or
-            Systems.BSD:
+            Systems.FreeBSD:
                 [],
             Systems.Mageia:
                 [],
@@ -392,7 +393,7 @@ class Installer:
             Systems.NetBSD:
                 ['texmaker', 'latex2html', 'texstudio', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
                  'texlive-collection-all', 'font-screen-cyrillic', 'cyr-rfx-koi8-ru'],
-            Systems.BSD:
+            Systems.FreeBSD:
                 ['texmaker', 'latex2html', 'texstudio', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
                  'texlive-full', 'xorg-fonts-cyrillic'],
             Systems.Mageia:
@@ -435,7 +436,7 @@ class Installer:
                 ['xboard', 'clonekeen', 'dreamchess', 'gnuchess'],
             Systems.NetBSD:
                 ['nethack-all', 'xboard', 'jin', 'eboard', 'gnuchess'],
-            Systems.BSD:
+            Systems.FreeBSD:
                 ['xboard', 'crafty', 'foobillard', 'chessx', 'brutalchess', 'dreamchess'],
             Systems.Mageia:
                 ['xboard', 'commandergenius', 'pychess', 'phalanx', 'dreamchess', 'gnuchess', 'xskat',
@@ -474,7 +475,7 @@ class Installer:
                 ['nextcloud-client'],
             Systems.NetBSD:
                 ['nextcloud-client'],
-            Systems.BSD:
+            Systems.FreeBSD:
                 ['nextcloudclient'],
             Systems.Mageia:
                 ['nextcloud-client'],

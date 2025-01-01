@@ -23,7 +23,7 @@ class Systems(Enum):
     Zorin = 8
     Redhat = 9
     Mageia = 10
-    BSD = 11
+    FreeBSD = 11
     NetBSD = 12
     SunOS = 13
     Raspbian = 14
@@ -102,9 +102,9 @@ def determine_os():
     if system == 'sunos':
         output('<green>Sun OS<nc>')
         return Systems.SunOS, subsys
-    if 'bsd' in system:
-        output('<green>BSD derivate<nc>')
-        return Systems.BSD, subsys
+    if 'freebsd' in system:
+        output('<green>FreeBSD<nc>')
+        return Systems.FreeBSD, subsys
     if system == 'linux':
         linux = platform.platform().lower() + platform.version().lower()
         if '.fc3' in linux:
@@ -147,7 +147,7 @@ def determine_os():
 
 
 def determine_installer(os):
-    if os == Systems.BSD:
+    if os == Systems.FreeBSD:
         return ["sudo", "pkg", "install", "-y"]
     if os == Systems.SunOS:
         return ["sudo", "pkg", "install", "--accept"]

@@ -20,14 +20,14 @@ def install_login(root, targetsys, subsys, options):
     #if not options.desktop == 'xfce':
     #    output('<yellow>XFCE not used<nc>')
     #    return
-    #if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+    #if targetsys == Systems.FreeBSD or targetsys == Systems.NetBSD:
     #    output('<yellow>uses SLIM<nc>')
     #    return
     if not flag_is_set(options, options.login, options.nologin):
         output('<yellow>pass<nc>')
         return
     configfile = '/etc/lightdm/lightdm-gtk-greeter.conf'
-    if targetsys == Systems.BSD or targetsys == Systems.NetBSD:
+    if targetsys == Systems.FreeBSD or targetsys == Systems.NetBSD:
         targetdir = '/usr/local/share/pixmaps/'
         configfile = '/usr/local/etc/lightdm/lightdm-gtk-greeter.conf'
     elif targetsys == Systems.SuSE:
@@ -37,7 +37,7 @@ def install_login(root, targetsys, subsys, options):
     targetfile = 'StarTrekLogo1920x1080.jpg'
     # elif targetsys == Systems.Fedora or targetsys == Systems.MxLinux:
     #    targetdir = '/usr/share/backgrounds/'
-    # elif targetsys == Systems.BSD:
+    # elif targetsys == Systems.FreeBSD:
     #    targetdir = '/usr/local/share/backgrounds/'
     #    configfile = '/usr/local/share/PCDM/themes/trueos/trueos.theme'
     if not os.path.isfile(targetdir + targetfile):
