@@ -77,7 +77,7 @@ class Installer:
             Systems.NetBSD:
                 ['pstree', 'synergy', 'fortunes-de', 'taskwarrior'],
             Systems.FreeBSD:
-                ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh', 'taskwarrior'],
+                ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh', 'taskwarrior', 'cheat'],
             Systems.Mageia:
                 ['synergy', 'gitflow', 'fortune-mod', 'fortune-murphy'],
             Systems.MxLinux:
@@ -183,13 +183,11 @@ class Installer:
                 ['ja-anthy', 'xaos','vlc', 'gnupg', 'anki',
                  'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
                  'ja-font-kochi', 'ja-ibus-anthy', 
-                 'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'surf-browser', 'neovim-gtk',
+                 'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'neovim-gtk',
                  'lollypop', 'exaile', 'easytag', 
                  'iridium-browser', 'strawberry', 'rhythmbox', 'worker',
-                 'qemu', 'virt-manager', 'cpu-x'
+                 'qemu', 'virt-manager', 'cpu-x', 'vscode' 
                  ],
-                # ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki', 'ja-font-kochi', 'ja-ibus-anthy', 'xorg',
-                #   'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
             Systems.Mageia:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'chromium-browser', 'vim-X11', 'vlc', 'gnome-commander', 'unetbootin', 'rhythmbox', 'anki',
                  'hunspell-de', 'hunspell-es', 'hunspell-ru', 'hunspell-fr',
