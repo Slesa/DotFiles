@@ -73,7 +73,7 @@ class Installer:
             Systems.SunOS:
                 ['synergy', 'rdesktop'],
             Systems.Fedora:
-                ['fortune-mod', 'hfsutils', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy', 'task', 'fastfetch', 'cheat'],
+                ['fortune-mod', 'keybase', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy', 'task', 'fastfetch', 'cheat'],
             Systems.NetBSD:
                 ['pstree', 'synergy', 'fortunes-de', 'taskwarrior'],
             Systems.FreeBSD:
@@ -170,7 +170,7 @@ class Installer:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'gnome-commander', 'chromium', 'vim-X11', 'gstreamer1-plugins-good',
                  'gstreamer1-plugins-bad-free', 'gstreamer1-plugins-bad-free-extras', 'unetbootin', #'anki',
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
-                 'kitty', 'worker'
+                 'kitty', 'worker', 'ghostwriter',
                  'qemu', 'virt-manager'],
             Systems.NetBSD:
                 ['anthy', 'ibus-anthy', 'xaos','vlc', 'gnupg', 
