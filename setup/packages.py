@@ -179,8 +179,8 @@ class Installer:
                  'qemu', 'virt-manager'],
             Systems.OpenBSD:
                 ['anthy', 'ibus-anthy', 'xaos','vlc', 'gnupg', 'chromium', 'totem',
-                 'vlc', 'gnupg', 'tor-browser', 'audacity',
-                 'xpdf', 'kitty', 'xfe', 
+                 'vlc', 'gnupg', 'tor-browser', 'audacity', 'anki',
+                 'xpdf', 'kitty', 'xfe', 'rhythmbox',
                  'easytag', 'worker',
                  'qemu'
                  ],
