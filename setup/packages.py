@@ -495,6 +495,8 @@ class Installer:
                 ['nextcloud-client'],
             Systems.Fedora:
                 ['nextcloud-client'],
+            Systems.OpenBSD:
+                ['nextcloudclient'],
             Systems.NetBSD:
                 ['nextcloud-client'],
             Systems.FreeBSD:
