@@ -115,7 +115,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        if self.targetsys == Systems.FreeBSD:
+        if self.targetsys == Systems.FreeBSD or self.targetsys == Systems.NetBSD or self.targetsys == Systems.OpenBSD:
             output('<tc>not supported<nc>')
             return
         if not flag_is_set_explicit(self.options.qt, self.options.noqt, True):
@@ -147,6 +147,7 @@ class Externals:
 
     def install_jetbrain(self, tool, zipfile, target, cdn=False):
         tooldir = self.bindir + '/Jetbrains.'+tool
+        tarpath = zipfile.replace(".tar.gz", "").replace("JetBrains.", "JetBrains ")
         if os.path.isdir(tooldir):
             output('<yellow>already installed<nc>')
             return False
@@ -156,8 +157,12 @@ class Externals:
             url = 'https://download.jetbrains.com/' if cdn else 'https://download-cdn.jetbrains.com/'
             subprocess.check_call(['wget', 'https://download.jetbrains.com/'+target+'/'+zipfile])
         os.chdir(self.bindir)
-        os.mkdir(tooldir)
-        subprocess.check_call(['tar', 'xvzf', self.downloads+'/'+zipfile, '-C', tooldir, '--strip-component=1'])
+        if self.targetsys == Systems.OpenBSD:
+            subprocess.check_call(['tar', 'xvzf', self.downloads+'/'+zipfile])
+            subprocess.check_call(['mv', tarpath, tooldir])
+        else:
+            os.mkdir(tooldir)
+            subprocess.check_call(['tar', 'xvzf', self.downloads+'/'+zipfile, '-C', tooldir, '--strip-component=1'])
         os.chdir(path)
         return True
 
@@ -174,7 +179,7 @@ class Externals:
 
     def install_toolbox(self):
         output('- install Toolbox.......: ', False)
-        if self.targetsys == Systems.FreeBSD or self.targetsys == Systems.NetBSD:
+        if self.targetsys == Systems.FreeBSD or self.targetsys == Systems.NetBSD or self.targetsys == Systems.OpenBSD:
             output('<tc>not supported<nc>')
             return
         if self.targetsys == Systems.Cygwin:
@@ -194,7 +199,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD or self.targetsys == Systems.OpenBSD
         if not flag_is_set_explicit(self.options.rider, self.options.norider, bsd):
             output('<yellow>pass<nc>')
             return
@@ -210,7 +215,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD or self.targetsys == Systems.OpenBSD
         if not flag_is_set_explicit(self.options.rover, self.options.norover, bsd):
             output('<yellow>pass<nc>')
             return
@@ -225,7 +230,8 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD or self.targetsys == Systems.OpenBSD
+
         if not flag_is_set_explicit(self.options.pycharm, self.options.nopycharm, bsd):
             output('<yellow>pass<nc>')
             return
@@ -241,7 +247,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD or self.targetsys == Systems.OpenBSD
         if not flag_is_set_explicit(self.options.clion, self.options.noclion, bsd):
             output('<yellow>pass<nc>')
             return
@@ -257,7 +263,7 @@ class Externals:
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return
-        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD
+        bsd = self.targetsys==Systems.FreeBSD or self.targetsys == Systems.NetBSD or self.targetsys == Systems.OpenBSD
         if not flag_is_set_explicit(self.options.webstorm, self.options.nowebstorm, bsd):
             output('<yellow>pass<nc>')
             return
