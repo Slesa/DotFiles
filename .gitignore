@@ -3,3 +3,4 @@ profiles/cygwin/subversion/subversion/auth/*
 *.swp
 etc/unix/purple/logs/
 __pycache__/
+.idea/
