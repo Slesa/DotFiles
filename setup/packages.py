@@ -77,7 +77,7 @@ class Installer:
             Systems.NetBSD:
                 ['pstree', 'synergy', 'fortunes-de', 'taskwarrior'],
             Systems.FreeBSD:
-                ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh', 'taskwarrior', 'cheat'],
+                ['inotify-tools', 'pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh', 'taskwarrior', 'cheat'],
             Systems.Mageia:
                 ['synergy', 'gitflow', 'fortune-mod', 'fortune-murphy'],
             Systems.MxLinux:
