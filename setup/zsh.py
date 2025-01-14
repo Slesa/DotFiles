@@ -23,7 +23,11 @@ def install_zsh(root, targetsys, options):
         srcfile = 'zshrc.cygwin'
         if targetsys == Systems.Cygwin:
             srcfile = 'zshrc.cygwin'
-        elif targetsys == Systems.BSD:
+        elif targetsys == Systems.NetBSD:
+            srcfile = 'zshrc.freebsd'
+        elif targetsys == Systems.OpenBSD:
+            srcfile = 'zshrc.freebsd'
+        elif targetsys == Systems.FreeBSD:
             srcfile = 'zshrc.freebsd'
         elif targetsys == Systems.Arch:
             srcfile = 'zshrc.manjaro'

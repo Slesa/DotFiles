@@ -25,9 +25,10 @@ class Systems(Enum):
     Mageia = 10
     FreeBSD = 11
     NetBSD = 12
-    SunOS = 13
-    Raspbian = 14
-    Debian = 15
+    OpenBSD = 13
+    SunOS = 14
+    Raspbian = 15
+    Debian = 16
 
 
 class Subsys(Enum):
@@ -96,6 +97,9 @@ def determine_os():
     if system == 'darwin':
         output('<green>MacOS<nc>')
         return Systems.MacOS, subsys
+    if system == 'openbsd':
+        output('<green>OpenBSD<nc>')
+        return Systems.OpenBSD, subsys
     if system == 'netbsd':
         output('<green>NetBSD<nc>')
         return Systems.NetBSD, subsys
@@ -130,7 +134,7 @@ def determine_os():
             return Systems.Ubuntu, subsys
         if 'zorin' in linux:
             output(f'<green>Zorin {subsys}<nc>')
-    return Systems.Zorin, subsys
+            return Systems.Zorin, subsys
 
     flow = os.popen('which zypper').read()[:-1]
     if '/zypper' in flow:
@@ -153,6 +157,8 @@ def determine_installer(os):
         return ["sudo", "pkg", "install", "--accept"]
     if os == Systems.NetBSD:
         return ["sudo", "pkgin", "-y", "install"]
+    if os == Systems.OpenBSD:
+        return ["doas", "pkg_add", "-i"]
     if os == Systems.Mageia:
         return ["sudo", "dnf", "install", "-y"]
     if os == Systems.Fedora:

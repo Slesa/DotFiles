@@ -34,7 +34,7 @@ def install_core(installprog, targetsys, subsys, options):
             packages += ['firefox']
     if targetsys == Systems.SunOS:
         packages += ['links', 'wget', 'rsync']
-    if targetsys == Systems.FreeBSD or targetsys == Systems.NetBSD:
+    if targetsys == Systems.FreeBSD or targetsys == Systems.NetBSD or targetsys == Systems.OpenBSD:
         packages += ['pidof', 'links', 'wget', 'rsync', 'bsdstats', 'neovim']
         if targetsys == Systems.FreeBSD:
             packages += ['linux_base-c7', 'portmaster', 'portshaker', 'poudriere-devel']
@@ -74,10 +74,12 @@ class Installer:
                 ['synergy', 'rdesktop'],
             Systems.Fedora:
                 ['fortune-mod', 'keybase', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy', 'task', 'fastfetch', 'cheat'],
+            Systems.OpenBSD:
+                ['pstree', 'synergy', 'ssh-copy-id', 'keybase', 'zsh-syntax-lightning', 'taskwarrior', 'pkglocatedb'],
             Systems.NetBSD:
                 ['pstree', 'synergy', 'fortunes-de', 'taskwarrior'],
             Systems.FreeBSD:
-                ['pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh', 'taskwarrior'],
+                ['inotify-tools', 'pstree', 'synergy', 'gitflow', 'keybase', 'fortune-mod-bofh', 'taskwarrior', 'cheat'],
             Systems.Mageia:
                 ['synergy', 'gitflow', 'fortune-mod', 'fortune-murphy'],
             Systems.MxLinux:
@@ -97,6 +99,7 @@ class Installer:
 
     def getpkgs_basics(self):
         output('Collect basics..........: ', False)
+        output(str(self.targetsys))
         if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return []
@@ -117,6 +120,8 @@ class Installer:
                 ['links', 'w3m', 'postgresql', 'tmux'],
             Systems.Fedora:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'postgresql-server', 'postgresql-contrib', 'tmux'],
+            Systems.OpenBSD:
+                ['mc', 'postgresql-server', 'postgresql-client'],
             Systems.NetBSD:
                 ['mc', 'postgresql16-server', 'postgresql16-client', 'tmux', 'hs-pandoc', 'byobu'],
             Systems.FreeBSD:
@@ -172,6 +177,13 @@ class Installer:
                  'hunspell-de', 'hunspell-ru', 'hunspell-fr', 'hunspell-es',
                  'kitty', 'worker', 'ghostwriter',
                  'qemu', 'virt-manager'],
+            Systems.OpenBSD:
+                ['anthy', 'ibus-anthy', 'xaos','vlc', 'gnupg', 'chromium', 'totem',
+                 'vlc', 'gnupg', 'tor-browser', 'audacity', 'anki',
+                 'xpdf', 'kitty', 'xfe', 'rhythmbox',
+                 'easytag', 'worker',
+                 'qemu'
+                 ],
             Systems.NetBSD:
                 ['anthy', 'ibus-anthy', 'xaos','vlc', 'gnupg', 
                  'vlc', 'gnupg', 'hunspell-de', 'hunspell-ru_RU', 'hunspell-fr_FR', 'hunspell-es_ES',
@@ -183,13 +195,11 @@ class Installer:
                 ['ja-anthy', 'xaos','vlc', 'gnupg', 'anki',
                  'chromium', 'vlc', 'gnupg', 'unetbootin', 'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell',
                  'ja-font-kochi', 'ja-ibus-anthy', 
-                 'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'surf-browser', 'neovim-gtk',
+                 'ghostwriter', 'xorg', 'xpdf', 'kitty', 'lazygit', 'xfe', 'nerd-fonts', 'neovim-gtk',
                  'lollypop', 'exaile', 'easytag', 
                  'iridium-browser', 'strawberry', 'rhythmbox', 'worker',
-                 'qemu', 'virt-manager', 'cpu-x'
+                 'qemu', 'virt-manager', 'cpu-x', 'vscode' 
                  ],
-                # ['chromium', 'unetbootin', 'vscode', 'lollypop', 'ghostwriter', 'anki', 'ja-font-kochi', 'ja-ibus-anthy', 'xorg',
-                #   'de-hunspell', 'ru-hunspell', 'fr-hunspell', 'es-hunspell']
             Systems.Mageia:
                 ['anthy', 'audacity', 'ibus-anthy', 'xaos', 'chromium-browser', 'vim-X11', 'vlc', 'gnome-commander', 'unetbootin', 'rhythmbox', 'anki',
                  'hunspell-de', 'hunspell-es', 'hunspell-ru', 'hunspell-fr',
@@ -249,6 +259,10 @@ class Installer:
                  'qt6-qtwebchannel-devel', 'qt6-qtwebsockets-devel', 'qt6-qtwebview-devel', 'qtsingleapplication-qt6-devel', 
                  'kdsoap-ws-discovery-client-devel',
                  ],
+            Systems.OpenBSD:
+                ['qt-creator', 'node', 'yarn', 'jdk17', 'rust',  
+                 'elixir', 'erlang'
+                ],
             Systems.NetBSD:
                 ['qtcreator', 'nodejs', 'yarn', 'openjdk17', 'rust', 'docker', 
                  'elixir', 'erlang'
@@ -307,6 +321,10 @@ class Installer:
                 [],
             Systems.Fedora:
                 ['xfwm4-themes', 'xfce4-eyes-plugin'],
+            Systems.OpenBSD:
+                ['xfwm4-themes', 'xfce4-xkb', 'xfce4-weather', 'xfce4-cpugraph',
+                 'xfce4-battery', 'xfce4-wavelan', 'xfce4-clipman', 'xfce4-netload',
+                 'xfce4-screenshooter'],
             Systems.NetBSD:
                 ['xfce4-wm-themes', 'xfce4-xkb-plugin', 'xfce4-weather-plugin', 'xfce4-cpugraph-plugin',
                  'xfce4-battery-plugin', 'xfce4-wavelan-plugin', 'xfce4-clipman-plugin', 'xfce4-netload-plugin',
@@ -397,6 +415,8 @@ class Installer:
             Systems.Fedora:
                 ['texmaker', 'latex2html', 'texstudio', 'texlive-ctex', 'texlive-xecjk', 'texlive-babel-japanese',
                  'texlive-babel-russian', 'texlive-collection-music', 'texlive-xetex', 'texlive-cyrillic'],
+            Systems.OpenBSD:
+                ['texmaker', 'latex2html', 'texlive_texmf-full'],
             Systems.NetBSD:
                 ['texmaker', 'latex2html', 'texstudio', 'font-cronyx-cyrillic', 'font-misc-cyrillic', 'font-screen-cyrillic',
                  'texlive-collection-all', 'font-screen-cyrillic', 'cyr-rfx-koi8-ru'],
@@ -441,6 +461,8 @@ class Installer:
                 ['nethack', 'freeciv', 'chromium-bsu'],
             Systems.Fedora:
                 ['xboard', 'clonekeen', 'dreamchess', 'gnuchess'],
+            Systems.OpenBSD:
+                ['nethack', 'xboard', 'clonekeen', 'eboard', 'gnuchess', 'chromium-bsu', 'foobillard', 'xskat', 'speeddreams', 'kiten'],
             Systems.NetBSD:
                 ['nethack-all', 'xboard', 'jin', 'eboard', 'gnuchess'],
             Systems.FreeBSD:
@@ -480,6 +502,8 @@ class Installer:
                 ['nextcloud-client'],
             Systems.Fedora:
                 ['nextcloud-client'],
+            Systems.OpenBSD:
+                ['nextcloudclient'],
             Systems.NetBSD:
                 ['nextcloud-client'],
             Systems.FreeBSD:
