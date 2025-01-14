@@ -238,9 +238,16 @@ class Installer:
                 ['build-essential', 'gcc-13', 'qt6', 'qtcreator', 'nodejs-20', 'rustc', 'cmake', 'codeblocks'],
             Systems.Fedora:
                 ['cgdb', 'ncurses-devel', 'cmake-gui', 'nodejs', 'mesa-libGL', 'mesa-libGL-devel', 
-                 'rust-cargo-devel', 'dotnet', 
+                 'rust-cargo-devel', 'dotnet', 'qt-creator', 'elixir', 'elixir-doc', 'erlang',
                  'dotnet-runtime-7.0', 'dotnet-sdk-7.0', 'dotnet-targeting-pack-7.0', 'dotnet-apphost-pack-7.0', 'dotnet-templates-7.0',
                  'dotnet-runtime-8.0', 'dotnet-sdk-8.0', 'dotnet-targeting-pack-8.0', 'dotnet-apphost-pack-8.0', 'dotnet-templates-8.0',
+                 'PackageKit-Qt6-devel', 'qt6-qtbase-devel', 'qt6-qtcharts-devel', 'qt6-qtconnectivity-devel', 'qt6-qtdeclarative-devel',
+                 'qt6-qtgraphs-devel', 'qt6-qtgrpc-devel', 'qt6-qthttpserver-devel', 'qt6-qtlanguageserver-devel', 'qt6-qtlocation-devel',
+                 'qt6-qtlottie-devel', 'qt6-qtmqtt-devel', 'qt6-qtmultimedia-devel', 'qt6-qtnetworkauth-devel', 'qt6-qtopcua-devel',
+                 'qt6-qtpdf-devel', 'qt6-qtpositioning-devel', 'qt6-qtgraphs-devel', 'qt6-qtremoteobjects-devel', 'qt6-qtscxml-devel',
+                 'qt6-qtsensors-devel', 'qt6-qtserialbus-devel', 'qt6-qtspeech-devel', 'qt6-qtsvg-devel', 'qt6-qtvirtualkeyboard-devel',
+                 'qt6-qtwebchannel-devel', 'qt6-qtwebsockets-devel', 'qt6-qtwebview-devel', 'qtsingleapplication-qt6-devel', 
+                 'kdsoap-ws-discovery-client-devel',
                  ],
             Systems.NetBSD:
                 ['qtcreator', 'nodejs', 'yarn', 'openjdk17', 'rust', 'docker', 
