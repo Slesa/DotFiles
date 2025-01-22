@@ -75,7 +75,7 @@ class Installer:
             Systems.Fedora:
                 ['fortune-mod', 'keybase', 'zsh-lovers', 'rdesktop', 'gcc-c++', 'synergy', 'task', 'fastfetch', 'cheat'],
             Systems.OpenBSD:
-                ['pstree', 'synergy', 'ssh-copy-id', 'keybase', 'zsh-syntax-lightning', 'taskwarrior', 'pkglocatedb'],
+                ['inotify-tools', 'pstree', 'synergy', 'ssh-copy-id', 'keybase', 'zsh-syntax-lightning', 'taskwarrior', 'pkglocatedb'],
             Systems.NetBSD:
                 ['pstree', 'synergy', 'fortunes-de', 'taskwarrior'],
             Systems.FreeBSD:
@@ -180,7 +180,7 @@ class Installer:
             Systems.OpenBSD:
                 ['anthy', 'ibus-anthy', 'xaos','vlc', 'gnupg', 'chromium', 'totem',
                  'vlc', 'gnupg', 'tor-browser', 'audacity', 'anki',
-                 'xpdf', 'kitty', 'xfe', 'rhythmbox',
+                 'xpdf', 'kitty', 'xfe', 'rhythmbox', 'noto-nerd-fonts', 'terminus-nerd-fonts', 'ubuntu-nerd-fonts', 'ubuntumono-nerd-fonts',
                  'easytag', 'worker',
                  'qemu'
                  ],
