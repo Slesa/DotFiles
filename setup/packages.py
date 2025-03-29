@@ -25,7 +25,9 @@ def install_core(installprog, targetsys, subsys, options):
         output(f'Fedora {version}')
         subprocess.check_call(['sudo', 'dnf', 'install', '-y', f'https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{version}.noarch.rpm'])
 
-    packages = ['zsh', 'neofetch', 'neovim']
+    packages = ['zsh', 'neovim']
+    if targetsys != Systems.Debian:
+        packages += ['neofetch']
     if subsys == Subsys.Origin:  # Not needed on Win Subsys
         packages += ['git']
         if targetsys == Systems.FreeBSD:
@@ -89,12 +91,14 @@ class Installer:
             Systems.Redhat:
                 ['fortune-mod', 'rdesktop', 'gcc-c++', 'synergy'],
             Systems.SuSE:
-                ['fortune', 'hfsutils', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc'],
+                ['fortune', 'synergy', 'qsynergy', 'rdesktop', 'gcc-c++', 'gcc'],
             Systems.Raspbian:
-                ['fortune-mod']
+                ['fortune-mod'],
+            Systems.Debian:    
+                ['fastfetch', 'taskwarrior', 'fortune-mod', 'fortunes', 'fortunes-de']
         }
         if self.subsys == Subsys.Origin:
-            pkgs[Systems.Ubuntu] += ['hfsplus', 'hfsutils', 'synergy', 'rdesktop']
+            pkgs[Systems.Ubuntu] += ['hfsplus', 'synergy', 'rdesktop']
         return pkgs
 
     def getpkgs_basics(self):
@@ -139,7 +143,9 @@ class Installer:
             Systems.SuSE:
                 ['mc', 'npm', 'links', 'w3m', 'postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix', 'dosemu'],
             Systems.Raspbian:
-                []
+                [],
+            Systems.Debian:
+                ['postgresql', 'byobu', 'tmux', 'ranger', 'dos2unix']
         }
         if self.subsys == Subsys.Origin:
             pkgs[Systems.Ubuntu] += ['synaptic', 'openssh-server', 'lshw']
@@ -239,7 +245,7 @@ class Installer:
     def create_compiler_packages(self):
         pkgs = {
             Systems.Unknown:
-                ['meld', 'gdb', 'cmake', 'ccache', 'docker'],
+                ['meld', 'gdb', 'cmake', 'ccache'],
             Systems.Arch:
                 ['cgdb', 'jdk-openjdk', 'nodejs', 'yarn', 'docker-compose',
                  'dotnet-runtime', 'dotnet-sdk', 'dotnet-targeting-pack', 'aspnet-runtime', 'aspnet-targeting-pack',
@@ -294,12 +300,19 @@ class Installer:
             Systems.SuSE:
                 # ['mono-complete','fsharp',]
                 ['cgdb', 'nodejs19', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel'],
+            Systems.Debian:
+                # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+                ['cgdb', 'nodejs', 'cmake-gui', 'qtcreator', 'elixir',
+                 'qt6-base-dev', 'qt6-base-dev-tools', 'qt6-base-doc', 'qt6-base-examples',
+                ]
         }
+        if self.targetsys != Systems.Cygwin and self.subsys != Subsys.Windows:
+            pkgs += ['docker']
         return pkgs
 
     def getpkgs_compiler(self):
         output('Collect compiler........: ', False)
-        if self.targetsys == Systems.Cygwin or self.subsys == Subsys.Windows:
+        if self.targetsys == Systems.Cygwin:
             output('<tc>not necessary<nc>')
             return []
         if not flag_is_set(self.options, self.options.compiler, self.options.nocompiler):

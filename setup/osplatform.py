@@ -42,7 +42,7 @@ def os_from_line(line):
             output('<green>MX Linux<nc>')
             return Systems.MxLinux;
         else:
-            output('<green>Fedora<nc>')
+            output('<green>Debian<nc>')
             return Systems.Debian;
     if 'fedora' in line:
         output('<green>Fedora<nc>')
@@ -171,7 +171,7 @@ def determine_installer(os):
         return ["sudo", "zypper", "install", "-ly"]
     if os == Systems.Arch:
         return ["sudo", "pacman", "--noconfirm", "-Syu"]
-    if os == Systems.Ubuntu or os == Systems.Zorin or os == Systems.Raspbian:
+    if os == Systems.Debian or os == Systems.Ubuntu or os == Systems.Zorin or os == Systems.Raspbian:
         return ["sudo", "apt-get", "install", "-y"]
     if os == Systems.MacOS:
         return ["sudo", "brew", "install", "-y"]

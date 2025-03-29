@@ -26,7 +26,8 @@ def install_dotnet(installprog, targetsys, options):
 #    if targetsys == Systems.BSD:
 #        packages = ['linux-dotnet10-sdk', 'linux-dotnet10-runtime']
 #    else:
-        os.popen('sh -x ./dotnet-install.sh -c 6.0')
+        os.popen('sh -x ./dotnet-install.sh -c 8.0')
+        os.popen('sh -x ./dotnet-install.sh -c 9.0')
 
 #    elif targetsys == Systems.Ubuntu or targetsys == Systems.Zorin or targetsys == Systems.MxLinux:
 #        os.popen('wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb')
