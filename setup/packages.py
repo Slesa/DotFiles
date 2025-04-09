@@ -299,10 +299,10 @@ class Installer:
                     , 'dotnet', 'dotnet-sdk-6.0', 'dotnet-templates-6.0'],
             Systems.SuSE:
                 # ['mono-complete','fsharp',]
-                ['cgdb', 'nodejs19', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel'],
+                ['cgdb', 'nodejs19', 'yarn', 'cmake-gui', 'rust', 'rust-cargo-devel', 'libboost-all-dev'],
             Systems.Debian:
                 # curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-                ['cgdb', 'nodejs', 'cmake-gui', 'qtcreator', 'elixir',
+                ['cgdb', 'nodejs', 'cmake-gui', 'qtcreator', 'elixir', 'libboost-all-dev', 'gettext', 'pkg-config', 'protobuf-compiler',
                  'qt6-base-dev', 'qt6-base-dev-tools', 'qt6-base-doc', 'qt6-base-examples',
                 ]
         }
