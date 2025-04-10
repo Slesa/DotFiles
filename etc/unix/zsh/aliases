@@ -4,7 +4,7 @@ alias lssmall='ls -Slhr | head'
 alias lsnew='ls -tlh | head'
 alias lsold='ls -tlh | tail'
 
-alias vi=vim
+alias vi=nvim
 alias df='df -h'
 alias du='du -h'
 alias cls='echo -ne "\033c"'
@@ -26,7 +26,7 @@ alias glog="git log --graph --oneline --all"
 alias unstage="git reset HEAD"
 
 # Suffix-Aliase
-alias -s txt=vim
+alias -s txt=nvim
 alias -s de=$BROWSER com=$BROWSER org=$BROWSER
 
 
